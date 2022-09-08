@@ -1,0 +1,23 @@
+{
+    "name": "Banners",
+    "label": "Banners",
+    "alias": "banners",
+    "description": "manage all banners",
+    "keywords": ["banners"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Banners\\Providers\\BannersServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "menus": [
+        {
+            "icon": "fas fa-circle",
+            "name": "Banners",
+            "route": "banners.index",
+            "permission": "read banners"
+        }
+    ],
+    "permissions": ["banners"]
+}

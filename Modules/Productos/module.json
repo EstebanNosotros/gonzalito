@@ -1,0 +1,23 @@
+{
+    "name": "Productos",
+    "label": "Productos",
+    "alias": "productos",
+    "description": "manage all productos",
+    "keywords": ["productos"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Productos\\Providers\\ProductosServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "menus": [
+        {
+            "icon": "fas fa-circle",
+            "name": "Productos",
+            "route": "productos.index",
+            "permission": "read productos"
+        }
+    ],
+    "permissions": ["productos"]
+}

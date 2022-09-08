@@ -1,0 +1,23 @@
+{
+    "name": "Categorias",
+    "label": "Categorias",
+    "alias": "categorias",
+    "description": "manage all categorias",
+    "keywords": ["categorias"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Categorias\\Providers\\CategoriasServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "menus": [
+        {
+            "icon": "fas fa-circle",
+            "name": "Categorias",
+            "route": "categorias.index",
+            "permission": "read categorias"
+        }
+    ],
+    "permissions": ["categorias"]
+}
