@@ -12,6 +12,6 @@
 */
 
 return [
-    'attached'  => 'Isian ini sudah dilampirkan.',
-    'relatable' => 'Isian ini mungkin tidak berasosiasi dengan sumber ini.',
+    'attached'  => 'Este campo ya se adjuntó.',
+    'relatable' => 'Este campo no se puede asociar con este recurso.',
 ];

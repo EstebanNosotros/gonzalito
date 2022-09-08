@@ -1,4 +1,12 @@
-<aside class="main-sidebar sidebar-dark-primary elevation-4">
+<style>
+    a.active, a {
+        color: #000000 !important;
+    }
+    .nav-header {
+        color: #000000 !important;
+    }
+</style>
+<aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #F2B705;">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
     <img src="{{ asset(Setting::getValue('app_logo')) }}" alt="{{ Setting::getName('app_name') }}" class="brand-image img-circle elevation-3" style="opacity: .8">
@@ -23,7 +31,7 @@
                 <li class="nav-item">
                     <a href="{{ route('dashboard') }}" class="nav-link {{ request()->routeIs('dashboard') ? 'active':'' }}">
                         <i class="nav-icon fas fa-tachometer-alt"></i>
-                        <p>Dashboard</p>
+                        <p>Inicio</p>
                     </a>
                 </li>@php $i = 1; @endphp
                 @foreach ($modulemenus as $menus)
@@ -34,7 +42,7 @@
                                     $perm[] = $menu['permission'];
                                 @endphp
                                 @canany($perm)
-                                    <li class="nav-header ml-2">MASTER DATA</li>
+                                    <li class="nav-header ml-2">DATOS</li>
                                 @endcanany
                             @endif
                             @can($menu['permission'])
@@ -74,13 +82,13 @@
                     @endif
                 @endforeach
                 @canany(['read user', 'read role', 'read permission'])
-                    <li class="nav-header ml-2">ACCESS</li>
+                    <li class="nav-header ml-2">ACCESO</li>
                 @endcanany
                 @can('read user')
                     <li class="nav-item">
                         <a href="{{ route('user.index') }}" class="nav-link {{ request()->routeIs('user.index') ? 'active':'' }}">
                             <i class="fas fa-user nav-icon"></i>
-                            <p>User</p>
+                            <p>Usuarios</p>
                         </a>
                     </li>
                 @endcan
@@ -88,7 +96,7 @@
                     <li class="nav-item">
                         <a href="{{ route('role.index') }}" class="nav-link {{ request()->routeIs('role.index') ? 'active':'' }}">
                             <i class="fas fa-user-cog nav-icon"></i>
-                            <p>Role</p>
+                            <p>Roles</p>
                         </a>
                     </li>
                 @endcan
@@ -96,16 +104,16 @@
                     <li class="nav-item">
                         <a href="{{ route('permission.index') }}" class="nav-link {{ request()->routeIs('permission.index') ? 'active':'' }}">
                             <i class="fas fa-unlock nav-icon"></i>
-                            <p>Permission</p>
+                            <p>Permisos</p>
                         </a>
                     </li>
                 @endcan
-                <li class="nav-header ml-2">SETTINGS</li>
+                <li class="nav-header ml-2">CONFIGURACIÓN</li>
                 @can('read setting')
                     <li class="nav-item">
                         <a href="{{ route('setting.index') }}" class="nav-link {{ request()->routeIs('setting.index') ? 'active':'' }}">
                             <i class="fas fa-cog nav-icon"></i>
-                            <p>Setting</p>
+                            <p>Configuración</p>
                         </a>
                     </li>
                 @endcan
@@ -113,7 +121,7 @@
                     <li class="nav-item">
                         <a href="{{ route('filemanager') }}" class="nav-link {{ request()->routeIs('filemanager') ? 'active':'' }}">
                             <i class="nav-icon fas fa-folder"></i>
-                            <p>File Manager</p>
+                            <p>Archivos</p>
                         </a>
                     </li>
                 @endcan
@@ -121,7 +129,7 @@
                     <li class="nav-item">
                         <a href="{{ route('module.index') }}" class="nav-link {{ request()->routeIs('module.index') ? 'active':'' }}">
                             <i class="fas fa-network-wired nav-icon"></i>
-                            <p>Module</p>
+                            <p>Módulos</p>
                         </a>
                     </li>
                 @endcan
@@ -129,7 +137,7 @@
                 <li class="nav-item">
                 <a href="#" class="nav-link bg-danger" data-toggle="modal" data-target="#modal-logout" data-backdrop="static" data-keyboard="false">
                     <i class="fas fa-sign-out-alt nav-icon"></i>
-                    <p>KELUAR</p>
+                    <p>Salir</p>
                 </a>
                 </li>
                 <li class="nav-header"></li>

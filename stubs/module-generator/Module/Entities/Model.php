@@ -9,7 +9,7 @@ use Modules\{Module}\Database\Factories\{Model}Factory;
 class {Model} extends Model
 {
     use HasFactory;
-    protected $fillable = ['name'];
+    protected $fillable = ['nombre'];
     
     protected static function newFactory()
     {

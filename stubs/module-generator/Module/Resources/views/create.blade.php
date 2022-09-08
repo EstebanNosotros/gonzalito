@@ -12,7 +12,7 @@
 
                     <form action="{{ route('app.{module}.create') }}" method="post">
                     @csrf
-                        <input class="border" name="name" value="{{ old('name') }}" />
+                        <input class="border" name="nombre" value="{{ old('nombre') }}" />
                         <button>Submit</button>
                     </form>
 

@@ -25,7 +25,7 @@
     <body class="hold-transition sidebar-mini layout-fixed">
         @php
             if (!$errors->isEmpty()) {
-                alert()->error('Pemberitahuan', implode('<br>', $errors->all()))->toToast()->toHtml();
+                alert()->error('Aviso', implode('<br>', $errors->all()))->toToast()->toHtml();
             }
         @endphp
         <div class="wrapper">

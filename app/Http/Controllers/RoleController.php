@@ -14,7 +14,7 @@ class RoleController extends Controller
 {
     public function index()
     {
-        $x['title']         = 'Role';
+        $x['title']         = 'Roles';
         $x['data']          = Role::with('permissions')->get();
         $x['permission']    = Permission::orderBy('id', 'desc')->get();
         return view('admin.role', $x);
@@ -39,10 +39,10 @@ class RoleController extends Controller
             ]);
             $role->givePermissionTo($request->permissions);
             DB::commit();
-            Alert::success('Pemberitahuan', 'Data <b>' . $role->name . '</b> berhasil dibuat')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . $role->name . '</b> registrado exitosamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             DB::rollback();
-            Alert::error('Pemberitahuan', 'Data <b>' . $role->name . '</b> gagal dibuat : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . $role->name . '</b> error al registralo : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }
@@ -52,7 +52,7 @@ class RoleController extends Controller
         $role = Role::with('permissions')->find($request->id);
         return response()->json([
             'status'    => Response::HTTP_OK,
-            'message'   => 'Data role by id',
+            'message'   => 'Dato de rol por id',
             'data'      => $role
         ], Response::HTTP_OK);
     }
@@ -76,10 +76,10 @@ class RoleController extends Controller
             ]);
             $role->syncPermissions($request->permissions);
             DB::commit();
-            Alert::success('Pemberitahuan', 'Data <b>' . $role->name . '</b> berhasil disimpan')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . $role->name . '</b> actualizado exitosamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             DB::rollback();
-            Alert::error('Pemberitahuan', 'Data <b>' . $role->name . '</b> gagal disimpan : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . $role->name . '</b> error al actualizarlo : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }
@@ -89,9 +89,9 @@ class RoleController extends Controller
         try {
             $role = Role::find($request->id);
             $role->delete();
-            Alert::success('Pemberitahuan', 'Data <b>' . $role->name . '</b> berhasil dihapus')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . $role->name . '</b> eliminado exitosamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
-            Alert::error('Pemberitahuan', 'Data <b>' . $role->name . '</b> gagal dihapus : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . $role->name . '</b> error al eliminarlo : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }

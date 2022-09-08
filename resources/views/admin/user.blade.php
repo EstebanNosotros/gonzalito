@@ -10,7 +10,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div><!-- /.col -->
@@ -29,7 +29,7 @@
                             @can('create user')
                             <div class="card-header">
                                 <h3 class="card-title">
-                                    <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-tambah" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Tambah</a>
+                                    <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
                                 </h3>
                             </div>
                             @endcan
@@ -39,12 +39,12 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
+                                            <th>Nombre</th>
                                             <th>Email</th>
-                                            <th>Role</th>
-                                            <th>Updated</th>
+                                            <th>Rol</th>
+                                            <th>Actualizado</th>
                                             @canany(['update user', 'delete user'])
-                                                <th>Action</th>
+                                                <th>Acciones</th>
                                             @endcanany
                                         </tr>
                                     </thead>
@@ -125,12 +125,12 @@
 @endsection
 
 @section('modal')
-    {{-- Modal tambah --}}
-    <div class="modal fade" id="modal-tambah">
+    {{-- Modal nuevo --}}
+    <div class="modal fade" id="modal-nuevo">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Tambah Data</h4>
+                    <h4 class="modal-title">Nuevo</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -139,7 +139,7 @@
                     <form action="{{ route('user.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="input-group">
-                            <label>Name</label>
+                            <label>Nombre</label>
                             <div class="input-group">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" name="name" value="{{ old('name') }}">
                                 @error('name')
@@ -166,7 +166,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>Role</label>
+                            <label>Rol</label>
                             <div class="input-group">
                                 <select class="form-control" name="role">
                                     @foreach ($role as $i)
@@ -180,8 +180,8 @@
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
             </div>
@@ -194,7 +194,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Data</h4>
+                    <h4 class="modal-title">Editar Usuario</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -204,7 +204,7 @@
                         @csrf
                         @method("PUT")
                         <div class="input-group">
-                            <label>Name</label>
+                            <label>Nombre</label>
                             <div class="input-group">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" name="name" id="name" value="{{ old('name') }}">
                                 @error('name')
@@ -231,7 +231,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>Role</label>
+                            <label>Rol</label>
                             <div class="input-group">
                                 <select class="form-control" name="role" id="role">
                                     @foreach ($role as $i)
@@ -247,8 +247,8 @@
                 <div class="modal-footer justify-content-between">
                     <input type="hidden" name="id" id="id">
                     <input type="hidden" name="old_email" id="old_email">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
             </div>
@@ -261,7 +261,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Hapus Data</h4>
+                    <h4 class="modal-title">Eliminar Usuario</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -270,12 +270,12 @@
                     <form action="{{ route('user.destroy') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('DELETE')
-                        <p class="modal-text">Apakah anda yakin akan menghapus? <b id="delete-data"></b></p>
+                        <p class="modal-text">¿Está seguro que desea eliminar este Usuario? <b id="delete-data"></b></p>
                         <input type="hidden" name="id" id="did">
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-danger">Hapus</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
                 </div>
                 </form>
             </div>

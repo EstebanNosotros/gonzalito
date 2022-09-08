@@ -10,7 +10,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div><!-- /.col -->
@@ -30,8 +30,8 @@
                             <div class="card-header">
                                 <h3 class="card-title">
                                     <div class="btn-group">
-                                        <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-tambah" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Tambah</a>
-                                        <a href="{{ route('permission.reload') }}" class="btn btn-sm btn-warning"><i class="fas fa-sync-alt"></i> Reload</a>
+                                        <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
+                                        <a href="{{ route('permission.reload') }}" class="btn btn-sm btn-warning"><i class="fas fa-sync-alt"></i> Recargar</a>
                                     </div>
                                 </h3>
                             </div>
@@ -42,11 +42,11 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Guard</th>
-                                            <th>Updated</th>
+                                            <th>Nombre</th>
+                                            <th>Guardia</th>
+                                            <th>Actualizado</th>
                                             @canany(['update permission', 'delete permission'])
-                                                <th>Action</th>
+                                                <th>Acciones</th>
                                             @endcanany
                                         </tr>
                                     </thead>
@@ -125,12 +125,12 @@
 @endsection
 
 @section('modal')
-    {{-- Modal tambah --}}
-    <div class="modal fade" id="modal-tambah">
+    {{-- Modal nuevo --}}
+    <div class="modal fade" id="modal-nuevo">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Tambah Data</h4>
+                    <h4 class="modal-title">Nuevo Permiso</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -139,16 +139,16 @@
                     <form action="{{ route('permission.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="input-group">
-                            <label>Name</label>
+                            <label>Nombre</label>
                             <div class="input-group">
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" name="name" value="{{ old('name') }}">
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Nombre" name="name" value="{{ old('name') }}">
                                 @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>Guard</label>
+                            <label>Guardia</label>
                             <div class="input-group">
                                 <select class="form-control" name="guard_name">
                                     <option value="web">web</option>
@@ -161,8 +161,8 @@
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
             </div>
@@ -175,7 +175,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Data</h4>
+                    <h4 class="modal-title">Editar Permiso</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -185,16 +185,16 @@
                         @csrf
                         @method("PUT")
                         <div class="input-group">
-                            <label>Name</label>
+                            <label>Nombre</label>
                             <div class="input-group">
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" name="name" id="name" value="{{ old('name') }}">
+                                <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Nombre" name="name" id="name" value="{{ old('name') }}">
                                 @error('name')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>Guard</label>
+                            <label>Guardia</label>
                             <div class="input-group">
                                 <select class="form-control" name="guard_name" id="guard_name">
                                     <option value="web">web</option>
@@ -208,8 +208,8 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <input type="hidden" name="id" id="id">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
             </div>
@@ -222,7 +222,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Hapus Data</h4>
+                    <h4 class="modal-title">Eliminar Permiso</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -231,12 +231,12 @@
                     <form action="{{ route('permission.destroy') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('DELETE')
-                        <p class="modal-text">Apakah anda yakin akan menghapus? <b id="delete-data"></b></p>
+                        <p class="modal-text">¿Está seguro que desea eliminar este permiso? <b id="delete-data"></b></p>
                         <input type="hidden" name="id" id="did">
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-danger">Hapus</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
                 </div>
                 </form>
             </div>

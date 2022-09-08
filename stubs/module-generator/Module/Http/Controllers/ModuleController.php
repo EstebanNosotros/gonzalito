@@ -22,7 +22,7 @@ class {Module}Controller extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'      => ['required', 'string', 'max:255']
+            'nombre'      => ['required', 'string', 'max:255']
         ]);
         if ($validator->fails()) {
             return back()->withErrors($validator)
@@ -30,11 +30,11 @@ class {Module}Controller extends Controller
         }
         try {
             ${model} = {Model}::create([
-                'name'      => $request->name
+                'nombre'      => $request->nombre
             ]);
-            Alert::success('Pemberitahuan', 'Data <b>' . ${model}->name . '</b> berhasil dibuat')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . ${model}->nombre . '</b> registrado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
-            Alert::error('Pemberitahuan', 'Data <b>' . ${model}->name . '</b> gagal dibuat : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . ${model}->nombre . '</b> error al registrar : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }
@@ -44,7 +44,7 @@ class {Module}Controller extends Controller
         ${model} = {Model}::find($request->id);
         return response()->json([
             'status'    => Response::HTTP_OK,
-            'message'   => 'Data {model} by id',
+            'message'   => 'Dato {model} por id',
             'data'      => ${model}
         ], Response::HTTP_OK);
     }
@@ -52,7 +52,7 @@ class {Module}Controller extends Controller
     public function update(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'name'      => ['required', 'string', 'max:255']
+            'nombre'      => ['required', 'string', 'max:255']
         ]);
         if ($validator->fails()) {
             return back()->withErrors($validator)
@@ -61,11 +61,11 @@ class {Module}Controller extends Controller
         try {
             ${model} = {Model}::find($request->id);
             ${model}->update([
-                'name'  => $request->name
+                'nombre'  => $request->nombre
             ]);
-            Alert::success('Pemberitahuan', 'Data <b>' . ${model}->name . '</b> berhasil disimpan')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . ${model}->nombre . '</b> actualizado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
-            Alert::error('Pemberitahuan', 'Data <b>' . ${model}->name . '</b> gagal disimpan : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . ${model}->nombre . '</b> error al actualizar : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }
@@ -75,9 +75,9 @@ class {Module}Controller extends Controller
         try {
             ${model} = {Model}::find($request->id);
             ${model}->delete();
-            Alert::success('Pemberitahuan', 'Data <b>' . ${model}->name . '</b> berhasil dihapus')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . ${model}->nombre . '</b> eliminado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
-            Alert::error('Pemberitahuan', 'Data <b>' . ${model}->name . '</b> gagal dihapus : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . ${model}->nombre . '</b> error al eliminar : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }

@@ -11,7 +11,7 @@ class {Model}Factory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->name()
+            'nombre' => $this->faker->name()
         ];
     }
 }

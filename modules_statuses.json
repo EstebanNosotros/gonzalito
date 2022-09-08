@@ -1,1 +1,5 @@
-[]
+{
+    "Categorias": true,
+    "Banners": true,
+    "Productos": true
+}

@@ -15,7 +15,7 @@ class UserController extends Controller
 {
     public function index()
     {
-        $x['title']     = 'User';
+        $x['title']     = 'Usuarios';
         $x['data']      = User::get();
         $x['role']      = Role::get();
         return view('admin.user', $x);
@@ -42,10 +42,10 @@ class UserController extends Controller
             ]);
             $user->assignRole($request->role);
             DB::commit();
-            Alert::success('Pemberitahuan', 'Data <b>' . $user->name . '</b> berhasil dibuat')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . $user->name . '</b> registrado exitosamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             DB::rollback();
-            Alert::error('Pemberitahuan', 'Data <b>' . $user->name . '</b> gagal dibuat : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . $user->name . '</b> error al registralo : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }
@@ -55,7 +55,7 @@ class UserController extends Controller
         $user = UserResource::collection(User::where(['id' => $request->id])->get());
         return response()->json([
             'status'    => Response::HTTP_OK,
-            'message'   => 'Data user by id',
+            'message'   => 'Dato de usuario por id',
             'data'      => $user[0]
         ], Response::HTTP_OK);
     }
@@ -94,10 +94,10 @@ class UserController extends Controller
             $user->update($data);
             $user->syncRoles($request->role);
             DB::commit();
-            Alert::success('Pemberitahuan', 'Data <b>' . $user->name . '</b> berhasil disimpan')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . $user->name . '</b> actualizado exitosamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             DB::rollback();
-            Alert::error('Pemberitahuan', 'Data <b>' . $user->name . '</b> gagal disimpan : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . $user->name . '</b> error al actualizarlo : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }
@@ -107,9 +107,9 @@ class UserController extends Controller
         try {
             $user = User::find($request->id);
             $user->delete();
-            Alert::success('Pemberitahuan', 'Data <b>' . $user->name . '</b> berhasil dihapus')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . $user->name . '</b> eliminado exitosamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
-            Alert::error('Pemberitahuan', 'Data <b>' . $user->name . '</b> gagal dihapus : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . $user->name . '</b> error al eliminarlo : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }

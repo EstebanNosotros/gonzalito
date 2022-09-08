@@ -10,7 +10,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div><!-- /.col -->
@@ -31,8 +31,8 @@
                                 <table class="table table-bordered table-hover datatable">
                                     <thead>
                                         <tr>
-                                            <th>Moduel</th>
-                                            <th>Status</th>
+                                            <th>Modulo</th>
+                                            <th>Estado</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -40,7 +40,7 @@
                                             <tr>
                                                 <td>{{ $i }}</td>
                                                 <td>
-                                                    <span class="badge badge-primary">Enable</span>
+                                                    <span class="badge badge-primary">Habilitado</span>
                                                 </td>
                                             </tr>
                                         @endforeach
@@ -48,7 +48,7 @@
                                             <tr>
                                                 <td>{{ $i }}</td>
                                                 <td>
-                                                    <span class="badge badge-danger">Disable</span>
+                                                    <span class="badge badge-danger">Inhabilitado</span>
                                                 </td>
                                             </tr>
                                         @endforeach

@@ -10,7 +10,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div><!-- /.col -->
@@ -29,7 +29,7 @@
                             @can('create {module}')
                             <div class="card-header">
                                 <h3 class="card-title">
-                                    <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-tambah" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Tambah</a>
+                                    <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
                                 </h3>
                             </div>
                             @endcan
@@ -39,10 +39,10 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Updated</th>
+                                            <th>Nombre</th>
+                                            <th>Última Modificación</th>
                                             @canany(['update {module}', 'delete {module}'])
-                                                <th>Action</th>
+                                                <th>Acciones</th>
                                             @endcanany
                                         </tr>
                                     </thead>
@@ -50,16 +50,16 @@
                                         @foreach ($data as $i)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $i->name }}</td>
+                                                <td>{{ $i->nombre }}</td>
                                                 <td>{{ $i->updated_at }}</td>
-                                            @canany(['update {module}', 'delete {module}'])
+                                                @canany(['update {module}', 'delete {module}'])
                                                     <td>
                                                         <div class="btn-group">
                                                             @can('update {module}')
                                                                 <button class="btn btn-sm btn-primary btn-edit" data-id="{{ $i->id }}"><i class="fas fa-pencil-alt"></i></button>
                                                             @endcan
                                                             @can('delete {module}')
-                                                                <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $i->id }}" data-name="{{ $i->name }}"><i class="fas fa-trash"></i></button>
+                                                                <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $i->id }}" data-name="{{ $i->nombre }}"><i class="fas fa-trash"></i></button>
                                                             @endcan
                                                         </div>
                                                     </td>
@@ -98,7 +98,7 @@
                     },
                     success: function(data) {
                         var data = data.data;
-                        $("#name").val(data.name);
+                        $("#u_nombre").val(data.nombre);
                         $("#id").val(data.id);
                         $('#modal-loading').modal('hide');
                         $('#modal-edit').modal({backdrop: 'static', keyboard: false, show: true});
@@ -108,9 +108,9 @@
             
             $(document).on("click", '.btn-delete', function() {
                 let id = $(this).attr("data-id");
-                let name = $(this).attr("data-name");
+                let nombre = $(this).attr("data-nombre");
                 $("#did").val(id);
-                $("#delete-data").html(name);
+                $("#delete-data").html(nombre);
                 $('#modal-delete').modal({backdrop: 'static', keyboard: false, show: true});
             });
         });
@@ -118,12 +118,12 @@
 @endsection
 
 @section('modal')
-    {{-- Modal tambah --}}
-    <div class="modal fade" id="modal-tambah">
+    {{-- Modal Nuevo --}}
+    <div class="modal fade" id="modal-nuevo">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Tambah Data</h4>
+                    <h4 class="modal-title">Nuevo Dato</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -132,18 +132,18 @@
                     <form action="{{ route('{module}.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="input-group">
-                            <label>Name</label>
+                            <label>Nombre</label>
                             <div class="input-group">
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" name="name" value="{{ old('name') }}">
-                                @error('name')
+                                <input type="text" class="form-control @error('nombre') is-invalid @enderror" placeholder="Nombre" name="nombre" value="{{ old('nombre') }}">
+                                @error('nombre')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
             </div>
@@ -156,7 +156,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Data</h4>
+                    <h4 class="modal-title">Editar Dato</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -166,10 +166,10 @@
                         @csrf
                         @method("PUT")
                         <div class="input-group">
-                            <label>Name</label>
+                            <label>Nombre</label>
                             <div class="input-group">
-                                <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" name="name" id="name" value="{{ old('name') }}">
-                                @error('name')
+                                <input type="text" class="form-control @error('u_nombre') is-invalid @enderror" placeholder="Nombre" name="u_nombre" id="u_nombre" value="{{ old('u_nombre') }}">
+                                @error('u_nombre')
                                 <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -177,8 +177,8 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <input type="hidden" name="id" id="id">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
             </div>
@@ -191,7 +191,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Hapus Data</h4>
+                    <h4 class="modal-title">Eliminar Dato</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -200,12 +200,12 @@
                     <form action="{{ route('{module}.destroy') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('DELETE')
-                        <p class="modal-text">Apakah anda yakin akan menghapus? <b id="delete-data"></b></p>
+                        <p class="modal-text">Seguro que desea borrar este registro? <b id="delete-data"></b></p>
                         <input type="hidden" name="id" id="did">
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-danger">Hapus</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
                 </div>
                 </form>
             </div>

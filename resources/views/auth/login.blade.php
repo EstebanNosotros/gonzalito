@@ -3,7 +3,7 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <title>Login - {{ ENV('APP_NAME') }}</title>
+        <title>Iniciar Sesión - {{ ENV('APP_NAME') }}</title>
         <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png" />
         <!-- Google Font: Source Sans Pro -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
@@ -18,7 +18,7 @@
     <body class="hold-transition login-page">
         @php
             if (!$errors->isEmpty()) {
-                alert()->error('Pemberitahuan', implode('<br>', $errors->all()))->toToast()->toHtml();
+                alert()->error('Aviso', implode('<br>', $errors->all()))->toToast()->toHtml();
             }
         @endphp
         <div class="login-box">
@@ -46,7 +46,7 @@
                                 </span>
                             @enderror
                         </div>
-                        <div class="form-group mb-3">
+                       {{-- <div class="form-group mb-3">
                             <div class="col-md-12">
                                 {!! htmlFormSnippet([
                                     "theme" => "light",
@@ -57,7 +57,7 @@
                                     "error-callback" => "errorCallbackFunction",
                                 ]) !!}
                             </div>
-                        </div>
+                        </div> --}}
                         <div class="row">
                             <div class="col-8">
                                 <div class="icheck-primary">
@@ -85,7 +85,7 @@
         <!-- jQuery -->
         <script src="{{ asset('template/admin/plugins/jquery/jquery.min.js') }}"></script>
         <!-- Bootstrap 4 -->
-            <script src="{{ asset('template/admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <script src="{{ asset('template/admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
         <!-- AdminLTE App -->
         <script src="{{ asset('template/admin/dist/js/adminlte.js') }}"></script>
     </body>

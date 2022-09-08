@@ -62,14 +62,14 @@
                                                                         <button class="btn btn-primary" type="button" id="{{ $set->key }}button">Pilih Foto</button>
                                                                     </div> --}}
                                                                 </div>
-                                                                <small class="text-primary">Klik untuk memilih file</small>
+                                                                <small class="text-primary">Click para cargar desde archivo</small>
                                                             @endif
                                                         </div>
                                                     </div>
                                                 @endforeach
                                                 <div class="form-group row">
                                                     <div class="offset-sm-2 col-sm-10">
-                                                        <button type="submit" class="btn btn-primary">Simpan</button>
+                                                        <button type="submit" class="btn btn-primary">Guardar</button>
                                                     </div>
                                                 </div>
                                             </form>

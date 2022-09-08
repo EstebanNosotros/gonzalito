@@ -9,7 +9,7 @@ class Create{Model}Request extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required'
+            'nombre' => 'required'
         ];
     }
 }

@@ -6,11 +6,11 @@
         <div class="container-fluid">
             <div class="row mb-2">
             <div class="col-sm-6">
-                <h1 class="m-0">Dashboard</h1>
+                <h1 class="m-0">Inicio</h1>
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
                 <li class="breadcrumb-item active">{{ $title }}</li>
                 </ol>
             </div><!-- /.col -->
@@ -29,12 +29,12 @@
                         <div class="small-box bg-info">
                         <div class="inner">
                             <h3>{{ count($user) }}</h3>
-                            <p>User</p>
+                            <p>Usuarios</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-user"></i>
                         </div>
-                        <a href="{{ route('user.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('user.index') }}" class="small-box-footer">Más Información <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                     <!-- ./col -->
@@ -43,12 +43,12 @@
                         <div class="small-box bg-success">
                         <div class="inner">
                             <h3>{{ count($role) }}</h3>
-                            <p>Role</p>
+                            <p>Roles</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-user-cog"></i>
                         </div>
-                        <a href="{{ route('role.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('role.index') }}" class="small-box-footer">Más Información <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                     <!-- ./col -->
@@ -58,12 +58,12 @@
                         <div class="inner">
                             <h3>{{ count($permission) }}</h3>
 
-                            <p>Permission</p>
+                            <p>Permisos</p>
                         </div>
                         <div class="icon">
                             <i class="fas fa-unlock"></i>
                         </div>
-                        <a href="{{ route('permission.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <a href="{{ route('permission.index') }}" class="small-box-footer">Más Información <i class="fas fa-arrow-circle-right"></i></a>
                         </div>
                     </div>
                     <!-- ./col -->

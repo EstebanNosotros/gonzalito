@@ -14,7 +14,7 @@
                     @csrf
                     @method('patch')
 
-                        <input class="border" name="name" value="{{ old('name', ${model}->name) }}" />
+                        <input class="border" name="nombre" value="{{ old('nombre', ${model}->nombre) }}" />
                         <button>{{ __('Submit') }}</button>
                     </form>
 

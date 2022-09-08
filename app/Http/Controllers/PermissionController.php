@@ -13,7 +13,7 @@ class PermissionController extends Controller
 {
     public function index()
     {
-        $x['title']     = 'Permission';
+        $x['title']     = 'Permisos';
         $x['data']      = Permission::get();
         return view('admin.permission', $x);
     }
@@ -33,9 +33,9 @@ class PermissionController extends Controller
                 'name'          => $request->name,
                 'guard_name'    => $request->guard_name,
             ]);
-            Alert::success('Pemberitahuan', 'Data <b>' . $permission->name . '</b> berhasil dibuat')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . $permission->name . '</b> registrado exitosamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
-            Alert::error('Pemberitahuan', 'Data <b>' . $permission->name . '</b> gagal dibuat : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . $permission->name . '</b> error al registrarlo : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }
@@ -45,7 +45,7 @@ class PermissionController extends Controller
         $permission = Permission::find($request->id);
         return response()->json([
             'status'    => Response::HTTP_OK,
-            'message'   => 'Data permission by id',
+            'message'   => 'Dato de permiso por id',
             'data'      => $permission
         ], Response::HTTP_OK);
     }
@@ -65,9 +65,9 @@ class PermissionController extends Controller
                 'name'          => $request->name,
                 'guard_name'    => $request->guard_name,
             ]);
-            Alert::success('Pemberitahuan', 'Data <b>' . $permission->name . '</b> berhasil disimpan')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . $permission->name . '</b> actualizado exitosamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
-            Alert::error('Pemberitahuan', 'Data <b>' . $permission->name . '</b> gagal disimpan : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . $permission->name . '</b> error al actualizarlo : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }
@@ -77,9 +77,9 @@ class PermissionController extends Controller
         try {
             $permission = Permission::find($request->id);
             $permission->delete();
-            Alert::success('Pemberitahuan', 'Data <b>' . $permission->name . '</b> berhasil dihapus')->toToast()->toHtml();
+            Alert::success('Aviso', 'Dato <b>' . $permission->name . '</b> eliminado exitosamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
-            Alert::error('Pemberitahuan', 'Data <b>' . $permission->name . '</b> gagal dihapus : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Dato <b>' . $permission->name . '</b> error al eliminarlo : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }
@@ -87,9 +87,9 @@ class PermissionController extends Controller
     {
         try {
             $this->initModules();
-            Alert::success('Pemberitahuan', 'Permisiion berhasil diperbarui')->toToast()->toHtml();
+            Alert::success('Aviso', 'Permisos actualizados exitosamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
-            Alert::error('Pemberitahuan', 'Permission gagal diperbarui : ' . $th->getMessage())->toToast()->toHtml();
+            Alert::error('Aviso', 'Error al actualizar los permisos : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
     }

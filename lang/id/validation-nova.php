@@ -12,6 +12,6 @@
 */
 
 return [
-    'attached'  => ':Attribute sudah dilampirkan.',
-    'relatable' => ':Attribute ini mungkin tidak berasosiasi dengan sumber ini.',
+    'attached'  => 'Este :attribute ya se adjuntó.',
+    'relatable' => 'Este :attribute no se puede asociar con este recurso',
 ];

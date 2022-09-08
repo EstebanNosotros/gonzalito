@@ -10,7 +10,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+                            <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div><!-- /.col -->
@@ -29,7 +29,7 @@
                             @can('create role')
                             <div class="card-header">
                                 <h3 class="card-title">
-                                    <button class="btn btn-sm btn-success" id="btn-tambah"><i class="fas fa-plus"></i> Tambah</button>
+                                    <button class="btn btn-sm btn-success" id="btn-nuevo"><i class="fas fa-plus"></i> Nuevo</button>
                                 </h3>
                             </div>
                             @endcan
@@ -39,12 +39,12 @@
                                     <thead>
                                         <tr>
                                             <th>#</th>
-                                            <th>Name</th>
-                                            <th>Guard</th>
-                                            <th>Permission</th>
-                                            <th>Updated</th>
+                                            <th>Nombre</th>
+                                            <th>Guardia</th>
+                                            <th>Permisos</th>
+                                            <th>Actualizado</th>
                                             @canany(['update role', 'delete role'])
-                                                <th>Action</th>
+                                                <th>Acciones</th>
                                             @endcanany
                                         </tr>
                                     </thead>
@@ -56,7 +56,7 @@
                                                 <td>{{ $i->guard_name }}</td>
                                                 <td>
                                                     @if ($i->name == 'superadmin' || count($i->permissions) == count($permission))
-                                                        All permission
+                                                        Todos los permisos
                                                     @else
                                                         {{ $i->permissions->implode('name', '|') }}
                                                     @endif
@@ -99,9 +99,9 @@
 @section('js')
     <script>
         $(document).ready(function() {
-            $(document).on("click", '#btn-tambah', function() {
+            $(document).on("click", '#btn-nuevo', function() {
                 $('input:checkbox').prop('checked', false);
-                $('#modal-tambah').modal({backdrop: 'static', keyboard: false, show: true});
+                $('#modal-nuevo').modal({backdrop: 'static', keyboard: false, show: true});
             });
             $(document).on("click", '.btn-edit', function() {
                 let id = $(this).attr("data-id");
@@ -165,12 +165,12 @@
 @endsection
 
 @section('modal')
-    {{-- Modal tambah --}}
-    <div class="modal fade" id="modal-tambah">
+    {{-- Modal nuevo --}}
+    <div class="modal fade" id="modal-nuevo">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Tambah Data</h4>
+                    <h4 class="modal-title">Nuevo</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -179,7 +179,7 @@
                     <form action="{{ route('role.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         <div class="input-group">
-                            <label>Name</label>
+                            <label>Nombre</label>
                             <div class="input-group">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" name="name" value="{{ old('name') }}">
                                 @error('name')
@@ -188,7 +188,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>Guard</label>
+                            <label>Guardia</label>
                             <div class="input-group">
                                 <select class="form-control" name="guard_name">
                                     <option value="web">web</option>
@@ -200,12 +200,12 @@
                             </div>
                         </div>
                         <div class="input-group mt-2">
-                            <label>Permission</label>
+                            <label>Permisos</label>
                         </div>
                         <div class="input-group">
                             <div class="icheck-primary col-md-3">
                                 <input class="form-check-input" type="checkbox" id="checkAll">
-                                <label class="form-check-label" for="checkAll">Check All</label>
+                                <label class="form-check-label" for="checkAll">Marcar Todos</label>
                             </div>
                         </div>
                         <div class="input-group">
@@ -218,8 +218,8 @@
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
             </div>
@@ -232,7 +232,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit Data</h4>
+                    <h4 class="modal-title">Editar Rol</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -242,7 +242,7 @@
                         @csrf
                         @method("PUT")
                         <div class="input-group">
-                            <label>Name</label>
+                            <label>Nombre</label>
                             <div class="input-group">
                                 <input type="text" class="form-control @error('name') is-invalid @enderror" placeholder="Name" name="name" id="name" value="{{ old('name') }}">
                                 @error('name')
@@ -251,7 +251,7 @@
                             </div>
                         </div>
                         <div class="input-group">
-                            <label>Guard</label>
+                            <label>Guardia</label>
                             <div class="input-group">
                                 <select class="form-control" name="guard_name" id="guard_name">
                                     <option value="web">web</option>
@@ -263,12 +263,12 @@
                             </div>
                         </div>
                         <div class="input-group mt-2">
-                            <label>Permission</label>
+                            <label>Permisos</label>
                         </div>
                         <div class="input-group">
                             <div class="icheck-primary col-md-3">
                                 <input class="form-check-input" type="checkbox" id="checkAllu">
-                                <label class="form-check-label" for="checkAllu">Check All</label>
+                                <label class="form-check-label" for="checkAllu">Marcar Todos</label>
                             </div>
                         </div>
                         <div class="input-group">
@@ -282,8 +282,8 @@
                 </div>
                 <div class="modal-footer justify-content-between">
                     <input type="hidden" name="id" id="id">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-primary">Simpan</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
             </div>
@@ -296,7 +296,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Hapus Data</h4>
+                    <h4 class="modal-title">Eliminar Rol</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -305,12 +305,12 @@
                     <form action="{{ route('role.destroy') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('DELETE')
-                        <p class="modal-text">Apakah anda yakin akan menghapus? <b id="delete-data"></b></p>
+                        <p class="modal-text">¿Está seguro que desea eliminar este Rol? <b id="delete-data"></b></p>
                         <input type="hidden" name="id" id="did">
                 </div>
                 <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-default" data-dismiss="modal">Tutup</button>
-                    <button type="submit" class="btn btn-danger">Hapus</button>
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
+                    <button type="submit" class="btn btn-danger">Eliminar</button>
                 </div>
                 </form>
             </div>

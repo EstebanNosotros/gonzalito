@@ -10,7 +10,7 @@ class Create{Module}Table extends Migration
     {
         Schema::create('{module_}', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->string('nombre');
             $table->timestamps();
         });
     }

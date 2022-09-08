@@ -1,4 +1,4 @@
-<nav class="main-header navbar navbar-expand navbar-dark">
+<nav class="main-header navbar navbar-expand navbar-dark" style="background-color: #F2B705;">
     <!-- Left navbar links -->
     <ul class="navbar-nav">
         <li class="nav-item">
@@ -35,8 +35,8 @@
                     </p>
                 </li>
                 <li class="user-footer">
-                    <a href="#" class="btn btn-default">Profile</a>
-                    <a href="#" data-toggle="modal" data-target="#modal-logout" data-backdrop="static" data-keyboard="false" class="btn btn-danger float-right">Keluar</a>
+                    <a href="#" class="btn btn-default">Perfil</a>
+                    <a href="#" data-toggle="modal" data-target="#modal-logout" data-backdrop="static" data-keyboard="false" class="btn btn-danger float-right">Salir</a>
                 </li>
             </ul>
         </li>
