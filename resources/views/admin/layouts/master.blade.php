@@ -52,6 +52,9 @@
         <!-- ./wrapper -->
         <!-- jQuery -->
         <script src="{{ asset('template/admin/plugins/jquery/jquery.min.js') }}"></script>
+        <!-- SELECT 2 -->
+        <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+        <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
         @yield('js')
         @include('admin.layouts.script')
         <!-- jQuery UI 1.11.4 -->

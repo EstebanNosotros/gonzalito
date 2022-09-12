@@ -201,7 +201,7 @@ class ProductosController extends Controller
         $imagenes = $request->file('imagenes_file');
         if(!empty($imagenes)) {
             foreach($imagenes as $imagen) {
-                Storage::put('public/prueba/'.$imagen->getClientOriginalName(),file_get_contents($imagen));
+                Storage::put('public/productos/'.$imagen->getClientOriginalName(),file_get_contents($imagen));
                 $nombre = $imagen->getClientOriginalName();
             }
         }

@@ -43,6 +43,7 @@
                                             <th>Nombre Web</th>
                                             <th>Imagen</th>
                                             <th>Icono</th>
+                                            <th>Referencia</th>
                                             <th>Mostrar</th>
                                             <th>Destacar</th>
                                             <th>Actualizado</th>
@@ -59,6 +60,7 @@
                                                 <td>{{ $i->nombre_web }}</td>
                                                 <td><img src="{{ asset($i->imagen) }}" alt="{{ $i->imagen }}" width="8%"></td>
                                                 <td><img src="{{ asset($i->icono) }}" alt="{{ $i->icono }}" width="8%"></td>
+                                                <td>{{ $i->referencia }}</td>
                                                 <td>{{ $i->mostrar }}</td>
                                                 <td>{{ $i->destacar }}</td>
                                                 <td>{{ $i->updated_at }}</td>

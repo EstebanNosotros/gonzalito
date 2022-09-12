@@ -1,5 +1,11 @@
 @extends('admin.layouts.master')
 @section('content')
+    <style>
+        a.active, a:not([name="btn_modal_nuevo"]) {
+            color: inherit !important;
+            text-decoration: underline;
+        }
+    </style>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
@@ -29,7 +35,7 @@
                             @can('create banners')
                             <div class="card-header">
                                 <h3 class="card-title">
-                                    <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
+                                    <a href="#" class="btn btn-sm btn-success" id="btn_modal_nuevo" name="btn_modal_nuevo" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
                                 </h3>
                             </div>
                             @endcan

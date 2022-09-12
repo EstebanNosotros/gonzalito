@@ -35,7 +35,7 @@ class ProductosController extends Controller
             ,'tags'                   => ['nullable', 'string', 'max:4000']
             ,'imagen_principal'       => ['nullable', 'string']
             ,'cuotas'                 => ['nullable', 'string', 'max:4000']
-            ,'productos_relacionados' => ['nullable', 'string']
+            ,'productos_relacionados' => ['nullable', 'array']
             ,'referencia'             => ['nullable', 'string']
             ,'mostrar'                => ['sometimes', 'boolean']
             ,'destacar'               => ['sometimes', 'boolean']
@@ -56,11 +56,12 @@ class ProductosController extends Controller
                 ,'tags'                   => $request->tags
                 ,'imagen_principal'       => $request->imagen_principal
                 ,'cuotas'                 => $request->cuotas
-                ,'productos_relacionados' => $request->productos_relacionados
+                ,'productos_relacionados' => implode(',', $request->productos_relacionados)
                 ,'referencia'             => $request->referencia
                 ,'mostrar'                => ($request->mostrar ? $request->mostrar : false)
                 ,'destacar'               => ($request->destacar ? $request->destacar : false)
             ]);
+
             Alert::success('Aviso', 'Dato <b>' . $producto->nombre . '</b> registrado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             Alert::error('Aviso', 'Dato <b>' . $producto->nombre . '</b> error al registrar : ' . $th->getMessage())->toToast()->toHtml();
@@ -93,7 +94,7 @@ class ProductosController extends Controller
             ,'u_tags'                   => ['nullable', 'string', 'max:4000']
             ,'u_imagen_principal'       => ['nullable', 'string']
             ,'u_cuotas'                 => ['nullable', 'string', 'max:4000']
-            ,'u_productos_relacionados' => ['nullable', 'string']
+            ,'u_productos_relacionados' => ['nullable', 'array']
             ,'u_referencia'             => ['nullable', 'string']
             ,'u_mostrar'                => ['sometimes', 'boolean']
             ,'u_destacar'               => ['sometimes', 'boolean']
@@ -115,7 +116,7 @@ class ProductosController extends Controller
                 ,'tags'                   => $request->u_tags
                 ,'imagen_principal'       => $request->u_imagen_principal
                 ,'cuotas'                 => $request->u_cuotas
-                ,'productos_relacionados' => $request->u_productos_relacionados
+                ,'productos_relacionados' => implode(',', $request->u_productos_relacionados)
                 ,'referencia'             => $request->u_referencia
                 ,'mostrar'                => ($request->u_mostrar ? $request->u_mostrar : false)
                 ,'destacar'               => ($request->u_destacar ? $request->u_destacar : false)

@@ -1,12 +1,12 @@
 <style>
     a.active, a {
-        color: #000000 !important;
+        color: #ffffff !important;
     }
     .nav-header {
-        color: #000000 !important;
+        color: #ffffff !important;
     }
 </style>
-<aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #F2B705;">
+<aside class="main-sidebar sidebar-dark-primary elevation-4" style="background-color: #FC8700; color:#ffffff;">
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
     <img src="{{ asset(Setting::getValue('app_logo')) }}" alt="{{ Setting::getName('app_name') }}" class="brand-image img-circle elevation-3" style="opacity: .8">

@@ -197,7 +197,7 @@ class CategoriasController extends Controller
         $imagenes = $request->file('imagenes_file');
         if(!empty($imagenes)) {
             foreach($imagenes as $imagen) {
-                Storage::put('public/'.$imagen->getClientOriginalName(),file_get_contents($imagen));
+                Storage::put('public/categorias/'.$imagen->getClientOriginalName(),file_get_contents($imagen));
                 $nombre = $imagen->getClientOriginalName();
             }
         }
