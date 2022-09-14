@@ -1,5 +1,10 @@
 @extends('admin.layouts.master')
 @section('content')
+    <style>
+        #mostrar, #destacar, #u_mostrar, #u_destacar {transform: scale(1.5);}
+        #breadcrumb_inicio {color:black !important;}
+        .page-link {color:inherit !important; text-decoration: underline !important;}
+    </style>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
@@ -10,7 +15,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                            <li class="breadcrumb-item"><a href="#" id="breadcrumb_inicio">Inicio</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div><!-- /.col -->
@@ -41,9 +46,9 @@
                                             <th>#</th>
                                             <th>Nombre</th>
                                             <th>Última Modificación</th>
-                                            @canany(['update {module}', 'delete {module}'])
+                                            {{--@canany(['update {module}', 'delete {module}'])--}}
                                                 <th>Acciones</th>
-                                            @endcanany
+                                            {{--@endcanany--}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -52,9 +57,10 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $i->nombre }}</td>
                                                 <td>{{ $i->updated_at }}</td>
-                                                @canany(['update {module}', 'delete {module}'])
+                                                {{--@canany(['update {module}', 'delete {module}'])--}}
                                                     <td>
                                                         <div class="btn-group">
+                                                            <button class="btn btn-sm btn-info btn-show" data-id="{{ $i->id }}"><i class="fas fa-eye"></i></button>
                                                             @can('update {module}')
                                                                 <button class="btn btn-sm btn-primary btn-edit" data-id="{{ $i->id }}"><i class="fas fa-pencil-alt"></i></button>
                                                             @endcan
@@ -63,7 +69,7 @@
                                                             @endcan
                                                         </div>
                                                     </td>
-                                                @endcanany
+                                                {{--@endcanany--}}
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -85,6 +91,7 @@
 @section('js')
     <script>
         $(document).ready(function() {
+            ///Modal edit
             $(document).on("click", '.btn-edit', function() {
                 let id = $(this).attr("data-id");
                 $('#modal-loading').modal({backdrop: 'static', keyboard: false, show: true});
@@ -105,7 +112,27 @@
                     },
                 });
             });
-            
+            ///Modal show
+            $(document).on("click", '.btn-show', function() {
+                let id = $(this).attr("data-id");
+                $('#modal-loading').modal({backdrop: 'static', keyboard: false, show: true});
+                $.ajax({
+                    url: "{{ route('{module}.show') }}",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        id: id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+                        var data = data.data;
+                        $("#s_nombre").val(data.nombre);
+                        $('#modal-loading').modal('hide');
+                        $('#modal-show').modal({backdrop: 'static', keyboard: false, show: true});
+                    },
+                });
+            });
+            ///Modal delete
             $(document).on("click", '.btn-delete', function() {
                 let id = $(this).attr("data-id");
                 let nombre = $(this).attr("data-nombre");
@@ -181,6 +208,46 @@
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    {{-- Modal Show --}}
+    <div class="modal fade" id="modal-show">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Datos de {{ $title }}</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <style>
+                    .show_label {
+                        margin-right: 10px;
+                    }
+                </style>
+                <div class="modal-body">
+                    <div class="input-group">
+                        <label>Nombre</label>
+                        <div class="input-group">
+                            <table class="table-striped">
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Nombre: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_nombre"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
             <!-- /.modal-content -->
         </div>

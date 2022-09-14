@@ -256,7 +256,7 @@
                         $('#s_referencia').html(data.data.referencia);
                         $('#s_descripcion').html(data.data.descripcion);
                         $('#s_codigo').html(data.data.codigo);
-                        $('#s_precio').html(data.data.precio);
+                        $('#s_precio').html((data.data.precio).toLocaleString('es'));
                         $('#s_marca').html(data.data.marca);
                         $('#s_categoria').html(data.data.categoria.nombre_web ? data.data.categoria.nombre_web : data.data.categoria.nombre);
                         $('#s_tags').html(data.data.tags);
@@ -269,14 +269,18 @@
                             data.data.cuotas.forEach(recorreCuotas);
                             function recorreCuotas(item) {
                                 i++;
-                                var fila = '<tr id="s_cuota'+i+'"><td><span id="s_cantidad'+i+'">'+item.cuotas+' cuotas de '+(item.monto).toLocaleString('es')+' Guaraníes</span></td></tr>';
+                                var fila = '<tr id="s_cuota'+i+'"><td><span>'+item.cuotas+' cuotas de '+(item.monto).toLocaleString('es')+' Guaraníes</span></td></tr>';
                                 $('#s_tabla_cuotas tbody').append(fila);
                             }
                         }else {
                             $('#s_tabla_cuotas').css('display', 'none');
                         }
 
-                        $('#s_productos_relacionados').html(data.data.productos_relacionados);
+                        if(data.data.productos_relacionados != '') {
+                            $('#s_productos_relacionados').html(data.data.productos_relacionados);
+                        }else {
+                            $('#s_productos_relacionados').html(data.data.productos_relacionados);
+                        }
 
                         $('#modal-loading').modal('hide');
                         $('#modal-show').modal({backdrop: 'static', keyboard: false, show: true});
