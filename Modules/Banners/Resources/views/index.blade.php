@@ -1,6 +1,7 @@
 @extends('admin.layouts.master')
 @section('content')
     <style>
+        #mostrar, #destacar, #u_mostrar, #u_destacar {transform: scale(1.5);}
         a.active, a:not([name="btn_modal_nuevo"]) {
             color: inherit !important;
             text-decoration: underline;
@@ -286,16 +287,16 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <label>Mostrar</label>
                             <div class="input-group">
-                                <input type="checkbox" class="form-control @error('mostrar') is-invalid @enderror" name="mostrar" id="mostrar" value="1" checked>
+                                <label for="mostrar" style="vertical-align: middle;">Mostrar</label>
+                                <input type="checkbox" class="@error('mostrar') is-invalid @enderror" name="mostrar" id="mostrar" style="margin-left: 17px;" value="1" checked>
                                 @error('mostrar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <label>Destacar</label>
                             <div class="input-group">
-                                <input type="checkbox" class="form-control @error('destacar') is-invalid @enderror" name="destacar" id="destacar" value="1">
+                                <label for="destacar" style="vertical-align: middle;">Destacar</label>
+                                <input type="checkbox" class="@error('destacar') is-invalid @enderror" name="destacar" id="destacar" style="margin-left: 10px;" value="1">
                                 @error('destacar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -375,17 +376,16 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <label>Mostrar</label>
                             <div class="input-group">
-                                <input type="checkbox" class="form-control @error('u_mostrar') is-invalid @enderror" name="u_mostrar" id="u_mostrar" value="{{ old('u_mostrar') }}">
+                                <label for="u_mostrar">Mostrar</label>
+                                <input type="checkbox" class="@error('u_mostrar') is-invalid @enderror" name="u_mostrar" id="u_mostrar" style="margin-left: 17px;" value="{{ old('u_mostrar') }}">
                                 @error('u_mostrar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <label>Destacar</label>
                             <div class="input-group">
-                                <input type="checkbox" class="form-control @error('u_destacar') is-invalid @enderror" name="u_destacar" id="u_destacar" value="{{ old('u_destacar') }}">
-                                @error('u_destacar')
+                                <label for="u_destacar">Destacar</label>
+                                <input type="checkbox" class="@error('u_destacar') is-invalid @enderror" name="u_destacar" id="u_destacar" style="margin-left: 10px;" value="{{ old('u_destacar') }}">                                @error('u_destacar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
