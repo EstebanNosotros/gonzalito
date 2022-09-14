@@ -10,6 +10,8 @@ use Modules\Productos\Models\Producto;
 use RealRashid\SweetAlert\Facades\Alert;
 use Symfony\Component\HttpFoundation\Response;
 use Modules\Categorias\Models\Categoria;
+use Modules\Productos\Models\ProductoCuota;
+use stdClass;
 
 class ProductosController extends Controller
 {
@@ -34,7 +36,9 @@ class ProductosController extends Controller
             ,'categoria_id'           => ['required', 'integer', 'exists:categorias,id']
             ,'tags'                   => ['nullable', 'string', 'max:4000']
             ,'imagen_principal'       => ['nullable', 'string']
-            ,'cuotas'                 => ['nullable', 'string', 'max:4000']
+           // ,'cuotas'                 => ['nullable', 'array']
+           // ,'cuotas.*.cantidad'      => ['sometimes', 'numeric']
+           // ,'cuotas.*.monto'         => ['sometimes', 'numeric']
             ,'productos_relacionados' => ['nullable', 'array']
             ,'referencia'             => ['nullable', 'string']
             ,'mostrar'                => ['sometimes', 'boolean']
@@ -44,6 +48,8 @@ class ProductosController extends Controller
             return back()->withErrors($validator)
                 ->withInput();
         }
+        $producto = new stdClass;
+        $producto->nombre = $request->nombre;
         try {
             $producto = Producto::create([
                 'nombre'                  => $request->nombre
@@ -55,13 +61,21 @@ class ProductosController extends Controller
                 ,'categoria_id'           => $request->categoria_id
                 ,'tags'                   => $request->tags
                 ,'imagen_principal'       => $request->imagen_principal
-                ,'cuotas'                 => $request->cuotas
-                ,'productos_relacionados' => implode(',', $request->productos_relacionados)
+                ,'productos_relacionados' => $request->productos_relacionados ? implode(',', $request->productos_relacionados) : ''
                 ,'referencia'             => $request->referencia
                 ,'mostrar'                => ($request->mostrar ? $request->mostrar : false)
                 ,'destacar'               => ($request->destacar ? $request->destacar : false)
             ]);
-
+            $tope = $request->crear_cuotas_tope;
+            for ($i = 1; $i <= $tope; $i++) {
+                if (isset($_POST["crear_cuotas_cantidad".$i])) {
+                    $productoCuota = ProductoCuota::create([
+                        'cuotas'       => $_POST["crear_cuotas_cantidad".$i]
+                        ,'monto'       => $_POST["crear_cuotas_monto".$i]
+                        ,'producto_id' => $producto->id
+                    ]);
+                }
+            }
             Alert::success('Aviso', 'Dato <b>' . $producto->nombre . '</b> registrado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             Alert::error('Aviso', 'Dato <b>' . $producto->nombre . '</b> error al registrar : ' . $th->getMessage())->toToast()->toHtml();
@@ -71,7 +85,7 @@ class ProductosController extends Controller
 
     public function show(Request $request)
     {
-        $producto = Producto::with('categoria')->where('id', $request->id)->first();
+        $producto = Producto::with(['categoria', 'cuotas'])->where('id', $request->id)->first();
         //\Log::info($request->id);
         //dd($producto);
         return response()->json([
@@ -93,7 +107,9 @@ class ProductosController extends Controller
             ,'u_categoria_id'           => ['required', 'integer', 'exists:categorias,id']
             ,'u_tags'                   => ['nullable', 'string', 'max:4000']
             ,'u_imagen_principal'       => ['nullable', 'string']
-            ,'u_cuotas'                 => ['nullable', 'string', 'max:4000']
+            //,'u_cuotas'                 => ['nullable', 'array']
+            //,'u_cuotas.*.cantidad'      => ['sometimes', 'numeric']
+            //,'u_cuotas.*.monto'         => ['sometimes', 'numeric']
             ,'u_productos_relacionados' => ['nullable', 'array']
             ,'u_referencia'             => ['nullable', 'string']
             ,'u_mostrar'                => ['sometimes', 'boolean']
@@ -115,12 +131,113 @@ class ProductosController extends Controller
                 ,'categoria_id'           => $request->u_categoria_id
                 ,'tags'                   => $request->u_tags
                 ,'imagen_principal'       => $request->u_imagen_principal
-                ,'cuotas'                 => $request->u_cuotas
-                ,'productos_relacionados' => implode(',', $request->u_productos_relacionados)
+                //,'cuotas'                 => $request->u_cuotas
+                ,'productos_relacionados' => $request->u_productos_relacionados ? implode(',', $request->u_productos_relacionados) : ''
                 ,'referencia'             => $request->u_referencia
                 ,'mostrar'                => ($request->u_mostrar ? $request->u_mostrar : false)
                 ,'destacar'               => ($request->u_destacar ? $request->u_destacar : false)
             ]);
+
+            
+            $cuotas = $producto->cuotas;
+            $indice = $request->actualizar_cuotas_indice;
+            $tope   = $request->actualizar_cuotas_tope;
+
+            ////Intento de complicacion para guardar sin tener que recrear cada vez... dejo las anotaciones para quien tenga el valor
+
+            /*\Log::info('indice: '.$request->actualizar_cuotas_indice);
+            \Log::info('tope: '.$request->actualizar_cuotas_tope);
+            \Log::info('cuotas: '.$producto->cuotas);
+            \Log::info('cuotas-count: '.$producto->cuotas->count());
+            if($cuotas->count() == $tope) {
+                for ($i = 0; $i < $tope; $i++) {
+                    if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
+                        if($cuotas[$i]->cuotas != $_POST["actualizar_cuotas_cantidad".($i+1)]) {
+                            $cuotas[$i]->cuotas = $_POST["actualizar_cuotas_cantidad".($i+1)];
+                        }
+                        if($cuotas[$i]->monto != $_POST["actualizar_cuotas_monto".($i+1)]) {
+                            $cuotas[$i]->monto = $_POST["actualizar_cuotas_monto".($i+1)];
+                        }
+                        if($cuotas[$i]->cuotas > 1 && $cuotas[$i]->monto > 0) {
+                            $cuotas[$i]->save();
+                        }else {
+                            $cuotas[$i]->delete();
+                        }
+                    }
+                }
+            }elseif ($cuotas->count() < $tope) {
+                for ($i = 0; $i < $tope; $i++) {
+                    if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
+                        if(isset($cuotas[$i])) {
+                            if($cuotas[$i]->cuotas != $_POST["actualizar_cuotas_cantidad".($i+1)]) {
+                                $cuotas[$i]->cuotas = $_POST["actualizar_cuotas_cantidad".($i+1)];
+                            }
+                            if($cuotas[$i]->monto != $_POST["actualizar_cuotas_monto".($i+1)]) {
+                                $cuotas[$i]->monto = $_POST["actualizar_cuotas_monto".($i+1)];
+                            }
+                            if($cuotas[$i]->cuotas > 1 && $cuotas[$i]->monto > 0) {
+                                $cuotas[$i]->save();
+                            }else {
+                                $cuotas[$i]->delete();
+                            }
+                        }else {
+                            if($_POST["actualizar_cuotas_cantidad".($i+1)] > 1 && $_POST["actualizar_cuotas_monto".($i+1)] > 0) {
+                                ProductoCuota::create([
+                                    'cuotas'       => $_POST["actualizar_cuotas_cantidad".($i+1)]
+                                    ,'monto'       => $_POST["actualizar_cuotas_monto".($i+1)]
+                                    ,'producto_id' => $producto->id
+                                ]);
+                            }
+                        }
+                    }else {
+                        \Log::info('no esta seteado');
+                        if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
+                            \Log::info('cantidad a insertar: '. $_POST["actualizar_cuotas_cantidad".($i+1)]);
+                            \Log::info('monto a insertar: '. $_POST["actualizar_cuotas_monto".($i+1)]);
+                            if($_POST["actualizar_cuotas_cantidad".($i+1)] > 1 && $_POST["actualizar_cuotas_monto".($i+1)] > 0) {
+                                \Log::info('deberia crear ahora');
+                                ProductoCuota::create([
+                                    'cuotas'       => $_POST["actualizar_cuotas_cantidad".($i+1)]
+                                    ,'monto'       => $_POST["actualizar_cuotas_monto".($i+1)]
+                                    ,'producto_id' => $producto->id
+                                ]);
+                            }
+                        }
+                    }
+                }
+            }else {
+                foreach($cuotas as $cuota) {
+                    $cuota->delete();   
+                }
+                for ($i = 0; $i < $tope; $i++) {
+                    if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
+                        if($_POST["actualizar_cuotas_cantidad".($i+1)] > 1 && $_POST["actualizar_cuotas_monto".($i+1)]) {
+                            ProductoCuota::create([
+                                'cuotas'       => $_POST["actualizar_cuotas_cantidad".($i+1)]
+                                ,'monto'       => $_POST["actualizar_cuotas_monto".($i+1)]
+                                ,'producto_id' => $producto->id
+                            ]);
+                        }
+                    }
+                }
+            }*/
+
+            ///Cuotas
+            foreach($cuotas as $cuota) {
+                $cuota->delete();   
+            }
+            for ($i = 0; $i < $tope; $i++) {
+                if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
+                    if($_POST["actualizar_cuotas_cantidad".($i+1)] > 1 && $_POST["actualizar_cuotas_monto".($i+1)] > 0) {
+                        ProductoCuota::create([
+                            'cuotas'       => $_POST["actualizar_cuotas_cantidad".($i+1)]
+                            ,'monto'       => $_POST["actualizar_cuotas_monto".($i+1)]
+                            ,'producto_id' => $producto->id
+                        ]);
+                    }
+                }
+            }
+
             Alert::success('Aviso', 'Dato <b>' . $producto->nombre . '</b> actualizado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             Alert::error('Aviso', 'Dato <b>' . $producto->nombre . '</b> error al actualizar : ' . $th->getMessage())->toToast()->toHtml();

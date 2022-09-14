@@ -47,16 +47,16 @@
                                             <th>#</th>
                                             <th>Nombre</th>
                                             <th>Tipo</th>
-                                            <th>Imagen Escritorio</th>
+                                            <!--th>Imagen Escritorio</th>
                                             <th>Imagen Móvil</th>
-                                            <th>Enlace</th>
+                                            <th>Enlace</th-->
                                             <th>Referencia</th>
                                             <th>Mostrar</th>
                                             <th>Destacar</th>
                                             <th>Última Modificación</th>
-                                            @canany(['update banners', 'delete banners'])
+                                            {{--@canany(['update banners', 'delete banners'])--}}
                                                 <th>Acciones</th>
-                                            @endcanany
+                                            {{--@endcanany--}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -65,16 +65,17 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $i->nombre }}</td>
                                                 <td>{{ $i->tipo }}</td>
-                                                <td><img src="{{ asset($i->imagen_desktop) }}" alt="{{ $i->imagen_desktop }}" width="100%"></td>
+                                                <!--td><img src="{{ asset($i->imagen_desktop) }}" alt="{{ $i->imagen_desktop }}" width="100%"></td>
                                                 <td><img src="{{ asset($i->imagen_mobile) }}" alt="{{ $i->imagen_mobile }}" width="100%"></td>
-                                                <td><a href="{{ $i->link }}">{{ $i->link }}</a></td>
+                                                <td><a href="{{ $i->link }}">{{ $i->link }}</a></td-->
                                                 <td>{{ $i->referencia }}</td>
                                                 <td>{{ $i->mostrar }}</td>
                                                 <td>{{ $i->destacar }}</td>
                                                 <td>{{ $i->updated_at }}</td>
-                                                @canany(['update banners', 'delete banners'])
+                                                {{--@canany(['update banners', 'delete banners'])--}}
                                                     <td>
                                                         <div class="btn-group">
+                                                            <button class="btn btn-sm btn-info btn-show" data-id="{{ $i->id }}"><i class="fas fa-eye"></i></button>
                                                             @can('update banners')
                                                                 <button class="btn btn-sm btn-primary btn-edit" data-id="{{ $i->id }}"><i class="fas fa-pencil-alt"></i></button>
                                                             @endcan
@@ -83,7 +84,7 @@
                                                             @endcan
                                                         </div>
                                                     </td>
-                                                @endcanany
+                                                {{--@endcanany--}}
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -105,6 +106,7 @@
 @section('js')
     <script>
         $(document).ready(function() {
+            ///Modal Edit
             $(document).on("click", '.btn-edit', function() {
                 let id = $(this).attr("data-id");
                 $('#modal-loading').modal({backdrop: 'static', keyboard: false, show: true});
@@ -148,7 +150,47 @@
                     },
                 });
             });
-            
+
+            ///Modal Show
+            $(document).on("click", '.btn-show', function() {
+                let id = $(this).attr("data-id");
+                $('#modal-loading').modal({backdrop: 'static', keyboard: false, show: true});
+                $.ajax({
+                    url: "{{ route('banners.show') }}",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        id: id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+                        var data = data.data;
+                        $("#s_nombre").html(data.nombre);
+                        $("#s_tipo").html(data.tipo);
+                        $('#s_imagen_desktop').attr('src', '{{ env("APP_URL") }}'+'/'+data.imagen_desktop);
+                        $('#s_imagen_mobile').attr('src', '{{ env("APP_URL") }}'+'/'+data.imagen_mobile);
+                        $('#s_imagen_desktop').attr('alt', data.imagen_desktop);
+                        $('#s_imagen_mobile').attr('alt', data.imagen_mobile);
+                        $("#s_link").html(data.link);
+                        $("#s_link_anchor").attr('href', data.link);
+                        $("#s_referencia").html(data.referencia);
+                        if (data.mostrar == 1) {
+                            $('#s_mostrar').html('Si');
+                        }else {
+                            $('#s_mostrar').html('No');
+                        }
+                        if (data.destacar == 1) {
+                            $('#s_destacar').html('Si');
+                        }else {
+                            $('#s_destacar').html('No');
+                        }
+                        $('#modal-loading').modal('hide');
+                        $('#modal-show').modal({backdrop: 'static', keyboard: false, show: true});
+                    },
+                });
+            });
+
+            ///Modal Delete
             $(document).on("click", '.btn-delete', function() {
                 let id = $(this).attr("data-id");
                 let nombre = $(this).attr("data-nombre");
@@ -360,6 +402,99 @@
         </div>
         <!-- /.modal-dialog -->
     </div>
+    {{-- Modal Show --}}
+    <div class="modal fade" id="modal-show">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mx-auto">Datos de Banner</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <style>
+                    .show_label {
+                        margin-right: 10px;
+                    }
+                </style>
+                <div class="modal-body">
+                        <div class="input-group">
+                            <table class="table-striped">
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Nombre: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_nombre"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Tipo: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_tipo"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Imagen Escritorio: </label>
+                                    </td>
+                                    <td>
+                                        <img src="" alt="" name="s_imagen_desktop" id="s_imagen_desktop" width="100%">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Imagen Móvil: </label>
+                                    </td>
+                                    <td>
+                                        <img src="" alt="" name="s_imagen_mobile" id="s_imagen_mobile" width="100%">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Link: </label>
+                                    </td>
+                                    <td>
+                                        <a id="s_link_anchor" href=""><span id="s_link"></span></a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Referencia: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_referencia"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Mostrar: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_mostrar"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Destacar</label>
+                                    </td>
+                                    <td>
+                                        <span id="s_destacar"></span>
+                                </tr>
+                            </table>
+                        </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+
     {{-- Modal delete --}}
     <div class="modal fade" id="modal-delete">
         <div class="modal-dialog">

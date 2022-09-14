@@ -3,6 +3,8 @@
     <style>
         .select2-selection__choice__display{color:black;}
         #mostrar, #destacar, #u_mostrar, #u_destacar {transform: scale(1.5);}
+        #breadcrumb_inicio {color:black !important;}
+        .page-link {color:inherit !important; text-decoration: underline !important;}
     </style>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -14,7 +16,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                            <li class="breadcrumb-item"><a href="#" id="breadcrumb_inicio">Inicio</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div><!-- /.col -->
@@ -45,22 +47,22 @@
                                             <th>#</th>
                                             <th>Nombre</th>
                                             <th>Nombre Web</th>
-                                            <th>Descripción</th>
+                                            <!--th>Descripción</th-->
                                             <th>Código</th>
-                                            <th>Precio</th>
+                                            <!--th>Precio</th-->
                                             <th>Marca</th>
                                             <th>Categoría</th>
-                                            <th>Tags</th>
+                                            <!--th>Tags</th>
                                             <th>Imagen Principal</th>
                                             <th>Cuotas</th>
-                                            <th>Productos Relacionados</th>
+                                            <th>Productos Relacionados</th-->
                                             <th>Referencia</th>
                                             <th>Mostrar</th>
                                             <th>Destacar</th>
                                             <th>Última Modificación</th>
-                                            @canany(['update productos', 'delete productos'])
+                                            {{--@canany(['update productos', 'delete productos'])--}}
                                                 <th>Acciones</th>
-                                            @endcanany
+                                            {{--@endcanany--}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -69,22 +71,30 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $i->nombre }}</td>
                                                 <td>{{ $i->nombre_web }}</td>
-                                                <td>{{ $i->descripcion }}</td>
+                                                <!--td>{{ $i->descripcion }}</td-->
                                                 <td>{{ $i->codigo }}</td>
-                                                <td>{{ $i->precio }}</td>
+                                                <!--td>{{ $i->precio }}</td-->
                                                 <td>{{ $i->marca }}</td>
                                                 <td>{{ ($i->categoria->nombre_web ? $i->categoria->nombre_web : $i->categoria->nombre) }}</td>
-                                                <td>{{ $i->tags }}</td>
+                                                <!--td>{{ $i->tags }}</td>
                                                 <td><img src="{{ asset($i->imagen_principal) }}" alt="{{ $i->imagen_principal }}" width="100%"></td>
-                                                <td>{{ $i->cuotas }}</td>
-                                                <td>{{ $i->productos_relacionados }}</td>
+                                                <td>@if( count($i->cuotas) > 0  )
+                                                        <ul>
+                                                       @forEach($i->cuotas as $cuota)
+                                                            <li>{{ $cuota->cuotas }} cuotas de {{ number_format($cuota->monto, 0, ',', '.') }} Guaran&iacute;es</li>
+                                                        @endforeach
+                                                        </ul>
+                                                    @endif
+                                                </td>
+                                                <td>{{ $i->productos_relacionados }}</td-->
                                                 <td>{{ $i->referencia }}</td>
                                                 <td>{{ $i->mostrar }}</td>
                                                 <td>{{ $i->destacar }}</td>
                                                 <td>{{ $i->updated_at }}</td>
-                                                @canany(['update productos', 'delete productos'])
+                                                {{--@canany(['update productos', 'delete productos'])--}}
                                                     <td>
                                                         <div class="btn-group">
+                                                            <button class="btn btn-sm btn-info btn-show" data-id="{{ $i->id }}"><i class="fas fa-eye"></i></button>
                                                             @can('update productos')
                                                                 <button class="btn btn-sm btn-primary btn-edit" data-id="{{ $i->id }}"><i class="fas fa-pencil-alt"></i></button>
                                                             @endcan
@@ -93,7 +103,7 @@
                                                             @endcan
                                                         </div>
                                                     </td>
-                                                @endcanany
+                                                {{--@endcanany--}}
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -122,6 +132,7 @@
     <script>
         $(document).ready(function() {
             let oculto;
+            ///Modal Edit
             $(document).on("click", '.btn-edit', function() {
                 let id = $(this).attr("data-id");
                 $('#modal-loading').modal({backdrop: 'static', keyboard: false, show: true});
@@ -163,12 +174,44 @@
                         $('#u_marca').val(data.marca);
                         $('#u_categoria').val(data.categoria_id);
                         $('#u_tags').val(data.tags);
-                        $('#u_cuotas').val(data.cuotas);
-                        var productos_relacionados_data = data.productos_relacionados;
-                        var productos_relacionados_array = productos_relacionados_data.split(",");
-                        $('#u_productos_relacionados').select2().val( productos_relacionados_array);
-                        $("#u_productos_relacionados option[value='"+data.codigo+"']").remove();
-                        oculto = data;
+
+                        ///Cuotas
+                        $("#u_tabla_cuotas").find("tr:not(:first)").remove();
+                        var i = 0;
+                        if(data.cuotas != '') {
+                            $('#u_tabla_cuotas').css('display', 'block');
+                            data.cuotas.forEach(recorreCuotas);
+                            function recorreCuotas(item) {
+                                i++;
+                                var fila = '<tr id="u_cuota'+i+'"><td><input type="text" id="actualizar_cuotas_cantidad'+i+'" name="actualizar_cuotas_cantidad'+i+'" value="'+item.cuotas+'" required></td><td><input type="text" id="actualizar_cuotas_monto'+i+'" name="actualizar_cuotas_monto'+i+'" value="'+item.monto+'" required></td><td><small><button type="button" id="btn_u_eliminar_cuota'+i+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Cuota</small></td></tr>';
+                                $('#u_tabla_cuotas tbody').append(fila);
+                                $('#btn_u_eliminar_cuota'+i).click(function() {
+                                    $('#actualizar_cuotas_indice').attr('value', parseInt($('#actualizar_cuotas_indice').attr('value')) - 1);
+                                    $(this).parent().parent().parent().remove();
+                                    var count = $("#u_tabla_cuotas > tbody > tr").length;
+                                    if (count < 1) {
+                                        $('#u_tabla_cuotas').css('display', 'none');
+                                    } 
+                                });
+                            }
+                        }else {
+                            $('#u_tabla_cuotas').css('display', 'none');
+                        }
+                        $('#actualizar_cuotas_indice').attr('value', i);
+                        $('#actualizar_cuotas_tope').attr('value', i);
+
+                        if(data.productos_relacionados != null) {
+                            var productos_relacionados_data = data.productos_relacionados;
+                            var productos_relacionados_array = productos_relacionados_data.split(",");
+                            $('#u_productos_relacionados').select2().val(productos_relacionados_array);
+                            $("#u_productos_relacionados option[value='"+data.codigo+"']").remove();
+                            oculto = data;
+                        }else {
+                            $('#u_productos_relacionados').select2().val([]);
+                            $("#u_productos_relacionados option[value='"+data.codigo+"']").remove();
+                            oculto = data;
+                        }
+
                         $('#modal-loading').modal('hide');
                         $('#modal-edit').modal({backdrop: 'static', keyboard: false, show: true});
                     },
@@ -177,12 +220,70 @@
             
             $('#modal-edit').on('hide.bs.modal', function (e) {
                 //$("#u_productos_relacionados-select option[value='"+oculto+"']").css('display: inline;');
-                var o = new Option((oculto.nombre_web ? oculto.nombre_web : oculto.nombre), oculto.id);
+                var o = new Option((oculto.nombre_web ? oculto.nombre_web : oculto.nombre), oculto.codigo);
                 /// jquerify the DOM object 'o' so we can use the html method
-                $(o).html((oculto.nombre_web ? oculto.nombre_web : oculto.nombre));
-                $("#u_productos_relacionados-select").append(o);
+                $(o).html((oculto.nombre_web ? oculto.nombre_web+'-'+oculto.codigo : oculto.nombre+'-'+oculto.codigo));
+                $("#u_productos_relacionados").append(o);
             });
+            ///Modal Show
+            $(document).on("click", '.btn-show', function() {
+                let id = $(this).attr("data-id");
+                $('#modal-loading').modal({backdrop: 'static', keyboard: false, show: true});
+                $.ajax({
+                    url: "{{ route('productos.show') }}",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        id: id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        $("#s_nombre").html(data.data.nombre);
+                        $("#s_nombre_web").html(data.data.nombre_web);
+                        if (data.data.mostrar == 1) {
+                            $('#s_mostrar').html('Si');
+                        }else {
+                            $('#s_mostrar').html('No');
+                        }
+                        if (data.data.destacar == 1) {
+                            $('#s_destacar').html('Si');
+                        }else {
+                            $('#s_destacar').html('No');
+                        }
+                        $('#s_imagen_principal').attr('src', '{{ env("APP_URL") }}'+'/'+data.data.imagen_principal);
+                        $('#s_imagen_principal').attr('alt', data.data.imagen_principal);
+                        $('#s_referencia').html(data.data.referencia);
+                        $('#s_descripcion').html(data.data.descripcion);
+                        $('#s_codigo').html(data.data.codigo);
+                        $('#s_precio').html(data.data.precio);
+                        $('#s_marca').html(data.data.marca);
+                        $('#s_categoria').html(data.data.categoria.nombre_web ? data.data.categoria.nombre_web : data.data.categoria.nombre);
+                        $('#s_tags').html(data.data.tags);
 
+                        ///Cuotas
+                        $("#s_tabla_cuotas").find("tr:not(:first)").remove();
+                        var i = 0;
+                        if(data.data.cuotas != '') {
+                            $('#s_tabla_cuotas').css('display', 'block');
+                            data.data.cuotas.forEach(recorreCuotas);
+                            function recorreCuotas(item) {
+                                i++;
+                                var fila = '<tr id="s_cuota'+i+'"><td><span id="s_cantidad'+i+'">'+item.cuotas+' cuotas de '+(item.monto).toLocaleString('es')+' Guaraníes</span></td></tr>';
+                                $('#s_tabla_cuotas tbody').append(fila);
+                            }
+                        }else {
+                            $('#s_tabla_cuotas').css('display', 'none');
+                        }
+
+                        $('#s_productos_relacionados').html(data.data.productos_relacionados);
+
+                        $('#modal-loading').modal('hide');
+                        $('#modal-show').modal({backdrop: 'static', keyboard: false, show: true});
+                    },
+                });
+            });
+            ///Modal Delete
             $(document).on("click", '.btn-delete', function() {
                 let id = $(this).attr("data-id");
                 let nombre = $(this).attr("data-nombre");
@@ -230,6 +331,54 @@
                 u_chosen = [];
                 u_productos_relacionados.value = '';
             }*/
+
+            //Cuotas Nuevo
+            function eliminar_cuota(cuota) {
+                $('#crear_cuotas_indice').attr('value', parseInt($('#crear_cuotas_indice').attr('value')) - 1);
+                $('#cuota'+cuota).remove();
+            }
+
+            $('#btn_agregar_cuota').click(function(){
+                $('#tabla_cuotas').css('display', 'block');
+                $('#crear_cuotas_indice').attr('value', parseInt($('#crear_cuotas_indice').attr('value',)) + 1);
+                $('#crear_cuotas_tope').attr('value', parseInt($('#crear_cuotas_tope').attr('value')) + 1);
+                var fila = '<tr id="cuota'+$('#crear_cuotas_tope').val()+'"><td><input type="text" id="crear_cuotas_cantidad'+$('#crear_cuotas_tope').val()+'" name="crear_cuotas_cantidad'+$('#crear_cuotas_tope').val()+'" required></td><td><input type="text" id="crear_cuotas_monto'+$('#crear_cuotas_tope').val()+'" name="crear_cuotas_monto'+$('#crear_cuotas_tope').val()+'" required></td><td><small><button type="button" id="btn_eliminar_cuota'+$('#crear_cuotas_tope').val()+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Cuota</small></td></tr>';
+                $('#tabla_cuotas tbody').append(fila);
+                //alert('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val());
+                //$('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val()).on('click', eliminar_cuota($('#crear_cuotas_tope').val()));
+                $('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val()).click(function() {
+                    $('#crear_cuotas_indice').attr('value', parseInt($('#crear_cuotas_indice').attr('value')) - 1);
+                    $(this).parent().parent().parent().remove();
+                    var count = $("#tabla_cuotas > tbody > tr").length;
+                    if (count < 1) {
+                        $('#tabla_cuotas').css('display', 'none');
+                    } 
+                });
+            });
+
+            //Cuotas Actualizar
+            function u_eliminar_cuota(cuota) {
+                $('#actualizar_cuotas_indice').attr('value', parseInt($('#actualizar_cuotas_indice').attr('value')) - 1);
+                $('#u_cuota'+cuota).remove();
+            }
+
+            $('#btn_u_agregar_cuota').click(function(){
+                $('#u_tabla_cuotas').css('display', 'block');
+                $('#actualizar_cuotas_indice').attr('value', parseInt($('#actualizar_cuotas_indice').attr('value',)) + 1);
+                $('#actualizar_cuotas_tope').attr('value', parseInt($('#actualizar_cuotas_tope').attr('value')) + 1);
+                var fila = '<tr id="u_cuota'+$('#actualizar_cuotas_tope').val()+'"><td><input type="text" id="actualizar_cuotas_cantidad'+$('#actualizar_cuotas_tope').val()+'" name="actualizar_cuotas_cantidad'+$('#actualizar_cuotas_tope').val()+'" required></td><td><input type="text" id="actualizar_cuotas_monto'+$('#actualizar_cuotas_tope').val()+'" name="actualizar_cuotas_monto'+$('#actualizar_cuotas_tope').val()+'" required></td><td><small><button type="button" id="btn_u_eliminar_cuota'+$('#actualizar_cuotas_tope').val()+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Cuota</small></td></tr>';
+                $('#u_tabla_cuotas tbody').append(fila);
+                //alert('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val());
+                //$('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val()).on('click', eliminar_cuota($('#crear_cuotas_tope').val()));
+                $('#btn_u_eliminar_cuota'+$('#actualizar_cuotas_tope').val()).click(function() {
+                    $('#actualizar_cuotas_indice').attr('value', parseInt($('#actualizar_cuotas_indice').attr('value')) - 1);
+                    $(this).parent().parent().parent().remove();
+                    var count = $("#u_tabla_cuotas > tbody > tr").length;
+                    if (count < 1) {
+                        $('#u_tabla_cuotas').css('display', 'none');
+                    } 
+                });
+            });
 
             // para subir imagenes
             let inputId = '';
@@ -295,7 +444,7 @@
                                 </div>
                             </div>
                             <div style="display: inline-block; width: 48%; margin-left: 4%;">
-                                <label>Precio</label>
+                                <label>Precio Contado</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control @error('precio') is-invalid @enderror" placeholder="Precio del producto" name="precio" value="{{ old('precio') }}">
                                     @error('precio')
@@ -328,7 +477,7 @@
                             </div>
                             <label>Tags</label>
                             <div class="input-group">
-                                <input type="text" class="form-control @error('tags') is-invalid @enderror" placeholder="Etiquetas que mejor describen al producto" name="tags" value="{{ old('tags') }}">
+                                <input type="text" class="form-control @error('tags') is-invalid @enderror" placeholder="Etiquetas que mejor describen al producto" id="tags" name="tags" value="{{ old('tags') }}">
                                 <!--textarea id="tags" name="tags" rows="4" cols="50" class="form-control @error('tags') is-invalid @enderror" placeholder="Etiquetas que mejor describen al producto">
                                     {{ old('tags') }}
                                 </textarea-->
@@ -347,20 +496,25 @@
                                 </div>
                                 <small class="text-primary">Click para cargar desde archivo</small>
                             </div>
-                            <label>Cuotas</label>
+                            <label>Cuotas <small style="margin-left: 10px;"><button type="button" id="btn_agregar_cuota" style="background-color: darkgreen; color: white; border-radius:50%;"><i class="fas fa-plus"></i></button>Agregar Cuota</small></label>
                             <div class="input-group">
-                                <textarea id="cuotas" name="cuotas" rows="4" cols="50" class="form-control @error('cuotas') is-invalid @enderror" placeholder="Planes de pago del producto">
-                                    {{ old('cuotas') }}
-                                </textarea>
-                                @error('cuotas')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <table id="tabla_cuotas" style="display: none;">
+                                    <thead id="thead_cuotas">
+                                      <tr>
+                                        <th>Cantidad de Cuotas</th>
+                                        <th>Monto de Cuota</th>
+                                        <th></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody id="tbody_cuotas">
+                                    </tbody>
+                                </table>
                             </div>
                             <label>Productos Relacionados</label>
                             <div class="input-group">
                                 <!--input type="text" id="productos_relacionados" name="productos_relacionados">
                                 <input type="button" value="Limpiar" id="limpiar_productos_relacionados"-->
-                                <select id="productos_relacionados" name="productos_relacionados[]" class="form-control @error('productos_relacionados') is-invalid @enderror" style="width: 100%;" value="{{ old("productos_relacionados") }}" multiple required>
+                                <select id="productos_relacionados" name="productos_relacionados[]" class="form-control @error('productos_relacionados') is-invalid @enderror" style="width: 100%;" value="{{ old("productos_relacionados") }}" multiple>
                                     <option value="" disabled>Seleccione Productos Relacionados</option>
                                     @foreach($data as $producto)
                                         <option value="{{ $producto->codigo }}">{{ $producto->nombre_web ? $producto->nombre_web.'-'.$producto->codigo : $producto->nombre.'-'.$producto->codigo }}</option>
@@ -394,6 +548,8 @@
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
+                    <input type="hidden" id="crear_cuotas_indice" name="crear_cuotas_indice" value="0">
+                    <input type="hidden" id="crear_cuotas_tope" name="crear_cuotas_tope" value="0">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
@@ -484,7 +640,7 @@
                             </div>
                             <label>Tags</label>
                             <div class="input-group">
-                                <input type="text" class="form-control @error('u_tags') is-invalid @enderror" placeholder="Etiquetas que mejor describen al producto" name="tags" value="{{ old('u_tags') }}">
+                                <input type="text" class="form-control @error('u_tags') is-invalid @enderror" placeholder="Etiquetas que mejor describen al producto" id="u_tags" name="u_tags" value="{{ old('u_tags') }}">
                                 <!--textarea id="u_tags" name="u_tags" rows="4" cols="50" class="form-control @error('u_tags') is-invalid @enderror" placeholder="Etiquetas que mejor describen al producto">
                                     {{ old('u_tags') }}
                                 </textarea-->
@@ -500,20 +656,23 @@
                                 </div>
                                 <small class="text-primary">Click para cargar desde archivo</small>
                             </div>
-                            <label>Cuotas</label>
+                            <label>Cuotas <small style="margin-left: 10px;"><button type="button" id="btn_u_agregar_cuota" style="background-color: darkgreen; color: white; border-radius:50%;"><i class="fas fa-plus"></i></button>Agregar Cuota</small></label>
                             <div class="input-group">
-                                <textarea id="u_cuotas" name="u_cuotas" rows="4" cols="50" class="form-control @error('u_cuotas') is-invalid @enderror" placeholder="Planes de pago del producto">
-                                    {{ old('u_cuotas') }}
-                                </textarea>
-                                @error('u_cuotas')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                                <table id="u_tabla_cuotas" style="display: none;">
+                                    <thead id="u_thead_cuotas">
+                                        <th>Cantidad de Cuotas</th>
+                                        <th>Monto de Cuota</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody id="u_tbody_cuotas">
+                                    </tbody>
+                                </table>
                             </div>
                             <label>Productos Relacionados</label>
                             <div class="input-group">
                                 <!--input type="text" id="u_productos_relacionados" name="u_productos_relacionados">
                                 <input type="button" value="Limpiar" id="u_limpiar_productos_relacionados"-->
-                                <select id="u_productos_relacionados" name="u_productos_relacionados[]" class="form-control @error('u_productos_relacionados') is-invalid @enderror" style="width: 100%;" multiple required>
+                                <select id="u_productos_relacionados" name="u_productos_relacionados[]" class="form-control @error('u_productos_relacionados') is-invalid @enderror" style="width: 100%;" multiple>
                                     <option value="" disabled>Seleccione Productos Relacionados</option>
                                     @foreach($data as $producto)
                                         <option value="{{ $producto->codigo }}">{{ $producto->nombre_web ? $producto->nombre_web.'-'.$producto->codigo : $producto->nombre.'-'.$producto->codigo }}</option>
@@ -547,11 +706,157 @@
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
+                    <input type="hidden" id="actualizar_cuotas_indice" name="actualizar_cuotas_indice" value="0">
+                    <input type="hidden" id="actualizar_cuotas_tope" name="actualizar_cuotas_tope" value="0">
                     <input type="hidden" name="id" id="id">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    {{-- Modal Show --}}
+    <div class="modal fade" id="modal-show">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mx-auto">Datos de Producto</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <style>
+                    .show_label {
+                        margin-right: 10px;
+                    }
+                </style>
+                <div class="modal-body">
+                        <div class="input-group">
+                            <table class="table-striped">
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Nombre: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_nombre"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Nombre Web: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_nombre_web"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Descripción: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_descripcion"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Código: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_codigo"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Precio: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_precio"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Marca</label>
+                                    </td>
+                                    <td>
+                                        <span id="s_marca"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Categoría: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_categoria"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Tags: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_tags"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Imagen Principal: </label>
+                                    </td>
+                                    <td>
+                                        <img src="" alt="" name="s_imagen_principal" id="s_imagen_principal" width="100%">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Cuotas: </label>
+                                    </td>
+                                    <td>
+                                        <table id="s_tabla_cuotas" style="display: none;">
+                                            <tbody id="s_tbody_cuotas">
+                                            </tbody>
+                                        </table>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Productos Relacionados: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_productos_relacionados"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Referencia: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_referencia"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Mostrar: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_mostrar"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label>Destacar: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_destacar"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
             <!-- /.modal-content -->
         </div>

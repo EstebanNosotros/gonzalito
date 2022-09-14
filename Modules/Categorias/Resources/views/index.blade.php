@@ -1,5 +1,9 @@
 @extends('admin.layouts.master')
 @section('content')
+    <style>
+        #breadcrumb_inicio {color:black !important;}
+        .page-link {color:inherit !important; text-decoration: underline !important;}
+    </style>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
@@ -10,7 +14,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                            <li class="breadcrumb-item"><a href="#" id="breadcrumb_inicio">Inicio</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div><!-- /.col -->
@@ -41,15 +45,15 @@
                                             <th>#</th>
                                             <th>Nombre</th>
                                             <th>Nombre Web</th>
-                                            <th>Imagen</th>
-                                            <th>Icono</th>
+                                            <!--th>Imagen</th>
+                                            <th>Icono</th-->
                                             <th>Referencia</th>
                                             <th>Mostrar</th>
                                             <th>Destacar</th>
                                             <th>Actualizado</th>
-                                            @canany(['update categorias', 'delete categorias'])
+                                            {{--@canany(['update categorias', 'delete categorias'])--}}
                                                 <th>Accciones</th>
-                                            @endcanany
+                                            {{--@endcanany--}}
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -58,23 +62,25 @@
                                                 <td>{{ $loop->iteration }}</td>
                                                 <td>{{ $i->nombre }}</td>
                                                 <td>{{ $i->nombre_web }}</td>
-                                                <td><img src="{{ asset($i->imagen) }}" alt="{{ $i->imagen }}" width="8%"></td>
-                                                <td><img src="{{ asset($i->icono) }}" alt="{{ $i->icono }}" width="8%"></td>
+                                                <!--td><img src="{{ asset($i->imagen) }}" alt="{{ $i->imagen }}" width="8%"></td>
+                                                <td><img src="{{ asset($i->icono) }}" alt="{{ $i->icono }}" width="8%"></td-->
                                                 <td>{{ $i->referencia }}</td>
                                                 <td>{{ $i->mostrar }}</td>
                                                 <td>{{ $i->destacar }}</td>
                                                 <td>{{ $i->updated_at }}</td>
-                                                @canany(['update categorias', 'delete categorias'])
+                                                {{--@canany(['update categorias', 'delete categorias'])--}}
                                                     <td>
                                                         <div class="btn-group">
+                                                            <button class="btn btn-sm btn-info btn-show" data-id="{{ $i->id }}"><i class="fas fa-eye"></i></button>
                                                             @can('update categorias')
                                                                 <button class="btn btn-sm btn-primary btn-edit" data-id="{{ $i->id }}"><i class="fas fa-pencil-alt"></i></button>
                                                             @endcan
                                                             @can('delete categorias')
                                                                 <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $i->id }}" data-name="{{ $i->name }}"><i class="fas fa-trash"></i></button>
-                                                            @endcan                                                        </div>
+                                                            @endcan
+                                                        </div>
                                                     </td>
-                                                @endcanany
+                                                {{--@endcanany--}}
                                             </tr>
                                         @endforeach
                                     </tbody>
@@ -96,6 +102,7 @@
 @section('js')
     <script>
         $(document).ready(function() {
+            ///Modal Edit
             $(document).on("click", '.btn-edit', function() {
                 let id = $(this).attr("data-id");
                 $('#modal-loading').modal({backdrop: 'static', keyboard: false, show: true});
@@ -138,7 +145,46 @@
                     },
                 });
             });
+
+            ///Modal Show
+            $(document).on("click", '.btn-show', function() {
+                let id = $(this).attr("data-id");
+                $('#modal-loading').modal({backdrop: 'static', keyboard: false, show: true});
+                $.ajax({
+                    url: "{{ route('categorias.show') }}",
+                    type: "POST",
+                    dataType: "JSON",
+                    data: {
+                        id: id,
+                        _token: "{{ csrf_token() }}"
+                    },
+                    success: function(data) {
+                        var data = data.data;
+                        $("#s_nombre").html(data.nombre);
+                        $("#s_nombre_web").html(data.nombre_web);
+                        // $("#id").val(data.id);
+                        if (data.mostrar == 1) {
+                            $('#s_mostrar').html('Si');
+                        }else {
+                            $('#s_mostrar').html('No');
+                        }
+                        if (data.destacar == 1) {
+                            $('#s_destacar').html('Si');
+                        }else {
+                            $('#s_destacar').html('No');
+                        }
+                        $('#s_imagen').attr('src', '{{ env("APP_URL") }}'+'/'+data.imagen);
+                        $('#s_icono').attr('src', '{{ env("APP_URL") }}'+'/'+data.icono);
+                        $('#s_imagen').attr('alt', data.imagen);
+                        $('#s_icono').attr('alt', data.icono);
+                        $('#s_referencia').html(data.referencia);
+                        $('#modal-loading').modal('hide');
+                        $('#modal-show').modal({backdrop: 'static', keyboard: false, show: true});
+                    },
+                });
+            });
             
+            ///Modal Delete
             $(document).on("click", '.btn-delete', function() {
                 let id = $(this).attr("data-id");
                 let nombre = $(this).attr("data-nombre");
@@ -323,6 +369,91 @@
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
                 </form>
+            </div>
+            <!-- /.modal-content -->
+        </div>
+        <!-- /.modal-dialog -->
+    </div>
+    {{-- Modal Show --}}
+    <div class="modal fade" id="modal-show">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title mx-auto">Datos de Categoría</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <style>
+                    .show_label {
+                        margin-right: 10px;
+                    }
+                </style>
+                <div class="modal-body">
+                        <div class="input-group">
+                            <table class="table-striped">
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Nombre: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_nombre"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Nombre Web: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_nombre_web"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Imagen: </label>
+                                    </td>
+                                    <td>
+                                        <img src="" alt="" name="s_imagen" id="s_imagen" width="8%">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Icono: </label>
+                                    </td>
+                                    <td>
+                                        <img src="" alt="" name="s_icono" id="s_icono" width="8%">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Referencia: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_referencia"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Mostrar: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_mostrar"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Destacar: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_destacar"></span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>
+                </div>
             </div>
             <!-- /.modal-content -->
         </div>

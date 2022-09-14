@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Modules\Productos\Database\Factories\ProductoFactory;
 use Modules\Categorias\Models\Categoria;
+use Modules\Productos\Models\ProductoCuota;
+use Carbon\Carbon;
 
 class Producto extends Model
 {
@@ -20,7 +22,6 @@ class Producto extends Model
         ,'categoria_id'
         ,'tags'
         ,'imagen_principal'
-        ,'cuotas'
         ,'productos_relacionados'
         ,'referencia'
         ,'mostrar'
@@ -30,6 +31,11 @@ class Producto extends Model
     public function categoria()
     {
         return $this->belongsTo(Categoria::class);
+    }
+
+    public function cuotas()
+    {
+        return $this->hasMany(ProductoCuota::class);
     }
     
     protected static function newFactory()

@@ -14,7 +14,7 @@ class CreateProductosTable extends Migration
             $table->string('nombre_web')->nullable();
             $table->longText('descripcion')->nullable();
             $table->string('codigo')->nullable();
-            $table->float('precio')->default(0);
+            $table->double('precio', 15, 2)->default(0);
             $table->string('marca')->nullable();
             $table->unsignedBigInteger('categoria_id');
             $table->foreign('categoria_id')
