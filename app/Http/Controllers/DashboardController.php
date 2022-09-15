@@ -10,7 +10,7 @@ use Spatie\Permission\Models\Role;
 class DashboardController extends Controller
 {
     public function index(Request $request){
-        $x['title']         = 'Dashboard';
+        $x['title']         = 'Inicio';
         $x['user']          = User::get();
         $x['role']          = Role::get();
         $x['permission']    = Permission::get();

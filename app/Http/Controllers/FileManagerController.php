@@ -8,7 +8,7 @@ class FileManagerController extends Controller
 {
     public function index(Request $request)
     {
-        $x['title']     = 'File Manager';
+        $x['title']     = 'Archivos';
         return view('admin.filemanager', $x);
     }
 }

@@ -23,12 +23,13 @@ use Spatie\Permission\Models\Role;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    //return view('welcome');
+    return redirect()->route('login');
 })->name('index');
 
 Auth::routes([
     'register'  => false,
-    'reset'     => false,
+    'reset'     => true,
     'confirm'   => false
 ]);
 
@@ -44,6 +45,8 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::post('user/show', 'show')->middleware(['permission:read user'])->name('user.show');
         Route::put('user', 'update')->middleware(['permission:update user'])->name('user.update');
         Route::delete('user', 'destroy')->middleware(['permission:delete user'])->name('user.destroy');
+
+        Route::get('user/profile', 'profile')->name('user.profile');
     });
 
     Route::controller(RoleController::class)->group(function () {

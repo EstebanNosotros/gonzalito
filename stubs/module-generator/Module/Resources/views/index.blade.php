@@ -3,7 +3,7 @@
     <style>
         #mostrar, #destacar, #u_mostrar, #u_destacar {transform: scale(1.5);}
         #breadcrumb_inicio {color:black !important;}
-        .page-link {color:inherit !important; text-decoration: underline !important;}
+        .page-link, .btn-perfil {color:inherit !important; text-decoration: underline !important;}
     </style>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->

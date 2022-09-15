@@ -21,6 +21,14 @@ class UserController extends Controller
         return view('admin.user', $x);
     }
 
+    public function profile()
+    {
+        $x['title']     = 'Perfil';
+        $x['data']      = User::find(auth()->user()->id);
+        //$x['role']      = Role::get();
+        return view('admin.profile', $x);
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [

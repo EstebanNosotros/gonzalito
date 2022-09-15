@@ -18,6 +18,10 @@
 @endpush
 @section('content')
     @section('content')
+    <style>
+        #breadcrumb_inicio {color:black !important;}
+        .page-link, .btn-perfil {color:inherit !important; text-decoration: underline !important;}
+    </style>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
         <div class="content-header">
@@ -28,7 +32,7 @@
             </div><!-- /.col -->
             <div class="col-sm-6">
                 <ol class="breadcrumb float-sm-right">
-                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Inicio</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}" id="breadcrumb_inicio">Inicio</a></li>
                 <li class="breadcrumb-item active">{{ $title }}</li>
                 </ol>
             </div><!-- /.col -->
