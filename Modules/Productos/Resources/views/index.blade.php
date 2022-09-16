@@ -37,6 +37,9 @@
                                 <h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
                                 </h3>
+                                <h3 class="card-title" style="margin-left: 20px;">
+                                    <a href="#" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar</a>
+                                </h3>
                             </div>
                             @endcan
                             <!-- /.card-header -->
@@ -59,7 +62,7 @@
                                             <th>Referencia</th>
                                             <th>Mostrar</th>
                                             <th>Destacar</th>
-                                            <th>Última Modificación</th>
+                                            <th>Actualizado</th>
                                             {{--@canany(['update productos', 'delete productos'])--}}
                                                 <th>Acciones</th>
                                             {{--@endcanany--}}
@@ -735,6 +738,7 @@
                 <style>
                     .show_label {
                         margin-right: 10px;
+                        margin-left: 10px;
                     }
                 </style>
                 <div class="modal-body">
@@ -750,7 +754,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Nombre Web: </label>
+                                        <label class="show_label">Nombre Web: </label>
                                     </td>
                                     <td>
                                         <span id="s_nombre_web"></span>
@@ -758,7 +762,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Descripción: </label>
+                                        <label class="show_label">Descripción: </label>
                                     </td>
                                     <td>
                                         <span id="s_descripcion"></span>
@@ -766,7 +770,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Código: </label>
+                                        <label class="show_label">Código: </label>
                                     </td>
                                     <td>
                                         <span id="s_codigo"></span>
@@ -774,7 +778,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Precio: </label>
+                                        <label class="show_label">Precio: </label>
                                     </td>
                                     <td>
                                         <span id="s_precio"></span>
@@ -782,7 +786,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Marca</label>
+                                        <label class="show_label">Marca</label>
                                     </td>
                                     <td>
                                         <span id="s_marca"></span>
@@ -790,7 +794,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Categoría: </label>
+                                        <label class="show_label">Categoría: </label>
                                     </td>
                                     <td>
                                         <span id="s_categoria"></span>
@@ -798,7 +802,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Tags: </label>
+                                        <label class="show_label">Tags: </label>
                                     </td>
                                     <td>
                                         <span id="s_tags"></span>
@@ -806,7 +810,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Imagen Principal: </label>
+                                        <label class="show_label">Imagen Principal: </label>
                                     </td>
                                     <td>
                                         <img src="" alt="" name="s_imagen_principal" id="s_imagen_principal" width="100%">
@@ -814,7 +818,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Cuotas: </label>
+                                        <label class="show_label">Cuotas: </label>
                                     </td>
                                     <td>
                                         <table id="s_tabla_cuotas" style="display: none;">
@@ -825,7 +829,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Productos Relacionados: </label>
+                                        <label class="show_label">Productos Relacionados: </label>
                                     </td>
                                     <td>
                                         <span id="s_productos_relacionados"></span>
@@ -833,7 +837,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Referencia: </label>
+                                        <label class="show_label">Referencia: </label>
                                     </td>
                                     <td>
                                         <span id="s_referencia"></span>
@@ -841,7 +845,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Mostrar: </label>
+                                        <label class="show_label">Mostrar: </label>
                                     </td>
                                     <td>
                                         <span id="s_mostrar"></span>
@@ -849,7 +853,7 @@
                                 </tr>
                                 <tr>
                                     <td>
-                                        <label>Destacar: </label>
+                                        <label class="show_label">Destacar: </label>
                                     </td>
                                     <td>
                                         <span id="s_destacar"></span>

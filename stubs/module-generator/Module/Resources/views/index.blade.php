@@ -36,6 +36,9 @@
                                 <h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
                                 </h3>
+                                <h3 class="card-title" style="margin-left: 20px;">
+                                    <a href="#" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar</a>
+                                </h3>
                             </div>
                             @endcan
                             <!-- /.card-header -->
@@ -226,6 +229,7 @@
                 <style>
                     .show_label {
                         margin-right: 10px;
+                        margin-left: 10px;
                     }
                 </style>
                 <div class="modal-body">

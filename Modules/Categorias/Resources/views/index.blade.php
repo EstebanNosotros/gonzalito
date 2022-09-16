@@ -36,6 +36,9 @@
                                 <h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nueva</a>
                                 </h3>
+                                <h3 class="card-title" style="margin-left: 20px;">
+                                    <a href="#" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar</a>
+                                </h3>
                             </div>
                             @endcan
                             <!-- /.card-header -->
@@ -272,14 +275,14 @@
                             </div>
                             <div class="input-group">
                                 <label for="mostrar" style="vertical-align: middle;">Mostrar</label>
-                                <input type="checkbox" class="@error('mostrar') is-invalid @enderror" name="mostrar" id="mostrar" value="1" checked>
+                                <input type="checkbox" class="@error('mostrar') is-invalid @enderror" name="mostrar" id="mostrar" style="margin-left: 17px;" value="1" checked>
                                 @error('mostrar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="input-group">
                                 <label for="destacar" style="vertical-align: middle;">Destacar</label>
-                                <input type="checkbox" class="@error('destacar') is-invalid @enderror" name="destacar" id="destacar" value="1">
+                                <input type="checkbox" class="@error('destacar') is-invalid @enderror" name="destacar" id="destacar" style="margin-left: 10px;" value="1">
                                 @error('destacar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -350,14 +353,14 @@
                             </div>
                             <div class="input-group">
                                 <label for="u_mostrar">Mostrar</label>
-                                <input type="checkbox" class="@error('u_mostrar') is-invalid @enderror" name="u_mostrar" id="u_mostrar" value="{{ old('u_mostrar') }}">
+                                <input type="checkbox" class="@error('u_mostrar') is-invalid @enderror" name="u_mostrar" id="u_mostrar" style="margin-left: 17px;" value="{{ old('u_mostrar') }}">
                                 @error('u_mostrar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="input-group">
                                 <label for="u_destacar">Destacar</label>
-                                <input type="checkbox" class="@error('u_destacar') is-invalid @enderror" name="u_destacar" id="u_destacar" value="{{ old('u_destacar') }}">
+                                <input type="checkbox" class="@error('u_destacar') is-invalid @enderror" name="u_destacar" id="u_destacar" style="margin-left: 10px;" value="{{ old('u_destacar') }}">
                                 @error('u_destacar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -388,6 +391,7 @@
                 <style>
                     .show_label {
                         margin-right: 10px;
+                        margin-left: 10px;
                     }
                 </style>
                 <div class="modal-body">

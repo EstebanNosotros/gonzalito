@@ -8,12 +8,18 @@
     #btn_perfil {
         color: inherit !important;
     }
+    [class*=sidebar-dark] .user-panel {
+        border-bottom: 1px solid #ffffffff;
+    }
+    [class*=sidebar-dark] .brand-link {
+        border-bottom: 1px solid #ffffffff;
+    }
 </style>
 <aside class="main-sidebar sidebar-dark-primary elevation-4" style="color:#ffffff; background-color: #E87B14;"><!--#FC8700;"-->
     <!-- Brand Logo -->
     <a href="index3.html" class="brand-link">
-    <img src="{{ asset(Setting::getValue('app_logo')) }}" alt="{{ Setting::getName('app_name') }}" class="brand-image img-circle elevation-3" style="opacity: .8">
-    <span class="brand-text font-weight-light">{{ Setting::getValue('app_short_name') }}</span>
+    <img src="{{ asset(Setting::getValue('app_logo')) }}" alt="{{ Setting::getName('app_name') }}" class="brand-image" style="opacity: .8">
+    <span class="brand-text font-weight-light">{{ /*Setting::getValue('app_short_name')*/' ' }}&nbsp;</span>
     </a>
 
     <!-- Sidebar -->

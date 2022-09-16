@@ -36,6 +36,9 @@
                                 <h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" id="btn_modal_nuevo" name="btn_modal_nuevo" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
                                 </h3>
+                                <h3 class="card-title" style="margin-left: 20px;">
+                                    <a href="#" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar</a>
+                                </h3>
                             </div>
                             @endcan
                             <!-- /.card-header -->
@@ -52,7 +55,7 @@
                                             <th>Referencia</th>
                                             <th>Mostrar</th>
                                             <th>Destacar</th>
-                                            <th>Última Modificación</th>
+                                            <th>Actualizado</th>
                                             {{--@canany(['update banners', 'delete banners'])--}}
                                                 <th>Acciones</th>
                                             {{--@endcanany--}}
@@ -413,6 +416,7 @@
                 <style>
                     .show_label {
                         margin-right: 10px;
+                        margin-left: 10px;
                     }
                 </style>
                 <div class="modal-body">
