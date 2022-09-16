@@ -3,6 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Modules\Banners\Models\Banner;
+use Modules\Productos\Models\Producto;
+use Modules\Categorias\Models\Categoria;
 
 class HomeController extends Controller
 {
@@ -23,6 +26,11 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $x['categorias']           = Categoria::get();
+        $x['categorias_populares'] = Categoria::where('destacar', true)->take(12);
+        $x['productos_nuevos']     = Producto::orderBy('created_at', 'desc')->take(12);
+        $x['productos_ofertas']    = Producto::where('destacar', true)->take(12);
+        $x['banner_principal']     = Banner::orderBy('created_at', 'desc')->first();
+        return view('home', $x);
     }
 }

@@ -17,7 +17,7 @@
             </a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{{ route('index') }}" target="_bkank" role="button">
+            <a class="nav-link" href="{{ route('tienda') }}" target="_bkank" role="button">
                 <i class="fas fa-globe"></i>
             </a>
         </li>

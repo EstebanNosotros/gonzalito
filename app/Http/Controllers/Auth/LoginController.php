@@ -52,7 +52,11 @@ class LoginController extends Controller
 
         $credentials = $request->only('email', 'password');
         if (Auth::attempt($credentials, true)) {
-            return to_route('dashboard');
+            if(implode(",", auth()->user()->getRoleNames()->toArray()) == 'superadmin') {
+                return to_route('dashboard');
+            } else {
+                return to_route('tienda');
+            }
         }
         throw ValidationException::withMessages([
             $this->username() => [trans('auth.failed')],
@@ -61,7 +65,7 @@ class LoginController extends Controller
 
     protected function authenticated(Request $request, $user)
     {
-        Alert::info('Selamat datang ' . $user->name)->toToast();
+        Alert::info('Bienvenido ' . $user->name)->toToast();
         return to_route('dashboard');
     }
 }

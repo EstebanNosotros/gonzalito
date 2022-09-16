@@ -2,10 +2,8 @@
 @section('content')
     <style>
         #mostrar, #destacar, #u_mostrar, #u_destacar {transform: scale(1.5);}
-        a.active, a:not([name="btn_modal_nuevo"]) {
-            color: inherit !important;
-            text-decoration: underline;
-        }
+        #breadcrumb_inicio {color:black !important;}
+        .page-link {color:inherit !important; text-decoration: underline !important;}
     </style>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -17,7 +15,7 @@
                     </div><!-- /.col -->
                     <div class="col-sm-6">
                         <ol class="breadcrumb float-sm-right">
-                            <li class="breadcrumb-item"><a href="#">Inicio</a></li>
+                            <li class="breadcrumb-item"><a href="#" id="breadcrumb_inicio">Inicio</a></li>
                             <li class="breadcrumb-item active">{{ $title }}</li>
                         </ol>
                     </div><!-- /.col -->

@@ -7,6 +7,7 @@ use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SettingController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 use Spatie\Permission\Models\Role;
@@ -27,11 +28,15 @@ Route::get('/', function () {
     return redirect()->route('login');
 })->name('index');
 
+Route::get('/tienda', [ HomeController::class, 'index' ])->name('tienda');
+
 Auth::routes([
     'register'  => false,
     'reset'     => true,
     'confirm'   => false
 ]);
+
+Route::get('user/profile', [ UserController::class, 'profile' ])->name('user.profile');
 
 Route::middleware(['auth'])->get('/home', [DashboardController::class, 'index'])->name('home');
 
@@ -45,9 +50,9 @@ Route::prefix('admin')->middleware(['auth'])->group(function () {
         Route::post('user/show', 'show')->middleware(['permission:read user'])->name('user.show');
         Route::put('user', 'update')->middleware(['permission:update user'])->name('user.update');
         Route::delete('user', 'destroy')->middleware(['permission:delete user'])->name('user.destroy');
-
-        Route::get('user/profile', 'profile')->name('user.profile');
     });
+
+    Route::get('user/profile', [ UserController::class, 'profile' ])->name('user.profile');
 
     Route::controller(RoleController::class)->group(function () {
         Route::get('role', 'index')->middleware(['permission:read role'])->name('role.index');
