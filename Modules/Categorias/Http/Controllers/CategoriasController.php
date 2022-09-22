@@ -101,11 +101,15 @@ class CategoriasController extends Controller
     {
         try {
             $categoria = Categoria::find($request->id);
-            if (file_exists(public_path($categoria->imagen))) {
-                unlink(public_path($categoria->imagen));
+            if($categoria->imagen) {
+                if (file_exists(public_path($categoria->imagen))) {
+                    unlink(public_path($categoria->imagen));
+                }
             }
-            if (file_exists(public_path($categoria->icono))) {
-                unlink(public_path($categoria->icono));
+            if($categoria->icono) {
+                if (file_exists(public_path($categoria->icono))) {
+                    unlink(public_path($categoria->icono));
+                }
             }
             $categoria->delete();
             Alert::success('Información', 'Registro <b>' . $categoria->nombre . '</b> eliminado correctamente')->toToast()->toHtml();
@@ -113,5 +117,36 @@ class CategoriasController extends Controller
             Alert::error('Información', 'Registro <b>' . $categoria->nombre . '</b> error al eliminar : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
+    }
+
+    //Synchronize
+    public function synchronize()
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            exit;
+        }
+        $username='p4nt4L1to';
+        $password='305pr15mA';
+        $httpClient = new \GuzzleHttp\Client();
+        $req = $httpClient->get('http://190.128.136.242:7575/catalogserv/categorias', ['auth' => [$username, $password]]);
+        $res = $req->getBody();
+        //return json_decode($res, true);
+        //return count(json_decode($res,true));
+        //dd($res);
+        $categorias = json_decode($res, true);
+        $existe = null;
+        foreach ($categorias as $categoria) {
+            $existe = Categoria::where('referencia', $categoria['id_categoria'])->first();
+            if($existe == null) {
+                Categoria::create([
+                    'nombre'     => $categoria['nombre'],
+                    'referencia' => $categoria['id_categoria']
+                ]);                    
+            }
+            $existe = null;
+        }
+        $totalCategorias = Categoria::count();
+        return "Ahora hay ".$totalCategorias." categorias en el sistema <a href=\"".route('categorias.index')."\">Volver</a>";
+
     }
 }

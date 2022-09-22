@@ -36,9 +36,12 @@
                                 <h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nueva</a>
                                 </h3>
-                                <h3 class="card-title" style="margin-left: 20px;">
-                                    <a href="#" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar</a>
-                                </h3>
+                                <form action="{{ route('categorias.synchronize') }}" method="POST" enctype="multipart/form-data">
+                                    @csrf
+                                    <h3 class="card-title" style="margin-left: 20px;">
+                                        <button type="submit" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Registros</a>
+                                    </h3>
+                                </form>
                             </div>
                             @endcan
                             <!-- /.card-header -->

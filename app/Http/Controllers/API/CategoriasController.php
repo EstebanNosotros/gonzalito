@@ -268,6 +268,9 @@ class CategoriasController extends Controller
     //Synchronize
     public function synchronize()
     {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            exit;
+        }
         $username='p4nt4L1to';
         $password='305pr15mA';
         $httpClient = new \GuzzleHttp\Client();
@@ -289,7 +292,7 @@ class CategoriasController extends Controller
             $existe = null;
         }
         $totalCategorias = Categoria::count();
-        return "Ahora hay ".$totalCategorias." categorias en el sistema";
+        return "Ahora hay ".$totalCategorias." categorias en el sistema <a href=\"back();\">Volver</a>";
 
     }
 

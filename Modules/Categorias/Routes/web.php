@@ -11,5 +11,7 @@ Route::middleware('auth')->prefix('admin/categoria')->group(function() {
         Route::post('/show', 'show')->middleware(['permisson:read categorias'])->name('categorias.show');
         Route::put('/', 'update')->middleware(['permisson:update categorias'])->name('categorias.update');
         Route::delete('/', 'destroy')->middleware(['permisson:delete categorias'])->name('categorias.destroy');
+
+        Route::post('/synchronize', 'synchronize')->middleware(['permisson:create categorias'])->name('categorias.synchronize');
     });
 });
