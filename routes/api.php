@@ -43,6 +43,8 @@ Route::middleware('auth:api')->group(function () {
  
     Route::resource('categorias', CategoriasController::class);
 
+    Route::get('synchronizeCategorias', [ CategoriasController::class, 'synchronize' ]);
+
     /// Productos
 
     Route::get('productosDownloadImages', [ ProductosController::class, 'downloadImages' ]);

@@ -255,11 +255,42 @@ class CategoriasController extends Controller
     // GET
     public function httpGet()
     {
+        $username='p4nt4L1to';
+        $password='305pr15mA';
         $httpClient = new \GuzzleHttp\Client();
-        $req = $httpClient->get('https://www.tiendagonzalito.com.py/');
+        $req = $httpClient->get('http://190.128.136.242:7575/catalogserv/categorias', ['auth' => [$username, $password]]);
         $res = $req->getBody();
-        //return $res;
-        dd($res);
+        return json_decode($res, true);
+        //return count(json_decode($res,true));
+        //dd($res);
+    }
+
+    //Synchronize
+    public function synchronize()
+    {
+        $username='p4nt4L1to';
+        $password='305pr15mA';
+        $httpClient = new \GuzzleHttp\Client();
+        $req = $httpClient->get('http://190.128.136.242:7575/catalogserv/categorias', ['auth' => [$username, $password]]);
+        $res = $req->getBody();
+        //return json_decode($res, true);
+        //return count(json_decode($res,true));
+        //dd($res);
+        $categorias = json_decode($res, true);
+        $existe = null;
+        foreach ($categorias as $categoria) {
+            $existe = Categoria::where('referencia', $categoria['id_categoria'])->first();
+            if($existe == null) {
+                Categoria::create([
+                    'nombre'     => $categoria['nombre'],
+                    'referencia' => $categoria['id_categoria']
+                ]);                    
+            }
+            $existe = null;
+        }
+        $totalCategorias = Categoria::count();
+        return "Ahora hay ".$totalCategorias." categorias en el sistema";
+
     }
 
     // POST
