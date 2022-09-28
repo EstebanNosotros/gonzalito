@@ -10,6 +10,7 @@
         "biscolab/laravel-recaptcha": "^5.3",
         "dcblogdev/laravel-module-generator": "^1.0",
         "guzzlehttp/guzzle": "^7.2",
+        "ladumor/laravel-pwa": "^0.0.3",
         "laravel/framework": "^9.2",
         "laravel/passport": "^11.0",
         "laravel/sanctum": "^2.14.1",

@@ -12,16 +12,156 @@ use Symfony\Component\HttpFoundation\Response;
 use Modules\Categorias\Models\Categoria;
 use Modules\Productos\Models\ProductoCuota;
 use stdClass;
+use Carbon\Carbon;
+use DB;
+use DataTables;
+use DateTime;
 
 class ProductosController extends Controller
 {
     public function index()
     {
         $x['title']      = "Productos";
-        $x['data']       = Producto::get();
+        $x['data']       = Producto::get();//->take(1000);
         $x['categorias'] = Categoria::get();
 
         return view('productos::index', $x);
+    }
+
+    // Fetch DataTable data
+    public function getProductos(Request $request)
+    {
+        ## Read value
+        $draw            = $request->get('draw');
+        $start           = $request->get("start");
+        $rowperpage      = $request->get("length"); // Rows display per page
+
+        $columnIndex_arr = $request->get('order');
+        $columnName_arr  = $request->get('columns');
+        $order_arr       = $request->get('order');
+        $search_arr      = $request->get('search');
+
+        $columnIndex     = $columnIndex_arr[0]['column']; // Column index
+        $columnName      = $columnName_arr[$columnIndex]['data']; // Column name
+        $columnSortOrder = $order_arr[0]['dir']; // asc or desc
+        $searchValue     = $search_arr['value']; // Search value
+
+        // Custom search filter 
+        /// no usamos esto dejo por si acaso
+        /*$searchCity = $request->get('searchCity');
+        $searchGender = $request->get('searchGender');
+        $searchName = $request->get('searchName');*/
+
+        // Total records
+        $totalRecords           = Producto::select('count(*) as allcount')
+                                          ->count();
+        $totalRecordswithFilter = Producto::select('count(*) as allcount')
+                                          ->where('nombre', 'like', '%' .$searchValue . '%')
+                                          ->count();
+
+        /// $records = Producto::select('count(*) as allcount'); //changed
+
+        ## Add custom filter conditions
+        /*if(!empty($searchCity)){
+            $records->where('city',$searchCity);
+        }
+        if(!empty($searchGender)){
+            $records->where('gender',$searchGender);
+        }
+        if(!empty($searchName)){
+            $records->where('name','like','%'.$searchName.'%');
+        }*/
+        /// $totalRecords = $records->count(); //changed
+
+        // Total records with filter
+        /// $records = Producto::select('count(*) as allcount')->where('nombre', 'like', '%' .$searchValue . '%'); //changed
+        ## Add custom filter conditions
+       /* if(!empty($searchCity)){
+        $records->where('city',$searchCity);
+        }
+        if(!empty($searchGender)){
+        $records->where('gender',$searchGender);
+        }
+        if(!empty($searchName)){
+        $records->where('name','like','%'.$searchName.'%');
+        }*/
+        /// $totalRecordswithFilter = $records->count(); //changed
+
+        // Fetch records
+        $records = Producto::with('categoria')
+                           ->orderBy($columnName,$columnSortOrder)
+                           ->where('productos.nombre', 'like', '%' .$searchValue . '%')
+                           ->orWhere('productos.nombre_web', 'like', '%' .$searchValue . '%')
+                           ->orWhere('productos.descripcion', 'like', '%' .$searchValue . '%')
+                           ->orWhere('productos.codigo', 'like', '%' .$searchValue . '%')
+                           ->orWhere('productos.precio', 'like', '%' .$searchValue . '%')
+                           ->orWhere('productos.marca', 'like', '%' .$searchValue . '%')
+                           //->orWhere('productos.categoria.nombre_web', 'like', '%' .$searchValue . '%')
+                           ->orWhere('productos.tags', 'like', '%' .$searchValue . '%')
+                           ->orWhere('productos.referencia', 'like', '%' .$searchValue . '%')
+                           ->orWhereHas('categoria', function ($query) use($searchValue) {
+                                        $query->where('nombre', 'like', '%' .$searchValue . '%');
+                                    })
+                           ->select('productos.*', DB::raw("ROW_NUMBER() OVER (ORDER BY id ASC) iteration"))
+                           ->skip($start)
+                           ->take($rowperpage)
+                           ->get();
+        //\Log::info($records);
+        ## Add custom filter conditions
+        /*if(!empty($searchCity)){
+        $records->where('city',$searchCity);
+        }
+        if(!empty($searchGender)){
+        $records->where('gender',$searchGender);
+        }
+        if(!empty($searchName)){
+        $records->where('name','like','%'.$searchName.'%');
+        }*/
+        /*$productos = $records->skip($start)
+                    ->take($rowperpage)
+                    ->get();*/   // changed
+
+        $data_arr = array();
+        /// foreach($productos as $producto){ //changed
+        foreach($records as $record){
+            $iteration             = $record->iteration;
+            $nombre                = $record->nombre;
+            $nombre_web            = $record->nombre_web;
+            $codigo                = $record->codigo;
+            $marca                 = $record->marca;
+            $categoria             = $record->categoria->nombre_web ? $record->categoria->nombre_web : $record->categoria->nombre;
+            $referencia            = $record->referencia;
+            $mostrar               = $record->mostrar;
+            $destacar              = $record->destacar;
+            $ultima_sincronizacion = $record->ultima_sincronizacion;
+            $id                    = $record->id;
+
+            $data_arr[] = array(
+                "iteration"             => $iteration,
+                "nombre"                => $nombre,
+                "nombre_web"            => $nombre_web,
+                "codigo"                => $codigo,
+                "marca"                 => $marca,
+                "categoria"             => $categoria,
+                "referencia"            => $referencia,
+                "mostrar"               => $mostrar,
+                "destacar"              => $destacar,
+                "ultima_sincronizacion" => $ultima_sincronizacion,
+                "id"                    => $id,
+            );
+        }
+
+        $response = array(
+        "draw" => intval($draw),
+        "iTotalRecords" => $totalRecords,
+        "iTotalDisplayRecords" => $totalRecordswithFilter,
+        "aaData" => $data_arr
+        );
+
+        $user = auth()->user();
+
+        return response()->json($response);
+
     }
 
     public function store(Request $request)
@@ -43,6 +183,7 @@ class ProductosController extends Controller
             ,'referencia'             => ['nullable', 'string']
             ,'mostrar'                => ['sometimes', 'boolean']
             ,'destacar'               => ['sometimes', 'boolean']
+            ,'en_stock'               => ['sometimes', 'boolean']
         ]);
         if ($validator->fails()) {
             return back()->withErrors($validator)
@@ -51,6 +192,22 @@ class ProductosController extends Controller
         $producto = new stdClass;
         $producto->nombre = $request->nombre;
         try {
+            $tope   = $request->crear_cuotas_tope;
+            $cuotas = [];
+            for ($i = 1; $i <= $tope; $i++) {
+                if (isset($_POST["crear_cuotas_cantidad".$i])) {
+                    $cuota = new stdClass;
+                    $cuota->cant_cuota  = intval($_POST["crear_cuotas_cantidad".$i]);
+                    $monto_cuota = intval($_POST["crear_cuotas_monto".$i]);
+                    $cuota->monto_cuota = $monto_cuota;
+                    array_push($cuotas, $cuota);
+                    /*$productoCuota = ProductoCuota::create([
+                        'cuotas'       => $_POST["crear_cuotas_cantidad".$i]
+                        ,'monto'       => $_POST["crear_cuotas_monto".$i]
+                        ,'producto_id' => $producto->id
+                    ]);*/ ///cuando habia tabla de cuotas
+                }
+            }
             $producto = Producto::create([
                 'nombre'                  => $request->nombre
                 ,'nombre_web'             => $request->nombre_web
@@ -65,17 +222,9 @@ class ProductosController extends Controller
                 ,'referencia'             => $request->referencia
                 ,'mostrar'                => ($request->mostrar ? $request->mostrar : false)
                 ,'destacar'               => ($request->destacar ? $request->destacar : false)
+                ,'en_stock'               => ($request->en_stock ? $request->en_stock : false)
+                ,'cuotas'                 => json_encode($cuotas, JSON_NUMERIC_CHECK)
             ]);
-            $tope = $request->crear_cuotas_tope;
-            for ($i = 1; $i <= $tope; $i++) {
-                if (isset($_POST["crear_cuotas_cantidad".$i])) {
-                    $productoCuota = ProductoCuota::create([
-                        'cuotas'       => $_POST["crear_cuotas_cantidad".$i]
-                        ,'monto'       => $_POST["crear_cuotas_monto".$i]
-                        ,'producto_id' => $producto->id
-                    ]);
-                }
-            }
             Alert::success('Aviso', 'Dato <b>' . $producto->nombre . '</b> registrado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             Alert::error('Aviso', 'Dato <b>' . $producto->nombre . '</b> error al registrar : ' . $th->getMessage())->toToast()->toHtml();
@@ -85,7 +234,7 @@ class ProductosController extends Controller
 
     public function show(Request $request)
     {
-        $producto = Producto::with(['categoria', 'cuotas'])->where('id', $request->id)->first();
+        $producto = Producto::with(['categoria'])->where('id', $request->id)->first();
         //\Log::info($request->id);
         //dd($producto);
         return response()->json([
@@ -114,12 +263,34 @@ class ProductosController extends Controller
             ,'u_referencia'             => ['nullable', 'string']
             ,'u_mostrar'                => ['sometimes', 'boolean']
             ,'u_destacar'               => ['sometimes', 'boolean']
+            ,'u_en_stock'               => ['sometimes', 'boolean']
         ]);
         if ($validator->fails()) {
             return back()->withErrors($validator)
                 ->withInput();
         }
+        $producto = new stdClass;
+        $producto->nombre = $request->u_nombre;
         try {
+            $indice = $request->actualizar_cuotas_indice;
+            $tope   = $request->actualizar_cuotas_tope;
+            $cuotas = [];
+            for ($i = 0; $i < $tope; $i++) {
+                if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
+                    if($_POST["actualizar_cuotas_cantidad".($i+1)] > 1 && $_POST["actualizar_cuotas_monto".($i+1)] > 0) {
+                        $cuota = new stdClass;
+                        $cuota->cant_cuota  = intval($_POST["actualizar_cuotas_cantidad".($i+1)]);
+                        $monto_cuota        = intval($_POST["actualizar_cuotas_monto".($i+1)]);
+                        $cuota->monto_cuota = $monto_cuota;
+                        array_push($cuotas, $cuota);
+                        /*ProductoCuota::create([
+                            'cuotas'       => $_POST["actualizar_cuotas_cantidad".($i+1)]
+                            ,'monto'       => $_POST["actualizar_cuotas_monto".($i+1)]
+                            ,'producto_id' => $producto->id
+                        ]);*/ ///cuando cuotas tenia su propia tabla
+                    }
+                }
+            }
             $producto = Producto::find($request->id);
             $producto->update([
                 'nombre'                  => $request->u_nombre
@@ -131,113 +302,22 @@ class ProductosController extends Controller
                 ,'categoria_id'           => $request->u_categoria_id
                 ,'tags'                   => $request->u_tags
                 ,'imagen_principal'       => $request->u_imagen_principal
-                //,'cuotas'                 => $request->u_cuotas
                 ,'productos_relacionados' => $request->u_productos_relacionados ? implode(',', $request->u_productos_relacionados) : ''
                 ,'referencia'             => $request->u_referencia
                 ,'mostrar'                => ($request->u_mostrar ? $request->u_mostrar : false)
                 ,'destacar'               => ($request->u_destacar ? $request->u_destacar : false)
+                ,'en_stock'               => ($request->u_en_stock ? $request->u_en_stock : false)
+                ,'cuotas'                 => json_encode($cuotas, JSON_NUMERIC_CHECK)
             ]);
 
             
-            $cuotas = $producto->cuotas;
-            $indice = $request->actualizar_cuotas_indice;
-            $tope   = $request->actualizar_cuotas_tope;
-
-            ////Intento de complicacion para guardar sin tener que recrear cada vez... dejo las anotaciones para quien tenga el valor
-
-            /*\Log::info('indice: '.$request->actualizar_cuotas_indice);
-            \Log::info('tope: '.$request->actualizar_cuotas_tope);
-            \Log::info('cuotas: '.$producto->cuotas);
-            \Log::info('cuotas-count: '.$producto->cuotas->count());
-            if($cuotas->count() == $tope) {
-                for ($i = 0; $i < $tope; $i++) {
-                    if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
-                        if($cuotas[$i]->cuotas != $_POST["actualizar_cuotas_cantidad".($i+1)]) {
-                            $cuotas[$i]->cuotas = $_POST["actualizar_cuotas_cantidad".($i+1)];
-                        }
-                        if($cuotas[$i]->monto != $_POST["actualizar_cuotas_monto".($i+1)]) {
-                            $cuotas[$i]->monto = $_POST["actualizar_cuotas_monto".($i+1)];
-                        }
-                        if($cuotas[$i]->cuotas > 1 && $cuotas[$i]->monto > 0) {
-                            $cuotas[$i]->save();
-                        }else {
-                            $cuotas[$i]->delete();
-                        }
-                    }
-                }
-            }elseif ($cuotas->count() < $tope) {
-                for ($i = 0; $i < $tope; $i++) {
-                    if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
-                        if(isset($cuotas[$i])) {
-                            if($cuotas[$i]->cuotas != $_POST["actualizar_cuotas_cantidad".($i+1)]) {
-                                $cuotas[$i]->cuotas = $_POST["actualizar_cuotas_cantidad".($i+1)];
-                            }
-                            if($cuotas[$i]->monto != $_POST["actualizar_cuotas_monto".($i+1)]) {
-                                $cuotas[$i]->monto = $_POST["actualizar_cuotas_monto".($i+1)];
-                            }
-                            if($cuotas[$i]->cuotas > 1 && $cuotas[$i]->monto > 0) {
-                                $cuotas[$i]->save();
-                            }else {
-                                $cuotas[$i]->delete();
-                            }
-                        }else {
-                            if($_POST["actualizar_cuotas_cantidad".($i+1)] > 1 && $_POST["actualizar_cuotas_monto".($i+1)] > 0) {
-                                ProductoCuota::create([
-                                    'cuotas'       => $_POST["actualizar_cuotas_cantidad".($i+1)]
-                                    ,'monto'       => $_POST["actualizar_cuotas_monto".($i+1)]
-                                    ,'producto_id' => $producto->id
-                                ]);
-                            }
-                        }
-                    }else {
-                        \Log::info('no esta seteado');
-                        if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
-                            \Log::info('cantidad a insertar: '. $_POST["actualizar_cuotas_cantidad".($i+1)]);
-                            \Log::info('monto a insertar: '. $_POST["actualizar_cuotas_monto".($i+1)]);
-                            if($_POST["actualizar_cuotas_cantidad".($i+1)] > 1 && $_POST["actualizar_cuotas_monto".($i+1)] > 0) {
-                                \Log::info('deberia crear ahora');
-                                ProductoCuota::create([
-                                    'cuotas'       => $_POST["actualizar_cuotas_cantidad".($i+1)]
-                                    ,'monto'       => $_POST["actualizar_cuotas_monto".($i+1)]
-                                    ,'producto_id' => $producto->id
-                                ]);
-                            }
-                        }
-                    }
-                }
-            }else {
-                foreach($cuotas as $cuota) {
-                    $cuota->delete();   
-                }
-                for ($i = 0; $i < $tope; $i++) {
-                    if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
-                        if($_POST["actualizar_cuotas_cantidad".($i+1)] > 1 && $_POST["actualizar_cuotas_monto".($i+1)]) {
-                            ProductoCuota::create([
-                                'cuotas'       => $_POST["actualizar_cuotas_cantidad".($i+1)]
-                                ,'monto'       => $_POST["actualizar_cuotas_monto".($i+1)]
-                                ,'producto_id' => $producto->id
-                            ]);
-                        }
-                    }
-                }
-            }*/
+            // $cuotas = $producto->cuotas; ///cuando cuotas tenia su propia tabla
 
             ///Cuotas
-            foreach($cuotas as $cuota) {
+            /*foreach($cuotas as $cuota) {
                 $cuota->delete();   
-            }
-            for ($i = 0; $i < $tope; $i++) {
-                if(isset($_POST["actualizar_cuotas_cantidad".($i+1)])) {
-                    if($_POST["actualizar_cuotas_cantidad".($i+1)] > 1 && $_POST["actualizar_cuotas_monto".($i+1)] > 0) {
-                        ProductoCuota::create([
-                            'cuotas'       => $_POST["actualizar_cuotas_cantidad".($i+1)]
-                            ,'monto'       => $_POST["actualizar_cuotas_monto".($i+1)]
-                            ,'producto_id' => $producto->id
-                        ]);
-                    }
-                }
-            }
-
+            }*/ ///cuando cuotas tenia su propia tabla
+            
             Alert::success('Aviso', 'Dato <b>' . $producto->nombre . '</b> actualizado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             Alert::error('Aviso', 'Dato <b>' . $producto->nombre . '</b> error al actualizar : ' . $th->getMessage())->toToast()->toHtml();
@@ -249,8 +329,10 @@ class ProductosController extends Controller
     {
         try {
             $producto = Producto::find($request->id);
-            if (file_exists(public_path($producto->imagen_principal))) {
-                unlink(public_path($producto->imagen_principal));
+            if ($producto->imagen_principal) {
+                if (file_exists(public_path($producto->imagen_principal))) {
+                    unlink(public_path($producto->imagen_principal));
+                }
             }
             $producto->delete();
             Alert::success('Aviso', 'Dato <b>' . $producto->nombre . '</b> eliminado correctamente')->toToast()->toHtml();
@@ -258,5 +340,130 @@ class ProductosController extends Controller
             Alert::error('Aviso', 'Dato <b>' . $producto->nombre . '</b> error al eliminar : ' . $th->getMessage())->toToast()->toHtml();
         }
         return back();
+    }
+
+    //Synchronize
+    public function synchronize()
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            exit;
+        }
+        \Log::info('Proceso entero de sincronizacion de productos, Inicio');
+        $username             ='p4nt4L1to';
+        $password             ='305pr15mA';
+        $httpClient           = new \GuzzleHttp\Client();
+        $fecha_inicio_con_cat = Carbon::now();
+        $categorias           = Categoria::get();
+        $fecha_fin_con_cat = Carbon::now(); //test
+        $tiempo_total_con_cat = $fecha_inicio_con_cat->diffForHumans($fecha_fin_con_cat); //test
+        \Log::info("Proceso para consultar categorias de BD terminado, inicio ".$tiempo_total_con_cat); //test
+        $contador_categorias  = 0;
+        $fecha_sincronizacion = Carbon::now();
+        foreach ($categorias as $categoria) {
+            $fecha_inicio_cat = Carbon::now();
+            $req                = $httpClient->get('http://190.128.136.242:7575/catalogserv/categorias/productos/'.$categoria->referencia, ['auth' => [$username, $password]]);
+            $fecha_fin_req = Carbon::now(); //test
+            $tiempo_total_req = $fecha_inicio_cat->diffForHumans($fecha_fin_req); //test
+            \Log::info("Categoria: ".$categoria->nombre." proceso para consultar sus datos terminado, inicio ".$tiempo_total_req); //test
+            $res                = $req->getBody();
+            $productos          = json_decode($res, true);
+            $contador_productos = 0;
+            foreach ($productos as $producto) {
+                $existe = null;
+                $fecha_inicio_con = Carbon::now(); //test
+                $existe = Producto::where('referencia', $producto['id_producto'])->first();
+                $fecha_fin_con = Carbon::now(); //test
+                $tiempo_total_con = $fecha_inicio_con->diffForHumans($fecha_fin_con); //test
+                \Log::info("Producto: ".$producto['nombre']." proceso para consultar sus datos terminado, inicio ".$tiempo_total_con); //test
+                if($existe == null) {
+                    \Log::info('no existe se va a crear');
+                    $fecha_inicio_ins = Carbon::now(); //test
+                    $producto_catalogo = Producto::create([
+                                             'nombre'                 => $producto['nombre']
+                                             ,'descripcion'           => $producto['descripcion']
+                                             ,'codigo'                => $producto['id_producto']
+                                             ,'precio'                => $producto['precio_contado']
+                                             ,'marca'                 => $producto['marca']
+                                             ,'categoria_id'          => $categoria->id
+                                             ,'referencia'            => $producto['id_producto']
+                                             ,'en_stock'              => $producto['disponible']
+                                             ,'ultima_sincronizacion' => $fecha_sincronizacion
+                                             ,'cuotas'                => json_encode($producto['precio_credito'], JSON_NUMERIC_CHECK)
+                                         ]);
+                    $fecha_fin_ins = Carbon::now(); //test
+                    $tiempo_total_ins = $fecha_inicio_ins->diffForHumans($fecha_fin_ins); //test
+                    \Log::info("Producto: ".$producto['nombre']." proceso para crearlo terminado, inicio ".$tiempo_total_ins); //test
+                    /*$fecha_inicio_cuo = Carbon::now(); //test
+                    foreach ($producto['precio_credito'] as $cuota) {
+                        $fecha_inicio_ins_cuo = Carbon::now(); //test
+                        ProductoCuota::create([
+                            'cuotas'       => $cuota["cant_cuota"]
+                            ,'monto'       => $cuota["monto_cuota"]
+                            ,'producto_id' => $producto_catalogo->id
+                        ]);
+                        $fecha_fin_ins_cuo = Carbon::now(); //test
+                        $tiempo_total_ins_cuo = $fecha_inicio_ins_cuo->diffForHumans($fecha_fin_ins_cuo); //test
+                        \Log::info("Producto: ".$producto['nombre']." proceso para insertar una cuota terminado, inicio ".$tiempo_total_ins_cuo); //test
+                    }
+                    $fecha_fin_cuo = Carbon::now(); //test
+                    $tiempo_total_cuo = $fecha_inicio_cuo->diffForHumans($fecha_fin_cuo); //test
+                    \Log::info("Producto: ".$producto['nombre']." proceso para insertar todas sus cuotas terminado, inicio ".$tiempo_total_cuo); //test*/
+                } else {
+                    /// Si queremos comparar las fechas antes de actualizar pero como
+                    /// esto es algo que fuerza la actualizacion, omito esta parte.
+                    /// (por ahora)
+                    /*$datetime1 = new DateTime($existe->ultima_sincronizacion);
+                    $datetime2 = new DateTime($fecha_sincronizacion);
+                    $interval = $datetime1->diff($datetime2);
+                    $days = $interval->format('%a');
+                    if(($existe->ultima_sincronizacion == null) || (intval($days) > 6) ) {
+
+                    }*/
+                    $fecha_inicio_act = Carbon::now(); //test
+                    $existe->update([
+                        'nombre'                 => $producto['nombre']
+                        ,'descripcion'           => $producto['descripcion']
+                        //,'codigo'                => $producto['id_producto']
+                        ,'precio'                => $producto['precio_contado']
+                        ,'marca'                 => $producto['marca']
+                        //,'categoria_id'          => $categoria->id
+                        //,'referencia'            => $producto['id_producto']
+                        ,'en_stock'              => $producto['disponible']
+                        ,'ultima_sincronizacion' => $fecha_sincronizacion
+                        ,'cuotas'                => $producto['precio_credito']
+                    ]);
+                    $fecha_fin_act = Carbon::now(); //test
+                    $tiempo_total_act = $fecha_inicio_act->diffForHumans($fecha_fin_act); //test
+                    \Log::info("Producto: ".$producto['nombre']." proceso para actualizarlo terminado, inicio ".$tiempo_total_act); //test
+                    ///Cuotas
+                    /*$fecha_inicio_bor_cuo = Carbon::now(); //test
+                    $cuotas = $existe->cuotas;
+                    foreach($cuotas as $cuota) {
+                        $cuota->delete();   
+                    }
+                    foreach ($producto['precio_credito'] as $cuota) {
+                        ProductoCuota::create([
+                            'cuotas'       => $cuota["cant_cuota"]
+                            ,'monto'       => $cuota["monto_cuota"]
+                            ,'producto_id' => $existe->id
+                        ]);
+                    }
+                    $fecha_fin_bor_cuo = Carbon::now(); //test
+                    $tiempo_total_bor_cuo = $fecha_inicio_bor_cuo->diffForHumans($fecha_fin_bor_cuo); //test
+                    \Log::info("Producto: ".$producto['nombre']." proceso para borrar y reinsertar todas sus cuotas terminado, inicio ".$tiempo_total_bor_cuo); //test*/
+                }
+                $contador_productos++;
+            }
+            $fecha_fin_cat = Carbon::now();
+            $tiempo_total_cat = $fecha_inicio_cat->diffForHumans($fecha_fin_cat);
+            $contador_categorias++;
+            \Log::info("Categoria: ".$categoria->nombre." terminada, ".$contador_productos." productos relacionados a la misma y procesados. ".$contador_categorias." categorias procesadas, este proceso se inicio ".$tiempo_total_cat);
+        }
+        $totalProductos = Producto::count();
+        $fecha_fin_proceso = Carbon::now();
+        $tiempo_total_proceso = $fecha_sincronizacion->diffForHumans($fecha_fin_proceso);
+        \Log::info('Proceso entero de sincronizacion de productos, Fin');
+        return "Ahora hay ".$totalProductos." productos en el sistema, el proceso se inició ".$tiempo_total_proceso." <a href=\"".route('productos.index')."\">Volver</a>";
+
     }
 }

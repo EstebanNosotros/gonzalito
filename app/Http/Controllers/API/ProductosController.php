@@ -21,7 +21,7 @@ class ProductosController extends Controller
      */
     public function index()
     {
-        $productos = Producto::with(['categoria', 'cuotas'])->get();
+        $productos = Producto::with(['categoria'])->get();
      
         return response()->json([
             "success" => true,
@@ -49,12 +49,13 @@ class ProductosController extends Controller
             ,'tags'                   => ['nullable', 'string', 'max:4000']
             ,'imagen_principal'       => ['nullable', 'string']
             ,'cuotas'                 => ['nullable', 'array']
-            ,'cuotas.*.cantidad'      => ['sometimes', 'numeric']
-            ,'cuotas.*.monto'         => ['sometimes', 'numeric']
+            ,'cuotas.*.cant_cuota'    => ['sometimes', 'numeric']
+            ,'cuotas.*.monto_cuota'   => ['sometimes', 'numeric']
             ,'productos_relacionados' => ['nullable', 'string']
             ,'referencia'             => ['nullable', 'string']
             ,'mostrar'                => ['sometimes', 'boolean']
             ,'destacar'               => ['sometimes', 'boolean']
+            ,'en_stock'               => ['sometimes', 'boolean']
         ]);
     
         if($validator->fails()){
@@ -67,7 +68,7 @@ class ProductosController extends Controller
         }
     
         $producto = Producto::create($input);
-        $idProducto = $producto->id;
+        /*$idProducto = $producto->id;
         \Log::info($producto->id);
         if($producto) {
             foreach($input['cuotas'] as $cuota) {
@@ -77,7 +78,7 @@ class ProductosController extends Controller
                     ,'producto_id' => $idProducto
                 ]);
             }
-        }
+        }*/
  
         return response()->json([
             "success" => true,
@@ -95,7 +96,7 @@ class ProductosController extends Controller
      */
     public function show($id)
     {
-        $producto = Producto::with(['categoria', 'cuotas'])->find($id);
+        $producto = Producto::with(['categoria'])->find($id);
    
         if (is_null($producto)) {
             //return $this->sendError('Producto no encontrado.');
@@ -135,12 +136,13 @@ class ProductosController extends Controller
             ,'tags'                   => ['nullable', 'string', 'max:4000']
             ,'imagen_principal'       => ['nullable', 'string']
             ,'cuotas'                 => ['nullable', 'array']
-            ,'cuotas.*.cantidad'      => ['sometimes', 'numeric']
-            ,'cuotas.*.monto'         => ['sometimes', 'numeric']
+            ,'cuotas.*.cant_cuota'    => ['sometimes', 'numeric']
+            ,'cuotas.*.monto_cuota'   => ['sometimes', 'numeric']
             ,'productos_relacionados' => ['nullable', 'string']
             ,'referencia'             => ['nullable', 'string']
             ,'mostrar'                => ['sometimes', 'boolean']
             ,'destacar'               => ['sometimes', 'boolean']
+            ,'en_stock'               => ['sometimes', 'boolean']
         ]);
     
         if($validator->fails()){
@@ -166,23 +168,25 @@ class ProductosController extends Controller
             ,'referencia'             => $request->referencia
             ,'mostrar'                => ($request->mostrar ? $request->mostrar : false)
             ,'destacar'               => ($request->destacar ? $request->destacar : false)
+            ,'en_stock'               => ($request->en_stock ? $request->en_stock : false)
+            ,'cuotas'                 => $request->cuotas
         ]);
 
-        $cuotas = $producto->cuotas;
+        /* $cuotas = $producto->cuotas;
 
         foreach($cuotas as $cuota) {
             $cuota->delete();
         }
 
-        foreach($input['cuotas'] as $cuota) {
+        /*foreach($input['cuotas'] as $cuota) {
             $productoCuota = ProductoCuota::create([
                 'cuotas'       => $cuota["cantidad"]
                 ,'monto'       => $cuota["monto"]
                 ,'producto_id' => $producto->id
             ]);
-        }
+        }*/ ///cuando habia tabla de cuotas
 
-        $producto = Producto::with(['categoria', 'cuotas'])->find($producto->id);
+        $producto = Producto::with(['categoria'])->find($producto->id);
     
         return response()->json([
             "success" => true,

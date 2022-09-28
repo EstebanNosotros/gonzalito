@@ -82,7 +82,7 @@ return [
     |
     */
 
-    'locale' => 'id',
+    'locale' => 'es',
 
     /*
     |--------------------------------------------------------------------------
@@ -180,6 +180,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\AdminProvider::class,
+        Ladumor\LaravelPwa\PWAServiceProvider::class,
 
     ],
 
@@ -198,6 +199,7 @@ return [
         'Alert'         => RealRashid\SweetAlert\Facades\Alert::class,
         'ReCaptcha'     => Biscolab\ReCaptcha\Facades\ReCaptcha::class,
         'Setting'       => App\Helpers\SettingHelper::class,
+        'LaravelPwa'    => \Ladumor\LaravelPwa\LaravelPwa::class,
     ])->toArray(),
 
 ];

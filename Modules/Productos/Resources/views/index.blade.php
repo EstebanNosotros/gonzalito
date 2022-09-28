@@ -2,9 +2,27 @@
 @section('content')
     <style>
         .select2-selection__choice__display{color:black;}
-        #mostrar, #destacar, #u_mostrar, #u_destacar {transform: scale(1.5);}
+        #mostrar, #destacar, #u_mostrar, #u_destacar, #en_stock, #u_en_stock {transform: scale(1.5);}
         #breadcrumb_inicio {color:black !important;}
         .page-link, .btn-perfil {color:inherit !important; text-decoration: underline !important;}
+        #pageloader  
+        {  
+        background: rgba( 255, 255, 255, 0.8 );  
+        display: none;  
+        height: 100%;  
+        position: fixed;  
+        width: 100%;  
+        z-index: 9999;  
+        }  
+        
+        #pageloader img  
+        {  
+        left: 50%;  
+        margin-left: -32px;  
+        margin-top: -32px;  
+        position: absolute;  
+        top: 50%;  
+        }
     </style>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -37,14 +55,20 @@
                                 <h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
                                 </h3>
-                                <h3 class="card-title" style="margin-left: 20px;">
-                                    <a href="#" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar</a>
-                                </h3>
+                                <form action="{{ route('productos.synchronize') }}" method="POST" enctype="multipart/form-data" onSubmit="return confirm('El siguiente proceso puede tardar varios minutos y no puede ser interrumpido, ¿Está seguro que desea ejecutarlo?');" id="form_sincronizar_productos">
+                                    @csrf
+                                    <h3 class="card-title" style="margin-left: 20px;">
+                                        <button type="submit" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false" id="btn_sincronizar_productos"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Registros</button>
+                                    </h3>
+                                    <div id="pageloader">  
+                                        <img src="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif" alt="processing..." />  
+                                    </div> 
+                                </form>
                             </div>
                             @endcan
                             <!-- /.card-header -->
                             <div class="card-body table-responsive">
-                                <table class="table table-bordered table-hover datatable">
+                                <table class="table table-bordered table-hover" id="mainTable">
                                     <thead>
                                         <tr>
                                             <th>#</th>
@@ -62,13 +86,14 @@
                                             <th>Referencia</th>
                                             <th>Mostrar</th>
                                             <th>Destacar</th>
-                                            <th>Actualizado</th>
+                                            <!--th>Actualizado</th-->
+                                            <th>Sincronizado</th>
                                             {{--@canany(['update productos', 'delete productos'])--}}
                                                 <th>Acciones</th>
                                             {{--@endcanany--}}
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    {{--<tbody>
                                         @foreach ($data as $i)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
@@ -93,8 +118,9 @@
                                                 <td>{{ $i->referencia }}</td>
                                                 <td>{{ $i->mostrar }}</td>
                                                 <td>{{ $i->destacar }}</td>
-                                                <td>{{ $i->updated_at }}</td>
-                                                {{--@canany(['update productos', 'delete productos'])--}}
+                                                <!--td>{{ $i->updated_at }}</td-->
+                                                <td>{{ $i->ultima_sincronizacion }}</td>
+                                                {{--@canany(['update productos', 'delete productos'])--}-}
                                                     <td>
                                                         <div class="btn-group">
                                                             <button class="btn btn-sm btn-info btn-show" data-id="{{ $i->id }}"><i class="fas fa-eye"></i></button>
@@ -106,10 +132,10 @@
                                                             @endcan
                                                         </div>
                                                     </td>
-                                                {{--@endcanany--}}
+                                                {{--@endcanany--}-}
                                             </tr>
                                         @endforeach
-                                    </tbody>
+                                    </tbody> --}}
                                 </table>
                             </div>
                             <!-- /.card-body -->
@@ -134,6 +160,39 @@
    </script>
     <script>
         $(document).ready(function() {
+            // DataTable
+            $('#mainTable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: "{{route('getProductos')}}",
+                columns: [
+                    { data: 'iteration' },
+                    { data: 'nombre' },
+                    { data: 'nombre_web' },
+                    { data: 'codigo' },
+                    { data: 'marca' },
+                    { data: 'categoria' },
+                    { data: 'referencia' },
+                    { data: 'mostrar' },
+                    { data: 'destacar' },
+                    { data: 'ultima_sincronizacion' },
+                    { data: null,
+                      render: function ( data, type, row ) {
+                        var field;
+                        field = '<div class="btn-group">';
+                        field = field + '<button class="btn btn-sm btn-info btn-show" data-id="'+data.id+'"><i class="fas fa-eye"></i></button>';
+                        @can('update productos')
+                            field = field + '<button class="btn btn-sm btn-primary btn-edit" data-id="'+data.id+'"><i class="fas fa-pencil-alt"></i></button>';
+                        @endcan
+                        @can('delete productos')
+                            field = field + '<button class="btn btn-sm btn-danger btn-delete" data-id="'+data.id+'" data-name="'+data.nombre+'"><i class="fas fa-trash"></i></button>';
+                        @endcan
+                        field = field + '</div>';
+                        return field;
+                      }
+                    },
+                ]
+            });
             let oculto;
             ///Modal Edit
             $(document).on("click", '.btn-edit', function() {
@@ -167,6 +226,13 @@
                             $('#u_destacar').prop('checked', false);
                             $('#u_destacar').val(1);
                         }
+                        if (data.en_stock == 1) {
+                            $('#u_en_stock').prop('checked', true);
+                            $('#u_en_stock').val(1);
+                        }else {
+                            $('#u_en_stock').prop('checked', false);
+                            $('#u_en_stock').val(1);
+                        }
                         $('#u_imagen_principal').val(data.imagen_principal);
                         $('#u_imagen_principal-image').attr('src', '{{ env("APP_URL") }}'+'/'+data.imagen_principal);
                         $('#u_imagen_principal-image').attr('alt', data.imagen_principal);
@@ -181,12 +247,13 @@
                         ///Cuotas
                         $("#u_tabla_cuotas").find("tr:not(:first)").remove();
                         var i = 0;
-                        if(data.cuotas != '') {
+                        if(data.cuotas != null) {
+                            var cuotas = JSON.parse(data.cuotas);
                             $('#u_tabla_cuotas').css('display', 'block');
-                            data.cuotas.forEach(recorreCuotas);
+                            cuotas.forEach(recorreCuotas);
                             function recorreCuotas(item) {
                                 i++;
-                                var fila = '<tr id="u_cuota'+i+'"><td><input type="text" id="actualizar_cuotas_cantidad'+i+'" name="actualizar_cuotas_cantidad'+i+'" value="'+item.cuotas+'" required></td><td><input type="text" id="actualizar_cuotas_monto'+i+'" name="actualizar_cuotas_monto'+i+'" value="'+item.monto+'" required></td><td><small><button type="button" id="btn_u_eliminar_cuota'+i+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Cuota</small></td></tr>';
+                                var fila = '<tr id="u_cuota'+i+'"><td><input type="text" id="actualizar_cuotas_cantidad'+i+'" name="actualizar_cuotas_cantidad'+i+'" value="'+item.cant_cuota+'" required></td><td><input type="text" id="actualizar_cuotas_monto'+i+'" name="actualizar_cuotas_monto'+i+'" value="'+item.monto_cuota+'" required></td><td><small><button type="button" id="btn_u_eliminar_cuota'+i+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Cuota</small></td></tr>';
                                 $('#u_tabla_cuotas tbody').append(fila);
                                 $('#btn_u_eliminar_cuota'+i).click(function() {
                                     $('#actualizar_cuotas_indice').attr('value', parseInt($('#actualizar_cuotas_indice').attr('value')) - 1);
@@ -254,6 +321,11 @@
                         }else {
                             $('#s_destacar').html('No');
                         }
+                        if (data.data.en_stock == 1) {
+                            $('#s_en_stock').html('Si');
+                        }else {
+                            $('#s_en_stock').html('No');
+                        }
                         $('#s_imagen_principal').attr('src', '{{ env("APP_URL") }}'+'/'+data.data.imagen_principal);
                         $('#s_imagen_principal').attr('alt', data.data.imagen_principal);
                         $('#s_referencia').html(data.data.referencia);
@@ -265,14 +337,15 @@
                         $('#s_tags').html(data.data.tags);
 
                         ///Cuotas
-                        $("#s_tabla_cuotas").find("tr:not(:first)").remove();
+                        $("#s_tabla_cuotas").find("tr").remove();
                         var i = 0;
-                        if(data.data.cuotas != '') {
+                        if(data.data.cuotas != null) {
+                            var cuotas = JSON.parse(data.data.cuotas);
                             $('#s_tabla_cuotas').css('display', 'block');
-                            data.data.cuotas.forEach(recorreCuotas);
+                            cuotas.forEach(recorreCuotas);
                             function recorreCuotas(item) {
                                 i++;
-                                var fila = '<tr id="s_cuota'+i+'"><td><span>'+item.cuotas+' cuotas de '+(item.monto).toLocaleString('es')+' Guaraníes</span></td></tr>';
+                                var fila = '<tr id="s_cuota'+i+'"><td><span>'+item.cant_cuota+' cuotas de '+parseFloat(item.monto_cuota).toLocaleString('es')+' Guaraníes</span></td></tr>';
                                 $('#s_tabla_cuotas tbody').append(fila);
                             }
                         }else {
@@ -400,6 +473,12 @@
                 event.preventDefault();
                 inputId = '#'+event.target.id;
                 window.open('/file-manager/fm-button', 'fm', 'width=800,height=600');
+            });
+
+            //para sincronizar
+            $("#sincronizar_productos").submit( function(){
+                $(this).find(':input[type=submit]').prop('disabled', true);
+                $("#pageloader").fadeIn();
             });
         });
     </script>
@@ -549,6 +628,13 @@
                                 <label for="destacar" style="vertical-align: middle;">Destacar</label>
                                 <input type="checkbox" class="@error('destacar') is-invalid @enderror" name="destacar" id="destacar" style="margin-left: 10px;" value="1">
                                 @error('destacar')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="input-group">
+                                <label for="en_stock" style="vertical-align: middle;">Disponible</label>
+                                <input type="checkbox" class="@error('en_stock') is-invalid @enderror" name="en_stock" id="en_stock" style="margin-left: 10px;" value="1">
+                                @error('en_stock')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -710,6 +796,13 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="input-group">
+                                <label for="u_en_stock">Disponible</label>
+                                <input type="checkbox" class="@error('u_en_stock') is-invalid @enderror" name="u_en_stock" id="u_en_stock" style="margin-left: 10px;" value="{{ old('u_en_stock') }}">
+                                @error('u_en_stock')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -857,6 +950,14 @@
                                     </td>
                                     <td>
                                         <span id="s_destacar"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Disponible: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_en_stock"></span>
                                     </td>
                                 </tr>
                             </table>

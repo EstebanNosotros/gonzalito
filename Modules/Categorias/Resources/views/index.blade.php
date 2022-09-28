@@ -39,7 +39,7 @@
                                 <form action="{{ route('categorias.synchronize') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <h3 class="card-title" style="margin-left: 20px;">
-                                        <button type="submit" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Registros</a>
+                                        <button type="submit" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Registros</button>
                                     </h3>
                                 </form>
                             </div>

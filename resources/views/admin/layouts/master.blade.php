@@ -21,6 +21,11 @@
         <link rel="stylesheet" href="{{ asset('template/admin/plugins/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
         <!-- DataTables -->
         <link rel="stylesheet" href="{{ asset('template/admin/plugins/datatables-bs4/css/dataTables.bootstrap4.min.css') }}">
+        <!-- PWA  -->
+        <meta name="theme-color" content="#6777ef"/>
+        <link rel="apple-touch-icon" href="{{ asset('logo.PNG') }}">
+        <link rel="manifest" href="{{ asset('/manifest.json') }}">
+        <!-- Estilos personalizados de cada pagina -->
         @stack('style')
     </head>
     <body class="hold-transition sidebar-mini layout-fixed">
@@ -104,5 +109,14 @@
             });
         </script>
         @stack('script')
+        <!-- PWA -->
+        <script src="{{ asset('/sw.js') }}"></script>
+        <script>
+            if (!navigator.serviceWorker.controller) {
+                navigator.serviceWorker.register("/sw.js").then(function (reg) {
+                    console.log("Service worker has been registered for scope: " + reg.scope);
+                });
+            }
+        </script>
     </body>
 </html>
