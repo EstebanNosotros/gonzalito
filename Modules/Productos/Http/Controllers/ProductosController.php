@@ -102,7 +102,7 @@ class ProductosController extends Controller
                            ->orWhereHas('categoria', function ($query) use($searchValue) {
                                         $query->where('nombre', 'like', '%' .$searchValue . '%');
                                     })
-                           ->select('productos.*', DB::raw("ROW_NUMBER() OVER (ORDER BY id ASC) iteration"))
+                           ->select('productos.*', DB::raw("ROW_NUMBER() OVER (ORDER BY id ASC) AS iteration"))
                            ->skip($start)
                            ->take($rowperpage)
                            ->get();
