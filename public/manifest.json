@@ -8,8 +8,8 @@
     "theme_color": "#6777ef",
     "icons": [
         {
-            "src": "storage/logo-gonzalito-blanco-1.png",
-            "sizes": "1038x248",
+            "src": "storage/logo.png",
+            "sizes": "256x256",
             "type": "image/png",
             "purpose": "any maskable"
         }
