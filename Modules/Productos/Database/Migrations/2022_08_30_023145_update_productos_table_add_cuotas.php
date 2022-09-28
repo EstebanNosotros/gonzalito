@@ -9,7 +9,7 @@ class UpdateProductosTableAddCuotas extends Migration
     public function up()
     {
         Schema::table('productos', function (Blueprint $table) {
-            $table->json('cuotas')->nullable();
+            $table->longText('cuotas')->nullable();
         });
     }
 
