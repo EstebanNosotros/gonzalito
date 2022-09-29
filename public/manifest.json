@@ -1,9 +1,9 @@
 {
-    "name": "Laravel Package Tutorial",
-    "short_name": "LPT",
-    "start_url": "/admin",
+    "name": "Catálogo Online Gonzalito",
+    "short_name": "COG",
+    "start_url": "/admin/dashboard",
     "background_color": "#6777ef",
-    "description": "Tutorial of Laravel Package",
+    "description": "Catálogo Online para Tienda Gonzalito",
     "display": "fullscreen",
     "theme_color": "#6777ef",
     "icons": [

@@ -353,7 +353,7 @@ class ProductosController extends Controller
         $password             ='305pr15mA';
         $httpClient           = new \GuzzleHttp\Client();
         $fecha_inicio_con_cat = Carbon::now();
-        $categorias           = Categoria::get();
+        $categorias           = Categoria::where('referencia', '003')->get();
         $fecha_fin_con_cat = Carbon::now(); //test
         $tiempo_total_con_cat = $fecha_inicio_con_cat->diffForHumans($fecha_fin_con_cat); //test
         \Log::info("Proceso para consultar categorias de BD terminado, inicio ".$tiempo_total_con_cat); //test

@@ -5,23 +5,51 @@
         #mostrar, #destacar, #u_mostrar, #u_destacar, #en_stock, #u_en_stock {transform: scale(1.5);}
         #breadcrumb_inicio {color:black !important;}
         .page-link, .btn-perfil {color:inherit !important; text-decoration: underline !important;}
-        #pageloader  
-        {  
-        background: rgba( 255, 255, 255, 0.8 );  
-        display: none;  
-        height: 100%;  
-        position: fixed;  
-        width: 100%;  
-        z-index: 9999;  
-        }  
-        
-        #pageloader img  
-        {  
-        left: 50%;  
-        margin-left: -32px;  
-        margin-top: -32px;  
-        position: absolute;  
-        top: 50%;  
+        .button-submit-loader {
+            position: relative;
+            border: none;
+            outline: none;
+            border-radius: 2px;
+            cursor: pointer;
+        }
+        .btn-secondary:disabled,
+        .btn_secondary[disabled] {
+            opacity: 1;
+        }
+        .button__text {
+            color: #ffffff;
+            transition: all 0.2s;
+        }
+
+        .button--loading .button__text {
+            visibility: hidden;
+            opacity: 0;
+        }
+
+        .button--loading::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            border: 4px solid transparent;
+            border-top-color: #ffffff;
+            border-radius: 50%;
+            animation: button-loading-spinner 1s ease infinite;
+        }
+
+        @keyframes button-loading-spinner {
+            from {
+                transform: rotate(0turn);
+            }
+
+            to {
+                transform: rotate(1turn);
+            }
         }
     </style>
     <div class="content-wrapper">
@@ -55,14 +83,11 @@
                                 <h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
                                 </h3>
-                                <form action="{{ route('productos.synchronize') }}" method="POST" enctype="multipart/form-data" onSubmit="return confirm('El siguiente proceso puede tardar varios minutos y no puede ser interrumpido, ¿Está seguro que desea ejecutarlo?');" id="form_sincronizar_productos">
+                                <form action="{{ route('productos.synchronize') }}" method="POST" enctype="multipart/form-data" id="form_sincronizar_productos">
                                     @csrf
                                     <h3 class="card-title" style="margin-left: 20px;">
-                                        <button type="submit" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false" id="btn_sincronizar_productos"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Registros</button>
+                                        <button type="submit" class="btn btn-sm btn-secondary button-submit-loader" data-backdrop="static" data-keyboard="false" id="btn_sincronizar_productos"><span class="button__text"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Registros </span></button>
                                     </h3>
-                                    <div id="pageloader">  
-                                        <img src="http://cdnjs.cloudflare.com/ajax/libs/semantic-ui/0.16.1/images/loader-large.gif" alt="processing..." />  
-                                    </div> 
                                 </form>
                             </div>
                             @endcan
@@ -192,6 +217,19 @@
                       }
                     },
                 ]
+            });
+            /// Loader para Sincronizar
+            $('#form_sincronizar_productos').on('submit', function(){
+                var respuesta = confirm("El siguiente proceso puede tardar varios minutos y no puede ser interrumpido, ¿Está seguro que desea ejecutarlo?");
+                if(respuesta) {
+                    $('#btn_sincronizar_productos').attr('disabled', true);
+                    $('#btn_sincronizar_productos').addClass('button--loading');
+                    // this.classList.toggle('button--loading');
+                    // this.form.submit();
+                }else {
+                    // this.preventDefault();
+                    return false;
+                }
             });
             let oculto;
             ///Modal Edit
@@ -619,21 +657,21 @@
                             </div>
                             <div class="input-group">
                                 <label for="mostrar" style="vertical-align: middle;">Mostrar</label>
-                                <input type="checkbox" class="@error('mostrar') is-invalid @enderror" name="mostrar" id="mostrar" style="margin-left: 17px;" value="1" checked>
+                                <input type="checkbox" class="@error('mostrar') is-invalid @enderror" name="mostrar" id="mostrar" style="margin-left: 32px;" value="1" checked>
                                 @error('mostrar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="input-group">
                                 <label for="destacar" style="vertical-align: middle;">Destacar</label>
-                                <input type="checkbox" class="@error('destacar') is-invalid @enderror" name="destacar" id="destacar" style="margin-left: 10px;" value="1">
+                                <input type="checkbox" class="@error('destacar') is-invalid @enderror" name="destacar" id="destacar" style="margin-left: 25px;" value="1">
                                 @error('destacar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="input-group">
                                 <label for="en_stock" style="vertical-align: middle;">Disponible</label>
-                                <input type="checkbox" class="@error('en_stock') is-invalid @enderror" name="en_stock" id="en_stock" style="margin-left: 10px;" value="1">
+                                <input type="checkbox" class="@error('en_stock') is-invalid @enderror" name="en_stock" id="en_stock" style="margin-left: 11px;" value="1">
                                 @error('en_stock')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
@@ -784,21 +822,21 @@
                             </div>
                             <div class="input-group">
                                 <label for="u_mostrar">Mostrar</label>
-                                <input type="checkbox" class="@error('u_mostrar') is-invalid @enderror" name="u_mostrar" id="u_mostrar" style="margin-left: 17px;" value="{{ old('u_mostrar') }}">
+                                <input type="checkbox" class="@error('u_mostrar') is-invalid @enderror" name="u_mostrar" id="u_mostrar" style="margin-left: 32px;" value="{{ old('u_mostrar') }}">
                                 @error('u_mostrar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="input-group">
                                 <label for="u_destacar">Destacar</label>
-                                <input type="checkbox" class="@error('u_destacar') is-invalid @enderror" name="u_destacar" id="u_destacar" style="margin-left: 10px;" value="{{ old('u_destacar') }}">
+                                <input type="checkbox" class="@error('u_destacar') is-invalid @enderror" name="u_destacar" id="u_destacar" style="margin-left: 25px;" value="{{ old('u_destacar') }}">
                                 @error('u_destacar')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="input-group">
                                 <label for="u_en_stock">Disponible</label>
-                                <input type="checkbox" class="@error('u_en_stock') is-invalid @enderror" name="u_en_stock" id="u_en_stock" style="margin-left: 10px;" value="{{ old('u_en_stock') }}">
+                                <input type="checkbox" class="@error('u_en_stock') is-invalid @enderror" name="u_en_stock" id="u_en_stock" style="margin-left: 11px;" value="{{ old('u_en_stock') }}">
                                 @error('u_en_stock')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
