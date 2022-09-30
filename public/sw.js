@@ -22,6 +22,7 @@ const filesToCache = [
     '/storage/logo-gonzalito-blanco-1.png',
     '/storage/loading-orange.gif',
     '/storage/favicon.png',
+    '/admin/banner/show',
     '/storage/banners/gonzalo.png',
     '/storage/banners/gonzalo0.png',
     '/storage/banners/gonzalo1.png',
