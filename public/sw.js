@@ -10,6 +10,8 @@ self.addEventListener("install", function (event) {
 });
 
 const filesToCache = [
+    '/',
+    '/home',
     '/admin',
     '/admin/dashboard',
     '/admin/banner',
@@ -20,6 +22,12 @@ const filesToCache = [
     '/storage/logo-gonzalito-blanco-1.png',
     '/storage/loading-orange.gif',
     '/storage/favicon.png',
+    '/storage/banners/gonzalo.png',
+    '/storage/banners/gonzalo0.png',
+    '/storage/banners/gonzalo1.png',
+    '/storage/banners/gonzalo2.png',
+    '/storage/banners/gonzalo3.jpg',
+    '/storage/banners/gonzalo4.jpeg',
    /* "{!! asset(Setting::getValue('app_favicon')) !!}",*/
     "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback",
     "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css",
