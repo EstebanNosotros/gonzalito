@@ -134,16 +134,21 @@ class CategoriasController extends Controller
         //return count(json_decode($res,true));
         //dd($res);
         $categorias = json_decode($res, true);
-        $existe = null;
         foreach ($categorias as $categoria) {
+            $existe = null;
             $existe = Categoria::where('referencia', $categoria['id_categoria'])->first();
             if($existe == null) {
                 Categoria::create([
-                    'nombre'     => $categoria['nombre'],
-                    'referencia' => $categoria['id_categoria']
+                    'nombre'     => $categoria['nombre']
+                    ,'referencia' => $categoria['id_categoria']
+                    ,'mostrar'    => $categoria['estado'] == 'A' ? 1 : 0
                 ]);                    
+            }else {
+                $existe->update([
+                    'nombre'     => $categoria['nombre']
+                    ,'mostrar'    => $categoria['estado'] == 'A' ? 1 : 0
+                ]);
             }
-            $existe = null;
         }
         $totalCategorias = Categoria::count();
         return "Ahora hay ".$totalCategorias." categorias en el sistema <a href=\"".route('categorias.index')."\">Volver</a>";

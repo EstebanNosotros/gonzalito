@@ -349,6 +349,109 @@ class ProductosController extends Controller
             exit;
         }
         \Log::info('Proceso entero de sincronizacion de productos, Inicio');
+        $username              ='p4nt4L1to';
+        $password              ='305pr15mA';
+        $httpClient            = new \GuzzleHttp\Client();
+        $fecha_inicio_con_pro  = Carbon::now();
+        $req                   = $httpClient->get('http://190.128.136.242:7575/catalogserv/categorias/productos', ['auth' => [$username, $password]]);
+        $fecha_fin_con_pro     = Carbon::now(); //test
+        $tiempo_total_con_pro  = $fecha_inicio_con_pro->diffForHumans($fecha_fin_con_pro); //test
+        \Log::info("Proceso para consultar productos de BD de origen terminado, inicio ".$tiempo_total_con_pro); //test
+        $fecha_sincronizacion  = Carbon::now();
+        $res                   = $req->getBody();
+        $productos             = json_decode($res, true);
+        $contador_nuevos       = 0;
+        foreach ($productos as $producto) {
+            $existe           = null;
+            $fecha_inicio_con = Carbon::now(); //test
+            $existe           = Producto::where('referencia', $producto['id_producto'])->first();
+            $fecha_fin_con    = Carbon::now(); //test
+            $tiempo_total_con = $fecha_inicio_con->diffForHumans($fecha_fin_con); //test
+            \Log::info("Producto: ".$producto['nombre']." proceso para consultar sus datos terminado, inicio ".$tiempo_total_con); //test
+            if($existe == null) {
+                \Log::info('no existe se va a crear');
+                $fecha_inicio_con_cat = Carbon::now();
+                $categoria            = Categoria::where('referencia', $producto['id_categoria'])->first();
+                $fecha_fin_con_cat    = Carbon::now(); //test
+                $tiempo_total_con_cat = $fecha_inicio_con_cat->diffForHumans($fecha_fin_con_cat); //test
+                \Log::info("Proceso para consultar referencia de categoria de BD terminado, inicio ".$tiempo_total_con_cat); //test
+                if($categoria){
+                    $categoriaId       = $categoria->id; 
+                    $fecha_inicio_ins  = Carbon::now(); //test
+                    $producto_catalogo = Producto::create([
+                                                'nombre'                      => $producto['nombre']
+                                                ,'descripcion'                => $producto['descripcion']
+                                                ,'codigo'                     => $producto['id_producto']
+                                                ,'precio'                     => $producto['precio_contado']
+                                                ,'marca'                      => $producto['marca']
+                                                ,'categoria_id'               => $categoriaId
+                                                ,'referencia'                 => $producto['id_producto']
+                                                ,'en_stock'                   => $producto['disponible']
+                                                ,'ultima_sincronizacion'      => $fecha_sincronizacion
+                                                ,'cuotas'                     => json_encode($producto['precio_credito'], JSON_NUMERIC_CHECK)
+                                                ,'ultima_modificacion_origen' => $producto['ultima_mod']
+                                                ,'catalogo'                   => $producto['catalogo'] == 'S' ? 1 : 0 
+                                            ]);
+                    $fecha_fin_ins     = Carbon::now(); //test
+                    $tiempo_total_ins  = $fecha_inicio_ins->diffForHumans($fecha_fin_ins); //test
+                    $contador_nuevos++;
+                    \Log::info("Producto: ".$producto['nombre']." proceso para crearlo terminado, inicio ".$tiempo_total_ins); //test
+                }
+            } else {
+                /// Si queremos comparar las fechas antes de actualizar pero como
+                /// esto es algo que fuerza la actualizacion, omito esta parte.
+                /// (por ahora)
+                /// $b = Carbon::createFromFormat('Y-m-d h:i:s', $a->ultima_sincronizacion)->format('Y-m-d'); /// esto sera muy util... espero
+                /*$datetime1 = new DateTime($existe->ultima_sincronizacion);
+                $datetime2 = new DateTime($fecha_sincronizacion);
+                $interval = $datetime1->diff($datetime2);
+                $days = $interval->format('%a');
+                if(($existe->ultima_sincronizacion == null) || (intval($days) > 6) ) {
+
+                }*/
+                $fecha_inicio_con_cat = Carbon::now();
+                $categoria            = Categoria::where('referencia', $producto['id_categoria'])->first();
+                $fecha_fin_con_cat    = Carbon::now(); //test
+                $tiempo_total_con_cat = $fecha_inicio_con_cat->diffForHumans($fecha_fin_con_cat); //test
+                \Log::info("Proceso para consultar referencia de categoria de BD terminado, inicio ".$tiempo_total_con_cat); //test
+                if($categoria) {
+                    $categoriaId      = $categoria->id;
+                    $fecha_inicio_act = Carbon::now(); //test
+                    $existe->update([
+                        'nombre'                      => $producto['nombre']
+                        ,'descripcion'                => $producto['descripcion']
+                        //,'codigo'                   => $producto['id_producto']
+                        ,'precio'                     => $producto['precio_contado']
+                        ,'marca'                      => $producto['marca']
+                        ,'categoria_id'               => $categoriaId
+                        //,'referencia'               => $producto['id_producto']
+                        ,'en_stock'                   => $producto['disponible']
+                        ,'ultima_sincronizacion'      => $fecha_sincronizacion
+                        ,'cuotas'                     => $producto['precio_credito']
+                        ,'ultima_modificacion_origen' => $producto['ultima_mod']
+                        ,'catalogo'                   => $producto['catalogo'] == 'S' ? 1 : 0
+                    ]);
+                    $fecha_fin_act    = Carbon::now(); //test
+                    $tiempo_total_act = $fecha_inicio_act->diffForHumans($fecha_fin_act); //test
+                    \Log::info("Producto: ".$producto['nombre']." proceso para actualizarlo terminado, inicio ".$tiempo_total_act); //test
+                }
+            }
+            // $contador_productos++;
+        }
+        $totalProductos       = Producto::count();
+        $fecha_fin_proceso    = Carbon::now();
+        $tiempo_total_proceso = $fecha_sincronizacion->diffForHumans($fecha_fin_proceso);
+        \Log::info('Proceso entero de sincronizacion de productos, Fin');
+        return "Ahora hay ".$totalProductos." productos en el sistema, se insertaron ".$contador_nuevos." productos al sistema, el proceso se inició ".$tiempo_total_proceso." <a href=\"".route('productos.index')."\">Volver</a>";
+    }
+
+    //Synchronize Original por categorias (DEPRECADO)
+    public function synchronize_OLD()
+    {
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            exit;
+        }
+        \Log::info('Proceso entero de sincronizacion de productos, Inicio');
         $username             ='p4nt4L1to';
         $password             ='305pr15mA';
         $httpClient           = new \GuzzleHttp\Client();

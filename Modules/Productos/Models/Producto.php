@@ -29,6 +29,8 @@ class Producto extends Model
         ,'en_stock'
         ,'ultima_sincronizacion'
         ,'cuotas'
+        ,'ultima_modificacion_origen'
+        ,'catalogo'
     ];
 
     public function categoria()
