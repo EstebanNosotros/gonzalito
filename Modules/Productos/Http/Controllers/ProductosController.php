@@ -102,10 +102,11 @@ class ProductosController extends Controller
                            ->orWhereHas('categoria', function ($query) use($searchValue) {
                                         $query->where('nombre', 'like', '%' .$searchValue . '%');
                                     })
-                           ->select('productos.*', DB::raw("ROW_NUMBER() OVER (ORDER BY id ASC) AS iteration"))
+                           ->select('productos.*', DB::raw("@row_num:= @row_num + 1 AS iteration"))
                            ->skip($start)
                            ->take($rowperpage)
                            ->get();
+                           /// para cuando podamos poner los numeros de fila otra vez /// DB::raw("ROW_NUMBER() OVER (ORDER BY id ASC) AS iteration")
         //\Log::info($records);
         ## Add custom filter conditions
         /*if(!empty($searchCity)){
