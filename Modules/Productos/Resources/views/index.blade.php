@@ -189,7 +189,7 @@
             $('#mainTable').DataTable({
                 processing: true,
                 serverSide: true,
-                ajax: "{{route('getProductos')}}",
+                ajax: "{{ route('getProductos') }}",
                 columns: [
                     { data: 'iteration' },
                     { data: 'nombre' },
@@ -202,7 +202,7 @@
                     { data: 'destacar' },
                     { data: 'catalogo' },
                     { data: 'ultima_sincronizacion' },
-                    { data: null,
+                    { data: null ,
                       render: function ( data, type, row ) {
                         var field;
                         field = '<div class="btn-group">';
