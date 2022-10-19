@@ -2,7 +2,7 @@
 @section('content')
     <style>
         .select2-selection__choice__display{color:black;}
-        #mostrar, #destacar, #u_mostrar, #u_destacar, #en_stock, #u_en_stock {transform: scale(1.5);}
+        #mostrar, #destacar, #u_mostrar, #u_destacar, #en_stock, #u_en_stock, #en_catalogo, #u_catalogo {transform: scale(1.5);}
         #breadcrumb_inicio {color:black !important;}
         .page-link, .btn-perfil {color:inherit !important; text-decoration: underline !important;}
         .button-submit-loader {
@@ -111,7 +111,7 @@
                                             <th>Referencia</th>
                                             <th>Mostrar</th>
                                             <th>Destacar</th>
-                                            <!--th>Actualizado</th-->
+                                            <th>Cat&aacute;logo</th-->
                                             <th>Sincronizado</th>
                                             {{--@canany(['update productos', 'delete productos'])--}}
                                                 <th>Acciones</th>
@@ -200,6 +200,7 @@
                     { data: 'referencia' },
                     { data: 'mostrar' },
                     { data: 'destacar' },
+                    { data: 'catalogo' },
                     { data: 'ultima_sincronizacion' },
                     { data: null,
                       render: function ( data, type, row ) {
@@ -270,6 +271,13 @@
                         }else {
                             $('#u_en_stock').prop('checked', false);
                             $('#u_en_stock').val(1);
+                        }
+                        if (data.catalogo == 1) {
+                            $('#u_catalogo').prop('checked', true);
+                            $('#u_catalogo').val(1);
+                        }else {
+                            $('#u_catalogo').prop('checked', false);
+                            $('#u_catalogo').val(1);
                         }
                         $('#u_imagen_principal').val(data.imagen_principal);
                         $('#u_imagen_principal-image').attr('src', '{{ env("APP_URL") }}'+'/'+data.imagen_principal);
@@ -364,6 +372,11 @@
                         }else {
                             $('#s_en_stock').html('No');
                         }
+                        if (data.data.catalogo == 1) {
+                            $('#s_catalogo').html('Si');
+                        }else {
+                            $('#s_catalogo').html('No');
+                        }
                         $('#s_imagen_principal').attr('src', '{{ env("APP_URL") }}'+'/'+data.data.imagen_principal);
                         $('#s_imagen_principal').attr('alt', data.data.imagen_principal);
                         $('#s_referencia').html(data.data.referencia);
@@ -373,6 +386,8 @@
                         $('#s_marca').html(data.data.marca);
                         $('#s_categoria').html(data.data.categoria.nombre_web ? data.data.categoria.nombre_web : data.data.categoria.nombre);
                         $('#s_tags').html(data.data.tags);
+                        $('#s_ultima_modificacion_origen').html(data.data.ultima_modificacion_origen);
+                        $('#s_ultima_sincronizacion').html(data.data.ultima_sincronizacion);
 
                         ///Cuotas
                         $("#s_tabla_cuotas").find("tr").remove();
@@ -676,6 +691,13 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="input-group">
+                                <label for="catalogo" style="vertical-align: middle;">Cat&aacute;logo</label>
+                                <input type="checkbox" class="@error('catalogo') is-invalid @enderror" name="catalogo" id="en_stock" style="margin-left: 24px;" value="1">
+                                @error('catalogo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -841,6 +863,13 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="input-group">
+                                <label for="u_catalogo">Cat&aacute;logo</label>
+                                <input type="checkbox" class="@error('u_catalogo') is-invalid @enderror" name="u_catalogo" id="u_catalogo" style="margin-left: 24px;" value="{{ old('u_catalogo') }}">
+                                @error('u_catalogo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -996,6 +1025,30 @@
                                     </td>
                                     <td>
                                         <span id="s_en_stock"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Cat&aacute;logo: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_catalogo"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">&Uacute;ltima Modificaci&oacute;n en Origen: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_ultima_modificacion_origen"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">&Uacute;ltima Sincronizaci&oacute;n: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_ultima_sincronizacion"></span>
                                     </td>
                                 </tr>
                             </table>

@@ -134,6 +134,7 @@ class ProductosController extends Controller
             $referencia            = $record->referencia;
             $mostrar               = $record->mostrar;
             $destacar              = $record->destacar;
+            $catalogo              = $record->catalogo;
             $ultima_sincronizacion = $record->ultima_sincronizacion;
             $id                    = $record->id;
 
@@ -147,6 +148,7 @@ class ProductosController extends Controller
                 "referencia"            => $referencia,
                 "mostrar"               => $mostrar,
                 "destacar"              => $destacar,
+                "catalogo"              => $catalogo,
                 "ultima_sincronizacion" => $ultima_sincronizacion,
                 "id"                    => $id,
             );
@@ -185,6 +187,7 @@ class ProductosController extends Controller
             ,'mostrar'                => ['sometimes', 'boolean']
             ,'destacar'               => ['sometimes', 'boolean']
             ,'en_stock'               => ['sometimes', 'boolean']
+            ,'catalogo'               => ['sometimes', 'boolean']
         ]);
         if ($validator->fails()) {
             return back()->withErrors($validator)
@@ -224,6 +227,7 @@ class ProductosController extends Controller
                 ,'mostrar'                => ($request->mostrar ? $request->mostrar : false)
                 ,'destacar'               => ($request->destacar ? $request->destacar : false)
                 ,'en_stock'               => ($request->en_stock ? $request->en_stock : false)
+                ,'catalogo'               => ($request->catalogo ? $request->catalogo : false)
                 ,'cuotas'                 => json_encode($cuotas, JSON_NUMERIC_CHECK)
             ]);
             Alert::success('Aviso', 'Dato <b>' . $producto->nombre . '</b> registrado correctamente')->toToast()->toHtml();
@@ -265,6 +269,7 @@ class ProductosController extends Controller
             ,'u_mostrar'                => ['sometimes', 'boolean']
             ,'u_destacar'               => ['sometimes', 'boolean']
             ,'u_en_stock'               => ['sometimes', 'boolean']
+            ,'u_catalogo'               => ['sometimes', 'boolean']
         ]);
         if ($validator->fails()) {
             return back()->withErrors($validator)
@@ -308,6 +313,7 @@ class ProductosController extends Controller
                 ,'mostrar'                => ($request->u_mostrar ? $request->u_mostrar : false)
                 ,'destacar'               => ($request->u_destacar ? $request->u_destacar : false)
                 ,'en_stock'               => ($request->u_en_stock ? $request->u_en_stock : false)
+                ,'catalogo'               => ($request->u_catalogo ? $request->u_catalogo : false)
                 ,'cuotas'                 => json_encode($cuotas, JSON_NUMERIC_CHECK)
             ]);
 
