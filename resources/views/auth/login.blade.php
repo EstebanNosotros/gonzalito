@@ -4,7 +4,7 @@
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Iniciar Sesión - {{ ENV('APP_NAME') }}</title>
-        <link rel="icon" href="{{ asset('favicon.png') }}" type="image/png" />
+        <link rel="icon" href="{{ asset('/storage/favicon.png') }}" type="image/png" />
         <!-- Google Font: Source Sans Pro -->
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
         <!-- Font Awesome -->
@@ -13,9 +13,17 @@
         <link rel="stylesheet" href="{{ asset('template/admin/plugins/icheck-bootstrap/icheck-bootstrap.min.css') }}">
         <!-- Theme style -->
         <link rel="stylesheet" href="{{ asset('template/admin/dist/css/adminlte.min.css') }}">
+
+        <link rel="stylesheet" href="{{ asset('css/bootstrap.min.css') }}">
+        <link rel="stylesheet" href="{{ asset('css/main.min.css') }}">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+
+        <script src="{{ asset('js/jquery-3.6.1.min.js') }}"></script>
+        <script src="{{ asset('js/bootstrap.min.js') }}"></script>
+        <script src="{{ asset('js/slick.min.js') }}"></script>
         {!! htmlScriptTagJsApi() !!}
     </head>
-    <body class="hold-transition login-page">
+ {{--   <body class="hold-transition login-page">
         @php
             if (!$errors->isEmpty()) {
                 alert()->error('Aviso', implode('<br>', $errors->all()))->toToast()->toHtml();
@@ -107,7 +115,7 @@
                                     "error-callback" => "errorCallbackFunction",
                                 ]) !!}
                             </div>
-                        </div> --}}
+                        </div> --}-}
                         <div class="row">
                             <!--div class="col-8">
                                 <div class="icheck-primary">
@@ -130,6 +138,74 @@
             </div>
             <!-- /.card -->
         </div>
+        @include('sweetalert::alert')
+        <!-- /.login-box -->
+        <!-- jQuery -->
+        <script src="{{ asset('template/admin/plugins/jquery/jquery.min.js') }}"></script>
+        <!-- Bootstrap 4 -->
+        <script src="{{ asset('template/admin/plugins/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+        <!-- AdminLTE App -->
+        <script src="{{ asset('template/admin/dist/js/adminlte.js') }}"></script>
+    </body> --}}
+    <body>
+        @if(Session::has('success'))
+            <div class="alert alert-success">
+                {{Session::get('success')}}
+            </div>
+        @endif
+        @if(Session::has('fail'))
+            <div class="alert alert-danger">
+            {{Session::get('fail')}}
+            </div>
+        @endif
+        <main role="main" class="container-fluid" id="login">
+            <div class="wrapper">
+                <div class="logo">
+                    <img src="{{ asset('img/Logo-login.svg') }}" alt="Logo Gonzalito">
+                </div>
+                <div class="form-wrap">
+                    <h1>Bienvenido</h1>
+                    <p>Ingresá tus datos para acceder al catálogo</p>
+        
+                    <form method="POST" action="{{ route('login') }}">
+                        @csrf
+                        <div class="form-group">
+                            <label for="email">Correo Electr&oacute;nico</label>
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><img src="{{ asset('img/person.svg') }}"></div>
+                                </div>
+                                <input type="text" class="form-control" id="email" name="email" autofocus>
+                            </div>
+                            <div>
+                                @if ($errors->has('email'))
+                                    <span class="text-danger">{{ $errors->first('email') }}</span>
+                                @endif
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="password">Password</label>
+        
+                            <div class="input-group">
+                                <div class="input-group-prepend">
+                                    <div class="input-group-text"><img src="{{ asset('img/key.svg') }}"></div>
+                                </div>
+                                <input type="password" class="form-control" id="password" name="password">
+                            </div>
+                            <div>
+                                @if ($errors->has('password'))
+                                    <span class="text-danger">{{ $errors->first('password') }}</span>
+                                @endif
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-4" >Ingresar</button>
+                    </form>
+                </div>
+            </div>
+    
+    
+        </main><!-- /.container -->
+        <div class="footer-line"></div>
         @include('sweetalert::alert')
         <!-- /.login-box -->
         <!-- jQuery -->
