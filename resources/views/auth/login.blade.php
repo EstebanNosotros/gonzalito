@@ -74,10 +74,10 @@
                 <div class="card-body">
                     <form method="POST" id="#recaptcha-form" action="{{ route('login') }}">
                         @csrf
-                        <label>C&eacute;dula de Identidad</label>
+                        <label>Correo Electr&oacute;nico</label>
                         <div class="input-group mb-3 username">
-                            <i class="fa fa-user icon"></i>
-                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="     C&eacute;dula">
+                            <!--i class="fa fa-user icon"></i-->
+                            <input id="email" type="email" class="form-control @error('email') is-invalid @enderror" name="email" value="{{ old('email') }}" required autocomplete="email" autofocus placeholder="     Correo Electr&oacute;nico">
                             @error('email')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>
@@ -87,7 +87,7 @@
                         </div>
                         <label>Contrase&ntilde;a</label><br/>
                         <div class="input-group mb-3 password">
-                            <i class="fa fa-lock icon"></i>
+                            <!--i class="fa fa-lock icon"></i-->
                             <input id="password" type="password" class="form-control @error('password') is-invalid @enderror" name="password" required autocomplete="current-password" placeholder=" Contrase&ntilde;a">
                             @error('password')
                                 <span class="invalid-feedback" role="alert">
