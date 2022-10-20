@@ -159,47 +159,49 @@
             </div>
         @endif
         <main role="main" class="container-fluid" id="login">
-            <div class="wrapper">
-                <div class="logo">
-                    <img src="{{ asset('img/Logo-login.svg') }}" alt="Logo Gonzalito">
-                </div>
-                <div class="form-wrap">
-                    <h1>Bienvenido</h1>
-                    <p>Ingresá tus datos para acceder al catálogo</p>
-        
-                    <form method="POST" action="{{ route('login') }}">
-                        @csrf
-                        <div class="form-group">
-                            <label for="email">Correo Electr&oacute;nico</label>
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text"><img src="{{ asset('img/person.svg') }}"></div>
+            <div class="wrapper d-flex align-items-center">
+                <div>                    
+                    <div class="logo">
+                        <img src="{{ asset('img/Logo-login.svg') }}" alt="Logo Gonzalito">
+                    </div>
+                    <div class="form-wrap">
+                        <h1>Bienvenido</h1>
+                        <p>Ingresá tus datos para acceder al catálogo</p>
+            
+                        <form method="POST" action="{{ route('login') }}">
+                            @csrf
+                            <div class="form-group">
+                                <label for="email">Correo Electr&oacute;nico</label>
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{{ asset('img/person.svg') }}"></div>
+                                    </div>
+                                    <input type="text" class="form-control" id="email" name="email" autofocus>
                                 </div>
-                                <input type="text" class="form-control" id="email" name="email" autofocus>
-                            </div>
-                            <div>
-                                @if ($errors->has('email'))
-                                    <span class="text-danger">{{ $errors->first('email') }}</span>
-                                @endif
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="password">Password</label>
-        
-                            <div class="input-group">
-                                <div class="input-group-prepend">
-                                    <div class="input-group-text"><img src="{{ asset('img/key.svg') }}"></div>
+                                <div>
+                                    @if ($errors->has('email'))
+                                        <span class="text-danger">{{ $errors->first('email') }}</span>
+                                    @endif
                                 </div>
-                                <input type="password" class="form-control" id="password" name="password">
                             </div>
-                            <div>
-                                @if ($errors->has('password'))
-                                    <span class="text-danger">{{ $errors->first('password') }}</span>
-                                @endif
+                            <div class="form-group">
+                            <label for="password">Contraseña</label>
+            
+                                <div class="input-group">
+                                    <div class="input-group-prepend">
+                                        <div class="input-group-text"><img src="{{ asset('img/lock-icon.svg') }}"></div>
+                                    </div>
+                                    <input type="password" class="form-control" id="password" name="password">
+                                </div>
+                                <div>
+                                    @if ($errors->has('password'))
+                                        <span class="text-danger">{{ $errors->first('password') }}</span>
+                                    @endif
+                                </div>
                             </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 mt-4" >Ingresar</button>
-                    </form>
+                            <button type="submit" class="btn btn-primary w-100 mt-4" >Ingresar</button>
+                        </form>
+                    </div>
                 </div>
             </div>
     
