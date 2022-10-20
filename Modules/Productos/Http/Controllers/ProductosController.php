@@ -128,8 +128,8 @@ class ProductosController extends Controller
             $iteration             = $record->iteration;
             $nombre                = $record->nombre;
             $nombre_web            = $record->nombre_web;
-            $codigo                = $record->codigo;
-            $marca                 = $record->marca;
+            /*$codigo                = $record->codigo;
+            $marca                 = $record->marca;*/
             $categoria             = $record->categoria->nombre_web ? $record->categoria->nombre_web : $record->categoria->nombre;
             $referencia            = $record->referencia;
             $mostrar               = $record->mostrar;
@@ -142,8 +142,8 @@ class ProductosController extends Controller
                 "iteration"             => $iteration,
                 "nombre"                => $nombre,
                 "nombre_web"            => $nombre_web,
-                "codigo"                => $codigo,
-                "marca"                 => $marca,
+               /* "codigo"                => $codigo,
+                "marca"                 => $marca, */
                 "categoria"             => $categoria,
                 "referencia"            => $referencia,
                 "mostrar"               => $mostrar,
@@ -355,7 +355,7 @@ class ProductosController extends Controller
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             exit;
         }
-        \Log::info('Proceso entero de sincronizacion de productos, Inicio');
+        Log::info('Proceso entero de sincronizacion de productos, Inicio');
         $username              ='p4nt4L1to';
         $password              ='305pr15mA';
         $httpClient            = new \GuzzleHttp\Client();
@@ -363,7 +363,7 @@ class ProductosController extends Controller
         $req                   = $httpClient->get('http://190.128.136.242:7575/catalogserv/categorias/productos', ['auth' => [$username, $password]]);
         $fecha_fin_con_pro     = Carbon::now(); //test
         $tiempo_total_con_pro  = $fecha_inicio_con_pro->diffForHumans($fecha_fin_con_pro); //test
-        \Log::info("Proceso para consultar productos de BD de origen terminado, inicio ".$tiempo_total_con_pro); //test
+        Log::info("Proceso para consultar productos de BD de origen terminado, inicio ".$tiempo_total_con_pro); //test
         $fecha_sincronizacion  = Carbon::now();
         $res                   = $req->getBody();
         $productos             = json_decode($res, true);
@@ -374,14 +374,14 @@ class ProductosController extends Controller
             $existe           = Producto::where('referencia', $producto['id_producto'])->first();
             $fecha_fin_con    = Carbon::now(); //test
             $tiempo_total_con = $fecha_inicio_con->diffForHumans($fecha_fin_con); //test
-            \Log::info("Producto: ".$producto['nombre']." proceso para consultar sus datos terminado, inicio ".$tiempo_total_con); //test
+            Log::info("Producto: ".$producto['nombre']." proceso para consultar sus datos terminado, inicio ".$tiempo_total_con); //test
             if($existe == null) {
-                \Log::info('no existe se va a crear');
+                Log::info('no existe se va a crear');
                 $fecha_inicio_con_cat = Carbon::now();
                 $categoria            = Categoria::where('referencia', $producto['id_categoria'])->first();
                 $fecha_fin_con_cat    = Carbon::now(); //test
                 $tiempo_total_con_cat = $fecha_inicio_con_cat->diffForHumans($fecha_fin_con_cat); //test
-                \Log::info("Proceso para consultar referencia de categoria de BD terminado, inicio ".$tiempo_total_con_cat); //test
+                Log::info("Proceso para consultar referencia de categoria de BD terminado, inicio ".$tiempo_total_con_cat); //test
                 if($categoria){
                     $categoriaId       = $categoria->id; 
                     $fecha_inicio_ins  = Carbon::now(); //test
@@ -402,7 +402,7 @@ class ProductosController extends Controller
                     $fecha_fin_ins     = Carbon::now(); //test
                     $tiempo_total_ins  = $fecha_inicio_ins->diffForHumans($fecha_fin_ins); //test
                     $contador_nuevos++;
-                    \Log::info("Producto: ".$producto['nombre']." proceso para crearlo terminado, inicio ".$tiempo_total_ins); //test
+                    Log::info("Producto: ".$producto['nombre']." proceso para crearlo terminado, inicio ".$tiempo_total_ins); //test
                 }
             } else {
                 /// Si queremos comparar las fechas antes de actualizar pero como
@@ -420,7 +420,7 @@ class ProductosController extends Controller
                 $categoria            = Categoria::where('referencia', $producto['id_categoria'])->first();
                 $fecha_fin_con_cat    = Carbon::now(); //test
                 $tiempo_total_con_cat = $fecha_inicio_con_cat->diffForHumans($fecha_fin_con_cat); //test
-                \Log::info("Proceso para consultar referencia de categoria de BD terminado, inicio ".$tiempo_total_con_cat); //test
+                Log::info("Proceso para consultar referencia de categoria de BD terminado, inicio ".$tiempo_total_con_cat); //test
                 if($categoria) {
                     $categoriaId      = $categoria->id;
                     $fecha_inicio_act = Carbon::now(); //test
@@ -440,7 +440,7 @@ class ProductosController extends Controller
                     ]);
                     $fecha_fin_act    = Carbon::now(); //test
                     $tiempo_total_act = $fecha_inicio_act->diffForHumans($fecha_fin_act); //test
-                    \Log::info("Producto: ".$producto['nombre']." proceso para actualizarlo terminado, inicio ".$tiempo_total_act); //test
+                    Log::info("Producto: ".$producto['nombre']." proceso para actualizarlo terminado, inicio ".$tiempo_total_act); //test
                 }
             }
             // $contador_productos++;
@@ -448,7 +448,7 @@ class ProductosController extends Controller
         $totalProductos       = Producto::count();
         $fecha_fin_proceso    = Carbon::now();
         $tiempo_total_proceso = $fecha_sincronizacion->diffForHumans($fecha_fin_proceso);
-        \Log::info('Proceso entero de sincronizacion de productos, Fin');
+        Log::info('Proceso entero de sincronizacion de productos, Fin');
         return "Ahora hay ".$totalProductos." productos en el sistema, se insertaron ".$contador_nuevos." productos al sistema, el proceso se inició ".$tiempo_total_proceso." <a href=\"".route('productos.index')."\">Volver</a>";
     }
 
@@ -458,7 +458,7 @@ class ProductosController extends Controller
         if ($_SERVER['REQUEST_METHOD'] != 'POST') {
             exit;
         }
-        \Log::info('Proceso entero de sincronizacion de productos, Inicio');
+        Log::info('Proceso entero de sincronizacion de productos, Inicio');
         $username             ='p4nt4L1to';
         $password             ='305pr15mA';
         $httpClient           = new \GuzzleHttp\Client();
@@ -466,7 +466,7 @@ class ProductosController extends Controller
         $categorias           = Categoria::where('referencia', '003')->get();
         $fecha_fin_con_cat = Carbon::now(); //test
         $tiempo_total_con_cat = $fecha_inicio_con_cat->diffForHumans($fecha_fin_con_cat); //test
-        \Log::info("Proceso para consultar categorias de BD terminado, inicio ".$tiempo_total_con_cat); //test
+        Log::info("Proceso para consultar categorias de BD terminado, inicio ".$tiempo_total_con_cat); //test
         $contador_categorias  = 0;
         $fecha_sincronizacion = Carbon::now();
         foreach ($categorias as $categoria) {
@@ -474,7 +474,7 @@ class ProductosController extends Controller
             $req                = $httpClient->get('http://190.128.136.242:7575/catalogserv/categorias/productos/'.$categoria->referencia, ['auth' => [$username, $password]]);
             $fecha_fin_req = Carbon::now(); //test
             $tiempo_total_req = $fecha_inicio_cat->diffForHumans($fecha_fin_req); //test
-            \Log::info("Categoria: ".$categoria->nombre." proceso para consultar sus datos terminado, inicio ".$tiempo_total_req); //test
+            Log::info("Categoria: ".$categoria->nombre." proceso para consultar sus datos terminado, inicio ".$tiempo_total_req); //test
             $res                = $req->getBody();
             $productos          = json_decode($res, true);
             $contador_productos = 0;
@@ -484,9 +484,9 @@ class ProductosController extends Controller
                 $existe = Producto::where('referencia', $producto['id_producto'])->first();
                 $fecha_fin_con = Carbon::now(); //test
                 $tiempo_total_con = $fecha_inicio_con->diffForHumans($fecha_fin_con); //test
-                \Log::info("Producto: ".$producto['nombre']." proceso para consultar sus datos terminado, inicio ".$tiempo_total_con); //test
+                Log::info("Producto: ".$producto['nombre']." proceso para consultar sus datos terminado, inicio ".$tiempo_total_con); //test
                 if($existe == null) {
-                    \Log::info('no existe se va a crear');
+                    Log::info('no existe se va a crear');
                     $fecha_inicio_ins = Carbon::now(); //test
                     $producto_catalogo = Producto::create([
                                              'nombre'                 => $producto['nombre']
@@ -502,7 +502,7 @@ class ProductosController extends Controller
                                          ]);
                     $fecha_fin_ins = Carbon::now(); //test
                     $tiempo_total_ins = $fecha_inicio_ins->diffForHumans($fecha_fin_ins); //test
-                    \Log::info("Producto: ".$producto['nombre']." proceso para crearlo terminado, inicio ".$tiempo_total_ins); //test
+                    Log::info("Producto: ".$producto['nombre']." proceso para crearlo terminado, inicio ".$tiempo_total_ins); //test
                     /*$fecha_inicio_cuo = Carbon::now(); //test
                     foreach ($producto['precio_credito'] as $cuota) {
                         $fecha_inicio_ins_cuo = Carbon::now(); //test
@@ -544,7 +544,7 @@ class ProductosController extends Controller
                     ]);
                     $fecha_fin_act = Carbon::now(); //test
                     $tiempo_total_act = $fecha_inicio_act->diffForHumans($fecha_fin_act); //test
-                    \Log::info("Producto: ".$producto['nombre']." proceso para actualizarlo terminado, inicio ".$tiempo_total_act); //test
+                    Log::info("Producto: ".$producto['nombre']." proceso para actualizarlo terminado, inicio ".$tiempo_total_act); //test
                     ///Cuotas
                     /*$fecha_inicio_bor_cuo = Carbon::now(); //test
                     $cuotas = $existe->cuotas;
@@ -567,12 +567,12 @@ class ProductosController extends Controller
             $fecha_fin_cat = Carbon::now();
             $tiempo_total_cat = $fecha_inicio_cat->diffForHumans($fecha_fin_cat);
             $contador_categorias++;
-            \Log::info("Categoria: ".$categoria->nombre." terminada, ".$contador_productos." productos relacionados a la misma y procesados. ".$contador_categorias." categorias procesadas, este proceso se inicio ".$tiempo_total_cat);
+            Log::info("Categoria: ".$categoria->nombre." terminada, ".$contador_productos." productos relacionados a la misma y procesados. ".$contador_categorias." categorias procesadas, este proceso se inicio ".$tiempo_total_cat);
         }
         $totalProductos = Producto::count();
         $fecha_fin_proceso = Carbon::now();
         $tiempo_total_proceso = $fecha_sincronizacion->diffForHumans($fecha_fin_proceso);
-        \Log::info('Proceso entero de sincronizacion de productos, Fin');
+        Log::info('Proceso entero de sincronizacion de productos, Fin');
         return "Ahora hay ".$totalProductos." productos en el sistema, el proceso se inició ".$tiempo_total_proceso." <a href=\"".route('productos.index')."\">Volver</a>";
 
     }
