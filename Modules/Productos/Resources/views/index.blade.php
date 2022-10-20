@@ -100,9 +100,9 @@
                                             <th>Nombre</th>
                                             <th>Nombre Web</th>
                                             <!--th>Descripción</th-->
-                                            <th>Código</th>
+                                            <!--th>Código</th-->
                                             <!--th>Precio</th-->
-                                            <th>Marca</th>
+                                            <!--th>Marca</th-->
                                             <th>Categoría</th>
                                             <!--th>Tags</th>
                                             <th>Imagen Principal</th>
@@ -194,8 +194,8 @@
                     { data: 'iteration' },
                     { data: 'nombre' },
                     { data: 'nombre_web' },
-                    { data: 'codigo' },
-                    { data: 'marca' },
+                    /*{ data: 'codigo' },
+                    { data: 'marca' },*/
                     { data: 'categoria' },
                     { data: 'referencia' },
                     { data: 'mostrar' },
