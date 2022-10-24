@@ -21,7 +21,7 @@ class ProductosController extends Controller
      */
     public function index()
     {
-        $productos = Producto::with(['categoria'])->get();
+        $productos = Producto::with(['categoria', 'imagenes'])->get();
      
         return response()->json([
             "success" => true,
@@ -96,7 +96,7 @@ class ProductosController extends Controller
      */
     public function show($id)
     {
-        $producto = Producto::with(['categoria'])->find($id);
+        $producto = Producto::with(['categoria', 'imagenes'])->find($id);
    
         if (is_null($producto)) {
             //return $this->sendError('Producto no encontrado.');
