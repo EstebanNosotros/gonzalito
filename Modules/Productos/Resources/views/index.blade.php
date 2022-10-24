@@ -51,6 +51,10 @@
                 transform: rotate(1turn);
             }
         }
+
+        .galleryShowImage {
+            max-width: 100%;
+        }
     </style>
     <div class="content-wrapper">
         <!-- Content Header (Page header) -->
@@ -316,6 +320,36 @@
                         $('#actualizar_cuotas_indice').attr('value', i);
                         $('#actualizar_cuotas_tope').attr('value', i);
 
+                        ///Imagenes
+                        $("#u_tabla_imagenes").find("tr:not(:first)").remove();
+                        var i = 0;
+                        if(data.imagenes != null) {
+                            $('#u_tabla_imagenes').css('display', 'block');
+                            data.imagenes.forEach(recorreImagenes);
+                            function recorreImagenes(item) {
+                                i++;
+                                var fila = '<tr id="u_imagen'+i+'"><td style="max-width: 500px;"><input type="hidden" id="actualizar_imagenes_id'+i+'" name="actualizar_imagenes_id'+i+'" value="'+item.id+'"><img src="{{ env("APP_URL") }}'+'/'+item.imagen+'" alt="'+item.imagen+'" id="actualizar_imagenes_imagen'+i+'-image" name="actualizar_imagenes_imagen'+i+'-image" width="8%"><input type="text" class="form-control" id="actualizar_imagenes_imagen'+i+'" name="actualizar_imagenes_imagen'+i+'" value="'+item.imagen+'" readonly required></td><td><small><button type="button" id="btn_u_eliminar_imagen'+i+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Imagen</small></td></tr>';
+                                $('#u_tabla_imagenes tbody').append(fila);
+                                $('#btn_u_eliminar_imagen'+i).click(function() {
+                                    $('#actualizar_imagenes_indice').attr('value', parseInt($('#actualizar_imagenes_indice').attr('value')) - 1);
+                                    $(this).parent().parent().parent().remove();
+                                    var count = $("#u_tabla_imagenes > tbody > tr").length;
+                                    if (count < 1) {
+                                        $('#u_tabla_imagenes').css('display', 'none');
+                                    } 
+                                });
+                                $(document).on("click", '#actualizar_imagenes_imagen'+i, function(event) {
+                                    event.preventDefault();
+                                    inputId = '#'+event.target.id;
+                                    window.open('/file-manager/fm-button', 'fm', 'width=800,height=600');
+                                });
+                            }
+                        }else {
+                            $('#u_tabla_cuotas').css('display', 'none');
+                        }
+                        $('#actualizar_imagenes_indice').attr('value', i);
+                        $('#actualizar_imagenes_tope').attr('value', i);
+
                         if(data.productos_relacionados != null) {
                             var productos_relacionados_data = data.productos_relacionados;
                             var productos_relacionados_array = productos_relacionados_data.split(",");
@@ -411,6 +445,16 @@
                             $('#s_productos_relacionados').html(data.data.productos_relacionados);
                         }
 
+                        if(data.data.imagenes) {
+                            $('#s_celda_galeria').html('');
+                            var imagenes = '';
+                            data.data.imagenes.forEach(recorreImagenes);
+                            function recorreImagenes(item) {
+                                imagenes += '<img class="galleryShowImage" src="{{ env('APP_URL') }}'+'/'+item.imagen+'" alt="'+item.imagen+'"><br/>';
+                            }
+                            $('#s_celda_galeria').html(imagenes);
+                        }
+
                         $('#modal-loading').modal('hide');
                         $('#modal-show').modal({backdrop: 'static', keyboard: false, show: true});
                     },
@@ -489,6 +533,36 @@
                 });
             });
 
+            //Galeria Nuevo
+            function eliminar_imagen(imagen) {
+                $('#crear_imagenes_indice').attr('value', parseInt($('#crear_imagenes_indice').attr('value')) - 1);
+                $('#imagen'+imagen).remove();
+            }
+
+            $('#btn_agregar_imagen').click(function(){
+                $('#tabla_imagenes').css('display', 'block');
+                $('#crear_imagenes_indice').attr('value', parseInt($('#crear_imagenes_indice').attr('value',)) + 1);
+                $('#crear_imagenes_tope').attr('value', parseInt($('#crear_imagenes_tope').attr('value')) + 1);
+                //alert($('#crear_imagenes_tope').attr('value'));
+                var fila = '<tr id="imagen'+$('#crear_imagenes_tope').val()+'"><td style="max-width: 500px;"><img src="" alt="" id="crear_imagenes_imagen'+$('#crear_imagenes_tope').val()+'-image" name="crear_imagenes_imagen'+$('#crear_imagenes_tope').val()+'-image" width="8%"><input type="text" class="form-control" id="crear_imagenes_imagen'+$('#crear_imagenes_tope').val()+'" name="crear_imagenes_imagen'+$('#crear_imagenes_tope').val()+'" readonly required></td><td><small><button type="button" id="btn_eliminar_imagen'+$('#crear_imagenes_tope').val()+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Imagen</small></td></tr>';
+                $('#tabla_imagenes tbody').append(fila);
+                //alert('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val());
+                //$('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val()).on('click', eliminar_cuota($('#crear_cuotas_tope').val()));
+                $('#btn_eliminar_imagen'+$('#crear_imagenes_tope').val()).click(function() {
+                    $('#crear_imagenes_indice').attr('value', parseInt($('#crear_imagenes_indice').attr('value')) - 1);
+                    $(this).parent().parent().parent().remove();
+                    var count = $("#tabla_imagenes > tbody > tr").length;
+                    if (count < 1) {
+                        $('#tabla_imagenes').css('display', 'none');
+                    } 
+                });
+                $(document).on("click", '#crear_imagenes_imagen'+$('#crear_imagenes_tope').val(), function(event) {
+                    event.preventDefault();
+                    inputId = '#'+event.target.id;
+                    window.open('/file-manager/fm-button', 'fm', 'width=800,height=600');
+                });
+            });
+
             //Cuotas Actualizar
             function u_eliminar_cuota(cuota) {
                 $('#actualizar_cuotas_indice').attr('value', parseInt($('#actualizar_cuotas_indice').attr('value')) - 1);
@@ -510,6 +584,35 @@
                     if (count < 1) {
                         $('#u_tabla_cuotas').css('display', 'none');
                     } 
+                });
+            });
+
+            //Galeria Actualizar
+            function u_eliminar_imagen(imagen) {
+                $('#actualizar_imagenes_indice').attr('value', parseInt($('#actualizar_imagenes_indice').attr('value')) - 1);
+                $('#u_imagen'+imagen).remove();
+            }
+
+            $('#btn_u_agregar_imagen').click(function(){
+                $('#u_tabla_imagenes').css('display', 'block');
+                $('#actualizar_imagenes_indice').attr('value', parseInt($('#actualizar_imagenes_indice').attr('value',)) + 1);
+                $('#actualizar_imagenes_tope').attr('value', parseInt($('#actualizar_imagenes_tope').attr('value')) + 1);
+                var fila = '<tr id="u_imagen'+$('#actualizar_imagenes_tope').val()+'"><td style="max-width: 500px;"><input type="hidden" class="form-control" id="actualizar_imagenes_id'+$('#actualizar_imagenes_tope').val()+'" name="actualizar_imagenes_id'+$('#actualizar_imagenes_tope').val()+'"><img src="" alt="" id="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'-image" name="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'-image" width="8%"><input type="text" class="form-control" id="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'" name="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'" readonly required></td><td><small><button type="button" id="btn_u_eliminar_imagen'+$('#actualizar_imagenes_tope').val()+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Imagen</small></td></tr>';
+                $('#u_tabla_imagenes tbody').append(fila);
+                //alert('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val());
+                //$('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val()).on('click', eliminar_cuota($('#crear_cuotas_tope').val()));
+                $('#btn_u_eliminar_imagen'+$('#actualizar_imagenes_tope').val()).click(function() {
+                    $('#actualizar_imagenes_indice').attr('value', parseInt($('#actualizar_imagenes_indice').attr('value')) - 1);
+                    $(this).parent().parent().parent().remove();
+                    var count = $("#u_tabla_imagenes > tbody > tr").length;
+                    if (count < 1) {
+                        $('#u_tabla_imagenes').css('display', 'none');
+                    } 
+                });
+                $(document).on("click", '#actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val(), function(event) {
+                    event.preventDefault();
+                    inputId = '#'+event.target.id;
+                    window.open('/file-manager/fm-button', 'fm', 'width=800,height=600');
                 });
             });
 
@@ -635,6 +738,19 @@
                                 </div>
                                 <small class="text-primary">Click para cargar desde archivo</small>
                             </div>
+                            <label>Galer&iacute;a <small style="margin-left: 10px;"><button type="button" id="btn_agregar_imagen" style="background-color: darkgreen; color: white; border-radius:50%;"><i class="fas fa-plus"></i></button>Agregar Imagen</small></label>
+                            <div class="input-group">
+                                <table id="tabla_imagenes" style="display: none;">
+                                    <thead id="thead_imagenes">
+                                      <tr>
+                                        <th>Imagen</th>
+                                        <th></th>
+                                      </tr>
+                                    </thead>
+                                    <tbody id="tbody_imagenes">
+                                    </tbody>
+                                </table>
+                            </div>
                             <label>Cuotas <small style="margin-left: 10px;"><button type="button" id="btn_agregar_cuota" style="background-color: darkgreen; color: white; border-radius:50%;"><i class="fas fa-plus"></i></button>Agregar Cuota</small></label>
                             <div class="input-group">
                                 <table id="tabla_cuotas" style="display: none;">
@@ -703,6 +819,8 @@
                 <div class="modal-footer justify-content-between">
                     <input type="hidden" id="crear_cuotas_indice" name="crear_cuotas_indice" value="0">
                     <input type="hidden" id="crear_cuotas_tope" name="crear_cuotas_tope" value="0">
+                    <input type="hidden" id="crear_imagenes_indice" name="crear_imagenes_indice" value="0">
+                    <input type="hidden" id="crear_imagenes_tope" name="crear_imagenes_tope" value="0">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
                 </div>
@@ -809,6 +927,17 @@
                                 </div>
                                 <small class="text-primary">Click para cargar desde archivo</small>
                             </div>
+                            <label>Galer&iacute;a <small style="margin-left: 10px;"><button type="button" id="btn_u_agregar_imagen" style="background-color: darkgreen; color: white; border-radius:50%;"><i class="fas fa-plus"></i></button>Agregar Imagen</small></label>
+                            <div class="input-group">
+                                <table id="u_tabla_imagenes" style="display: none;">
+                                    <thead id="u_thead_imagenes">
+                                        <th>Imagen</th>
+                                        <th></th>
+                                    </thead>
+                                    <tbody id="u_tbody_imagenes">
+                                    </tbody>
+                                </table>
+                            </div>
                             <label>Cuotas <small style="margin-left: 10px;"><button type="button" id="btn_u_agregar_cuota" style="background-color: darkgreen; color: white; border-radius:50%;"><i class="fas fa-plus"></i></button>Agregar Cuota</small></label>
                             <div class="input-group">
                                 <table id="u_tabla_cuotas" style="display: none;">
@@ -875,6 +1004,8 @@
                 <div class="modal-footer justify-content-between">
                     <input type="hidden" id="actualizar_cuotas_indice" name="actualizar_cuotas_indice" value="0">
                     <input type="hidden" id="actualizar_cuotas_tope" name="actualizar_cuotas_tope" value="0">
+                    <input type="hidden" id="actualizar_imagenes_indice" name="actualizar_imagenes_indice" value="0">
+                    <input type="hidden" id="actualizar_imagenes_tope" name="actualizar_imagenes_tope" value="0">
                     <input type="hidden" name="id" id="id">
                     <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                     <button type="submit" class="btn btn-primary">Guardar</button>
@@ -1049,6 +1180,14 @@
                                     </td>
                                     <td>
                                         <span id="s_ultima_sincronizacion"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Galer&iacute;a: </label>
+                                    </td>
+                                    <td id="s_celda_galeria">
+                                        <!--img src="" alt="" name="s_imagen_principal" id="s_imagen_principal" width="100%"-->
                                     </td>
                                 </tr>
                             </table>

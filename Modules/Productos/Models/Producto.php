@@ -8,6 +8,7 @@ use Modules\Productos\Database\Factories\ProductoFactory;
 use Modules\Categorias\Models\Categoria;
 // use Modules\Productos\Models\ProductoCuota;
 use Carbon\Carbon;
+use Modules\Productos\Models\ProductoImagen;
 
 class Producto extends Model
 {
@@ -46,5 +47,10 @@ class Producto extends Model
     protected static function newFactory()
     {
         return ProductoFactory::new();
+    }
+
+    public function imagenes()
+    {
+        return $this->hasMany(ProductoImagen::class);
     }
 }

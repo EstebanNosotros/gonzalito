@@ -11,6 +11,7 @@ use RealRashid\SweetAlert\Facades\Alert;
 use Symfony\Component\HttpFoundation\Response;
 use Modules\Categorias\Models\Categoria;
 use Modules\Productos\Models\ProductoCuota;
+use Modules\Productos\Models\ProductoImagen;
 use stdClass;
 use Carbon\Carbon;
 use DB;
@@ -88,7 +89,7 @@ class ProductosController extends Controller
         /// $totalRecordswithFilter = $records->count(); //changed
 
         // Fetch records
-        $records = Producto::with('categoria')
+        $records = Producto::with(['categoria', 'imagenes'])
                            ->orderBy($columnName,$columnSortOrder)
                            ->where('productos.nombre', 'like', '%' .$searchValue . '%')
                            ->orWhere('productos.nombre_web', 'like', '%' .$searchValue . '%')
@@ -230,6 +231,20 @@ class ProductosController extends Controller
                 ,'catalogo'               => ($request->catalogo ? $request->catalogo : false)
                 ,'cuotas'                 => json_encode($cuotas, JSON_NUMERIC_CHECK)
             ]);
+            $topeImagenes = $request->crear_imagenes_tope;
+            for ($i = 1; $i <= $topeImagenes; $i++) {
+                if (isset($_POST["crear_imagenes_imagen".$i])) {
+                    $productoImagen = ProductoImagen::create([
+                        'imagen'       => $_POST["crear_imagenes_imagen".$i]
+                      //  ,'referencia'  => $_POST["crear_imagenes_imagen".$i]
+                      //  ,'mostrar'     => isset($_POST["crear_imagenes_mostrar".$i]) ? $_POST["crear_imagenes_mostrar".$i] : false
+                      //  ,'destacar'    => isset($_POST["crear_imagenes_destacar".$i]) ? $_POST["crear_imagenes_destacar".$i] : false
+                        ,'producto_id' => $producto->id
+                    ]);
+                    Log::info($productoImagen);
+                }
+            }
+            Log::info('fin de creacion');
             Alert::success('Aviso', 'Dato <b>' . $producto->nombre . '</b> registrado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             Alert::error('Aviso', 'Dato <b>' . $producto->nombre . '</b> error al registrar : ' . $th->getMessage())->toToast()->toHtml();
@@ -239,7 +254,7 @@ class ProductosController extends Controller
 
     public function show(Request $request)
     {
-        $producto = Producto::with(['categoria'])->where('id', $request->id)->first();
+        $producto = Producto::with(['categoria', 'imagenes'])->where('id', $request->id)->first();
         //\Log::info($request->id);
         //dd($producto);
         return response()->json([
@@ -316,7 +331,51 @@ class ProductosController extends Controller
                 ,'catalogo'               => ($request->u_catalogo ? $request->u_catalogo : false)
                 ,'cuotas'                 => json_encode($cuotas, JSON_NUMERIC_CHECK)
             ]);
+            $topeImagenes = $request->actualizar_imagenes_tope;
+            $imagenes_existentes = ProductoImagen::where('producto_id', $producto->id)->pluck('id')->toArray();
+            $imagenes_entrantes  = [];
+            for ($i = 0; $i < $topeImagenes; $i++) {
+                if(isset($_POST["actualizar_imagenes_imagen".($i+1)])) {
+                    if($_POST["actualizar_imagenes_id".($i+1)]) {
+                        array_push($imagenes_entrantes, $_POST["actualizar_imagenes_id".($i+1)]);
+                        $imagen = ProductoImagen::find($_POST["actualizar_imagenes_id".($i+1)]);
+                        $imagen->update([
+                            'imagen'      => $_POST["actualizar_imagenes_imagen".($i+1)]
+                           // ,'referencia' => $_POST["actualizar_imagenes_imagen".($i+1)]
+                           // ,'mostrar'    => isset($_POST["actualizar_imagenes_mostrar".($i+1)]) ? $_POST["actualizar_imagenes_mostrar".($i+1)] : false  
+                           // ,'destacar'   => isset($_POST["actualizar_imagenes_destacar".($i+1)]) ? $_POST["actualizar_imagenes_destacar".($i+1)] : false
+                        ]);
+                    }else{
+                        ProductoImagen::create([
+                            'imagen'       => $_POST["actualizar_imagenes_imagen".($i+1)]
+                            ,'producto_id' => $producto->id
+                           // ,'referencia'  => $_POST["actualizar_imagenes_imagen".($i+1)]
+                           // ,'mostrar'     => isset($_POST["actualizar_imagenes_mostrar".($i+1)])
+                           // ,'destacar'    => isset($_POST["actualizar_imagenes_destacar".($i+1)])
+                        ]);
+                    }
+                }
+            }
 
+            $imagenes_borrar = array_diff($imagenes_existentes, $imagenes_entrantes);
+            foreach($imagenes_borrar as $borrar) {
+                $imagen               = ProductoImagen::find($borrar);
+                /*$existeProducto       = Producto::where('imagen_principal', $imagen->imagen)
+                                                ->get();
+                $existeImagen         = ProductoImagen::where('imagen', $imagen->imagen)
+                                                      ->where('id', '<>', $imagen->id)
+                                                      ->get();
+                $existeCategoria      = Categoria::where('imagen', $imagen->imagen)
+                                            ->orWhere('icono', $imagen->imagen)
+                                            ->get();
+                $imagenDirectorioBase = strpos($imagen->imagen, '/', 8);
+                if(!$existeProducto && !$existeImagen && !$existeCategoria && !$imagenDirectorioBase) {*/
+                    if(file_exists(public_path($imagen->imagen))) {
+                        unlink(public_path($imagen->imagen));
+                    }
+                //}
+                $imagen->delete();
+            }
             
             // $cuotas = $producto->cuotas; ///cuando cuotas tenia su propia tabla
 
@@ -336,6 +395,13 @@ class ProductosController extends Controller
     {
         try {
             $producto = Producto::find($request->id);
+            $imagenes = ProductoImagen::where('producto_id', $producto->id)->get();
+            foreach($imagenes as $imagen) {
+                if (file_exists(public_path($imagen->imagen))) {
+                    unlink(public_path($imagen->imagen));
+                }
+                $imagen->delete();
+            }
             if ($producto->imagen_principal) {
                 if (file_exists(public_path($producto->imagen_principal))) {
                     unlink(public_path($producto->imagen_principal));
