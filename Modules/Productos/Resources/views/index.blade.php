@@ -291,7 +291,7 @@
                         $('#u_codigo').val(data.codigo);
                         $('#u_precio').val(data.precio);
                         $('#u_marca').val(data.marca);
-                        $('#u_categoria').val(data.categoria_id);
+                        $('#u_categoria_id').val(data.categoria_id);
                         $('#u_tags').val(data.tags);
 
                         ///Cuotas
