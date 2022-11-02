@@ -3,6 +3,7 @@
 namespace Modules\Categorias\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Routing\Controller;
 use Modules\Categorias\Models\Categoria;
@@ -153,5 +154,42 @@ class CategoriasController extends Controller
         $totalCategorias = Categoria::count();
         return "Ahora hay ".$totalCategorias." categorias en el sistema <a href=\"".route('categorias.index')."\">Volver</a>";
 
+    }
+
+    public function synchronizeDirect()
+    {
+        $username='p4nt4L1to';
+        $password='305pr15mA';
+        $httpClient = new \GuzzleHttp\Client();
+        $req = $httpClient->get('http://190.128.136.242:7575/catalogserv/categorias', ['auth' => [$username, $password]]);
+        $res = $req->getBody();
+        //return json_decode($res, true);
+        //return count(json_decode($res,true));
+        //dd($res);
+        $categorias = json_decode($res, true);
+        foreach ($categorias as $categoria) {
+            $existe = null;
+            $existe = Categoria::where('referencia', $categoria['id_categoria'])->first();
+            if($existe == null) {
+                Categoria::create([
+                    'nombre'     => $categoria['nombre']
+                    ,'referencia' => $categoria['id_categoria']
+                    ,'mostrar'    => $categoria['estado'] == 'A' ? 1 : 0
+                ]);                    
+            }else {
+                $existe->update([
+                    'nombre'     => $categoria['nombre']
+                    ,'mostrar'    => $categoria['estado'] == 'A' ? 1 : 0
+                ]);
+            }
+        }
+        $totalCategorias = Categoria::count();
+        return "Ahora hay ".$totalCategorias." categorias en el sistema <a href=\"".route('categorias.index')."\">Volver</a>";
+
+    }
+
+    public function synchronize_test() {
+        Log::info('synchronize de categorias');
+        return;
     }
 }

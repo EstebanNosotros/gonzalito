@@ -445,15 +445,15 @@
                             $('#s_productos_relacionados').html(data.data.productos_relacionados);
                         }
 
-                        {{--if(data.data.imagenes) {
+                        if(data.data.imagenes) {
                             $('#s_celda_galeria').html('');
                             var imagenes = '';
                             data.data.imagenes.forEach(recorreImagenes);
                             function recorreImagenes(item) {
-                                imagenes += '<img class="galleryShowImage" src="{{ env('APP_URL') }}'+'/'+item.imagen+'" alt="'+item.imagen+'"><br/>';
+                                imagenes += '<img class="galleryShowImage" src="{{ env('APP_URL') }}/'+item.imagen+'" alt="'+item.imagen+'"><br/>';
                             }
                             $('#s_celda_galeria').html(imagenes);
-                        }--}}
+                        }
 
                         $('#modal-loading').modal('hide');
                         $('#modal-show').modal({backdrop: 'static', keyboard: false, show: true});
@@ -1187,7 +1187,7 @@
                                         <label class="show_label">Galer&iacute;a: </label>
                                     </td>
                                     <td id="s_celda_galeria">
-                                        <img src="https://gonzalito.nosbase.com/template/admin/dist/img/user2-160x160.jpg" alt="" name="imagen_galeria" id="imagen_galeria" width="100%">
+                                        <!--img src="https://gonzalito.nosbase.com/template/admin/dist/img/user2-160x160.jpg" alt="" name="imagen_galeria" id="imagen_galeria" width="100%"-->
                                     </td>
                                 </tr>
                             </table>
