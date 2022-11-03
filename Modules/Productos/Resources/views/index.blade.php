@@ -183,7 +183,7 @@
 @section('js')
     <script>
         $(function(){
-            $("#productos_relacionados").select2();
+            $("#productos_relacionados").select2({maximumSelectionLength: 5});
             //$("#u_productos_relacionados").select2();
         }); 
    </script>
@@ -237,6 +237,7 @@
                 }
             });
             let oculto;
+
             ///Modal Edit
             $(document).on("click", '.btn-edit', function() {
                 let id = $(this).attr("data-id");
@@ -323,7 +324,7 @@
                         ///Imagenes
                         $("#u_tabla_imagenes").find("tr:not(:first)").remove();
                         var i = 0;
-                        if(data.imagenes != null) {
+                        if(data.imagenes.length > 0) {
                             $('#u_tabla_imagenes').css('display', 'block');
                             data.imagenes.forEach(recorreImagenes);
                             function recorreImagenes(item) {
@@ -345,22 +346,43 @@
                                 });
                             }
                         }else {
-                            $('#u_tabla_cuotas').css('display', 'none');
+                            $('#u_tabla_imagenes').css('display', 'none');
                         }
                         $('#actualizar_imagenes_indice').attr('value', i);
                         $('#actualizar_imagenes_tope').attr('value', i);
 
+                        $.extend($.fn.select2.defaults, {
+                            formatSelectionTooBig: function (limit) {
+
+                                // Callback
+
+                                return 'Solo puede elegir hasta 5 productos';
+                            }
+                        });
                         if(data.productos_relacionados != null) {
                             var productos_relacionados_data = data.productos_relacionados;
                             var productos_relacionados_array = productos_relacionados_data.split(",");
-                            $('#u_productos_relacionados').select2().val(productos_relacionados_array);
+                            $('#u_productos_relacionados').select2({maximumSelectionLength: 5}).val(productos_relacionados_array);
                             $("#u_productos_relacionados option[value='"+data.codigo+"']").remove();
                             oculto = data;
                         }else {
-                            $('#u_productos_relacionados').select2().val([]);
+                            $('#u_productos_relacionados').select2({maximumSelectionLength: 5}).val([]);
                             $("#u_productos_relacionados option[value='"+data.codigo+"']").remove();
                             oculto = data;
                         }
+
+                        //Limite de selects multiples de prtoductos relacionados
+                        /*$('#u_productos_relacionados').change(function() {
+                            alert(this.length);
+                            if ( this.length <= 5 ) {
+                                alert("menor o igual a cinco items");
+                                this.setState( {
+                                    value: value
+                                } );
+                                // Then do a function that does whatever else you need done
+                                //this.handleTags( value )
+                            }
+                        });*/
 
                         $('#modal-loading').modal('hide');
                         $('#modal-edit').modal({backdrop: 'static', keyboard: false, show: true});
@@ -765,7 +787,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <label>Productos Relacionados</label>
+                            <label>Productos Relacionados (máximo 5)</label>
                             <div class="input-group">
                                 <!--input type="text" id="productos_relacionados" name="productos_relacionados">
                                 <input type="button" value="Limpiar" id="limpiar_productos_relacionados"-->
@@ -950,7 +972,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <label>Productos Relacionados</label>
+                            <label>Productos Relacionados (máximo 5)</label>
                             <div class="input-group">
                                 <!--input type="text" id="u_productos_relacionados" name="u_productos_relacionados">
                                 <input type="button" value="Limpiar" id="u_limpiar_productos_relacionados"-->
