@@ -183,7 +183,7 @@
 @section('js')
     <script>
         $(function(){
-            $("#productos_relacionados").select2({maximumSelectionLength: 5});
+            $("#productos_relacionados").select2({maximumSelectionLength: 6});
             //$("#u_productos_relacionados").select2();
         }); 
    </script>
@@ -362,11 +362,11 @@
                         if(data.productos_relacionados != null) {
                             var productos_relacionados_data = data.productos_relacionados;
                             var productos_relacionados_array = productos_relacionados_data.split(",");
-                            $('#u_productos_relacionados').select2({maximumSelectionLength: 5}).val(productos_relacionados_array);
+                            $('#u_productos_relacionados').select2({maximumSelectionLength: 6}).val(productos_relacionados_array);
                             $("#u_productos_relacionados option[value='"+data.codigo+"']").remove();
                             oculto = data;
                         }else {
-                            $('#u_productos_relacionados').select2({maximumSelectionLength: 5}).val([]);
+                            $('#u_productos_relacionados').select2({maximumSelectionLength: 6}).val([]);
                             $("#u_productos_relacionados option[value='"+data.codigo+"']").remove();
                             oculto = data;
                         }
@@ -787,7 +787,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <label>Productos Relacionados (máximo 5)</label>
+                            <label>Productos Relacionados (máximo 6)</label>
                             <div class="input-group">
                                 <!--input type="text" id="productos_relacionados" name="productos_relacionados">
                                 <input type="button" value="Limpiar" id="limpiar_productos_relacionados"-->
@@ -972,7 +972,7 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <label>Productos Relacionados (máximo 5)</label>
+                            <label>Productos Relacionados (máximo 6)</label>
                             <div class="input-group">
                                 <!--input type="text" id="u_productos_relacionados" name="u_productos_relacionados">
                                 <input type="button" value="Limpiar" id="u_limpiar_productos_relacionados"-->
