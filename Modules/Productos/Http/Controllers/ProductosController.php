@@ -96,6 +96,7 @@ class ProductosController extends Controller
                            ->orWhere('productos.descripcion', 'like', '%' .$searchValue . '%')
                            ->orWhere('productos.codigo', 'like', '%' .$searchValue . '%')
                            ->orWhere('productos.precio', 'like', '%' .$searchValue . '%')
+                           ->orWhere('productos.precio_oferta', 'like', '%' .$searchValue . '%')
                            ->orWhere('productos.marca', 'like', '%' .$searchValue . '%')
                            //->orWhere('productos.categoria.nombre_web', 'like', '%' .$searchValue . '%')
                            ->orWhere('productos.tags', 'like', '%' .$searchValue . '%')
@@ -137,6 +138,8 @@ class ProductosController extends Controller
             $destacar              = $record->destacar;
             $catalogo              = $record->catalogo;
             $ultima_sincronizacion = $record->ultima_sincronizacion;
+            $en_oferta             = $record->en_oferta;
+            $precio_oferta         = $record->precio_oferta;
             $id                    = $record->id;
 
             $data_arr[] = array(
@@ -151,6 +154,8 @@ class ProductosController extends Controller
                 "destacar"              => $destacar,
                 "catalogo"              => $catalogo,
                 "ultima_sincronizacion" => $ultima_sincronizacion,
+                "en_oferta"             => $en_oferta,
+                "precio_oferta"         => $precio_oferta,
                 "id"                    => $id,
             );
         }
@@ -189,6 +194,8 @@ class ProductosController extends Controller
             ,'destacar'               => ['sometimes', 'boolean']
             ,'en_stock'               => ['sometimes', 'boolean']
             ,'catalogo'               => ['sometimes', 'boolean']
+            ,'en_oferta'              => ['sometimes', 'boolean']
+            ,'precio_oferta'          => ['nullable', 'numeric']
         ]);
         if ($validator->fails()) {
             return back()->withErrors($validator)
@@ -230,6 +237,8 @@ class ProductosController extends Controller
                 ,'en_stock'               => ($request->en_stock ? $request->en_stock : false)
                 ,'catalogo'               => ($request->catalogo ? $request->catalogo : false)
                 ,'cuotas'                 => json_encode($cuotas, JSON_NUMERIC_CHECK)
+                ,'en_oferta'              => ($request->en_oferta ? $request->en_oferta : false)
+                ,'precio_oferta'          => $request->precio_oferta
             ]);
             $topeImagenes = $request->crear_imagenes_tope;
             for ($i = 1; $i <= $topeImagenes; $i++) {
@@ -285,6 +294,8 @@ class ProductosController extends Controller
             ,'u_destacar'               => ['sometimes', 'boolean']
             ,'u_en_stock'               => ['sometimes', 'boolean']
             ,'u_catalogo'               => ['sometimes', 'boolean']
+            ,'u_en_oferta'              => ['sometimes', 'boolean']
+            ,'u_precio_oferta'          => ['nullable', 'numeric']
         ]);
         if ($validator->fails()) {
             return back()->withErrors($validator)
@@ -330,6 +341,8 @@ class ProductosController extends Controller
                 ,'en_stock'               => ($request->u_en_stock ? $request->u_en_stock : false)
                 ,'catalogo'               => ($request->u_catalogo ? $request->u_catalogo : false)
                 ,'cuotas'                 => json_encode($cuotas, JSON_NUMERIC_CHECK)
+                ,'en_oferta'              => ($request->u_en_oferta ? $request->u_en_oferta : false)
+                ,'precio_oferta'          => $request->u_precio_oferta
             ]);
             $topeImagenes = $request->actualizar_imagenes_tope;
             $imagenes_existentes = ProductoImagen::where('producto_id', $producto->id)->pluck('id')->toArray();
@@ -464,6 +477,8 @@ class ProductosController extends Controller
                                                 ,'cuotas'                     => json_encode($producto['precio_credito'], JSON_NUMERIC_CHECK)
                                                 ,'ultima_modificacion_origen' => $producto['ultima_mod']
                                                 ,'catalogo'                   => $producto['catalogo'] == 'S' ? 1 : 0 
+                                                ,'en_oferta'                  => $producto['en_oferta'] == true ? 1 : 0 
+                                                ,'precio_oferta'              => $producto['precio_oferta']
                                             ]);
                     $fecha_fin_ins     = Carbon::now(); //test
                     $tiempo_total_ins  = $fecha_inicio_ins->diffForHumans($fecha_fin_ins); //test
@@ -503,6 +518,8 @@ class ProductosController extends Controller
                         ,'cuotas'                     => $producto['precio_credito']
                         ,'ultima_modificacion_origen' => $producto['ultima_mod']
                         ,'catalogo'                   => $producto['catalogo'] == 'S' ? 1 : 0
+                        ,'en_oferta'                  => $producto['en_oferta'] == true ? 1 : 0
+                        ,'precio_oferta'              => $producto['precio_oferta']
                     ]);
                     $fecha_fin_act    = Carbon::now(); //test
                     $tiempo_total_act = $fecha_inicio_act->diffForHumans($fecha_fin_act); //test
@@ -563,6 +580,8 @@ class ProductosController extends Controller
                                                 ,'cuotas'                     => json_encode($producto['precio_credito'], JSON_NUMERIC_CHECK)
                                                 ,'ultima_modificacion_origen' => $producto['ultima_mod']
                                                 ,'catalogo'                   => $producto['catalogo'] == 'S' ? 1 : 0 
+                                                ,'en_oferta'                  => $producto['en_oferta'] == true ? 1 : 0 
+                                                ,'precio_oferta'              => $producto['precio_oferta']
                                             ]);
                     $fecha_fin_ins     = Carbon::now(); //test
                     $tiempo_total_ins  = $fecha_inicio_ins->diffForHumans($fecha_fin_ins); //test
@@ -602,6 +621,8 @@ class ProductosController extends Controller
                         ,'cuotas'                     => $producto['precio_credito']
                         ,'ultima_modificacion_origen' => $producto['ultima_mod']
                         ,'catalogo'                   => $producto['catalogo'] == 'S' ? 1 : 0
+                        ,'en_oferta'                  => $producto['en_oferta'] == true ? 1 : 0
+                        ,'precio_oferta'              => $producto['precio_oferta']
                     ]);
                     $fecha_fin_act    = Carbon::now(); //test
                     $tiempo_total_act = $fecha_inicio_act->diffForHumans($fecha_fin_act); //test

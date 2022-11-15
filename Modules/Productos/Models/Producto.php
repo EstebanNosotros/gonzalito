@@ -32,6 +32,8 @@ class Producto extends Model
         ,'cuotas'
         ,'ultima_modificacion_origen'
         ,'catalogo'
+        ,"en_oferta"
+        ,"precio_oferta"
     ];
 
     public function categoria()

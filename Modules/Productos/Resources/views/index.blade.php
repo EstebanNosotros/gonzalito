@@ -2,7 +2,7 @@
 @section('content')
     <style>
         .select2-selection__choice__display{color:black;}
-        #mostrar, #destacar, #u_mostrar, #u_destacar, #en_stock, #u_en_stock, #en_catalogo, #u_catalogo {transform: scale(1.5);}
+        #mostrar, #destacar, #u_mostrar, #u_destacar, #en_stock, #u_en_stock, #catalogo, #u_catalogo, #en_oferta, #u_en_oferta {transform: scale(1.5);}
         #breadcrumb_inicio {color:black !important;}
         .page-link, .btn-perfil {color:inherit !important; text-decoration: underline !important;}
         .button-submit-loader {
@@ -114,8 +114,9 @@
                                             <th>Productos Relacionados</th-->
                                             <th>Referencia</th>
                                             <th>Mostrar</th>
-                                            <th>Destacar</th>
-                                            <th>Cat&aacute;logo</th-->
+                                            <th>Destacar</th>                       
+                                            <th>Cat&aacute;logo</th>
+                                            <th>Oferta</th>
                                             <th>Sincronizado</th>
                                             {{--@canany(['update productos', 'delete productos'])--}}
                                                 <th>Acciones</th>
@@ -205,6 +206,7 @@
                     { data: 'mostrar' },
                     { data: 'destacar' },
                     { data: 'catalogo' },
+                    { data: 'en_oferta' },
                     { data: 'ultima_sincronizacion' },
                     { data: null ,
                       render: function ( data, type, row ) {
@@ -284,6 +286,13 @@
                             $('#u_catalogo').prop('checked', false);
                             $('#u_catalogo').val(1);
                         }
+                        if (data.en_oferta == 1) {
+                            $('#u_en_oferta').prop('checked', true);
+                            $('#u_en_oferta').val(1);
+                        }else {
+                            $('#u_en_oferta').prop('checked', false);
+                            $('#u_en_oferta').val(1);
+                        }
                         $('#u_imagen_principal').val(data.imagen_principal);
                         $('#u_imagen_principal-image').attr('src', '{{ env("APP_URL") }}'+'/'+data.imagen_principal);
                         $('#u_imagen_principal-image').attr('alt', data.imagen_principal);
@@ -291,6 +300,7 @@
                         $('#u_descripcion').val(data.descripcion);
                         $('#u_codigo').val(data.codigo);
                         $('#u_precio').val(data.precio);
+                        $('#u_precio_oferta').val(data.precio_oferta);
                         $('#u_marca').val(data.marca);
                         $('#u_categoria_id').val(data.categoria_id);
                         $('#u_tags').val(data.tags);
@@ -433,12 +443,18 @@
                         }else {
                             $('#s_catalogo').html('No');
                         }
+                        if (data.data.en_oferta == 1) {
+                            $('#s_en_oferta').html('Si');
+                        }else {
+                            $('#s_en_oferta').html('No');
+                        }
                         $('#s_imagen_principal').attr('src', '{{ env("APP_URL") }}'+'/'+data.data.imagen_principal);
                         $('#s_imagen_principal').attr('alt', data.data.imagen_principal);
                         $('#s_referencia').html(data.data.referencia);
                         $('#s_descripcion').html(data.data.descripcion);
                         $('#s_codigo').html(data.data.codigo);
                         $('#s_precio').html((data.data.precio).toLocaleString('es'));
+                        $('#s_precio_oferta').html((data.data.precio_oferta).toLocaleString('es'));
                         $('#s_marca').html(data.data.marca);
                         $('#s_categoria').html(data.data.categoria.nombre_web ? data.data.categoria.nombre_web : data.data.categoria.nombre);
                         $('#s_tags').html(data.data.tags);
@@ -708,15 +724,6 @@
                                 </div>
                             </div>
                             <div style="display: inline-block; width: 48%; margin-left: 4%;">
-                                <label>Precio Contado</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control @error('precio') is-invalid @enderror" placeholder="Precio del producto" name="precio" value="{{ old('precio') }}">
-                                    @error('precio')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div style="display: inline-block; width: 48%;">
                                 <label>Marca</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control @error('marca') is-invalid @enderror" placeholder="Marca del producto" name="marca" value="{{ old('marca') }}">
@@ -725,19 +732,35 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div style="display: inline-block; width: 48%; margin-left: 4%;">
-                                <label>Categoría</label>
+                            <div style="display: inline-block; width: 48%;">
+                                <label>Precio Contado</label>
                                 <div class="input-group">
-                                    <select id="categoria_id" name="categoria_id" class="form-control @error('categoria_id') is-invalid @enderror" value="{{ old("categoria_id") }}" required>
-                                        <option value="" disabled selected>Seleccione Categoría</option>
-                                        @foreach($categorias as $categoria)
-                                            <option value="{{ $categoria->id }}">{{ $categoria->nombre_web ? $categoria->nombre_web : $categoria->nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('categoria_id')
+                                    <input type="text" class="form-control @error('precio') is-invalid @enderror" placeholder="Precio del producto" name="precio" value="{{ old('precio') }}">
+                                    @error('precio')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                            </div>
+                            <div style="display: inline-block; width: 48%; margin-left: 4%;">
+                                <label>Precio de Oferta</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control @error('precio_oferta') is-invalid @enderror" placeholder="Precio a utilizar cuando el producto est&aacute; de oferta" name="precio_oferta" value="{{ old('precio_oferta') }}">
+                                    @error('precio_oferta')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <label>Categoría</label>
+                            <div class="input-group">
+                                <select id="categoria_id" name="categoria_id" class="form-control @error('categoria_id') is-invalid @enderror" value="{{ old("categoria_id") }}" required>
+                                    <option value="" disabled selected>Seleccione Categoría</option>
+                                    @foreach($categorias as $categoria)
+                                        <option value="{{ $categoria->id }}">{{ $categoria->nombre_web ? $categoria->nombre_web : $categoria->nombre }}</option>
+                                    @endforeach
+                                </select>
+                                @error('categoria_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <label>Tags</label>
                             <div class="input-group">
@@ -831,8 +854,15 @@
                             </div>
                             <div class="input-group">
                                 <label for="catalogo" style="vertical-align: middle;">Cat&aacute;logo</label>
-                                <input type="checkbox" class="@error('catalogo') is-invalid @enderror" name="catalogo" id="en_stock" style="margin-left: 24px;" value="1">
+                                <input type="checkbox" class="@error('catalogo') is-invalid @enderror" name="catalogo" id="catalogo" style="margin-left: 24px;" value="1">
                                 @error('catalogo')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
+                            <div class="input-group">
+                                <label for="en_oferta" style="vertical-align: middle;">Oferta</label>
+                                <input type="checkbox" class="@error('en_oferta') is-invalid @enderror" name="en_oferta" id="en_oferta" style="margin-left: 40px;" value="1">
+                                @error('en_oferta')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
@@ -900,15 +930,6 @@
                                 </div>
                             </div>
                             <div style="display: inline-block; width: 48%; margin-left: 4%;">
-                                <label>Precio</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control @error('u_precio') is-invalid @enderror" placeholder="Precio del producto" name="u_precio" id="u_precio" value="{{ old('u_precio') }}">
-                                    @error('u_precio')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-                            <div style="display: inline-block; width: 48%;">
                                 <label>Marca</label>
                                 <div class="input-group">
                                     <input type="text" class="form-control @error('u_marca') is-invalid @enderror" placeholder="Marca del producto" name="u_marca" id="u_marca" value="{{ old('u_marca') }}">
@@ -917,19 +938,35 @@
                                     @enderror
                                 </div>
                             </div>
-                            <div style="display: inline-block; width: 48%; margin-left: 4%;">
-                                <label>Categoría</label>
+                            <div style="display: inline-block; width: 48%;">
+                                <label>Precio</label>
                                 <div class="input-group">
-                                    <select id="u_categoria_id" name="u_categoria_id" class="form-control @error('u_categoria_id') is-invalid @enderror" value="{{ old("u_categoria_id") }}" required>
-                                        <option value="" disabled>Seleccione Categoría</option>
-                                        @foreach($categorias as $categoria)
-                                            <option value="{{ $categoria->id }}">{{ $categoria->nombre_web ? $categoria->nombre_web : $categoria->nombre }}</option>
-                                        @endforeach
-                                    </select>
-                                    @error('u_categoria_id')
+                                    <input type="text" class="form-control @error('u_precio') is-invalid @enderror" placeholder="Precio del producto" name="u_precio" id="u_precio" value="{{ old('u_precio') }}">
+                                    @error('u_precio')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
+                            </div>
+                            <div style="display: inline-block; width: 48%; margin-left: 4%;">
+                                <label>Precio de Oferta</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control @error('u_precio_oferta') is-invalid @enderror" placeholder="Precio a utilizar cuando el producto est&aacute; de oferta" name="u_precio_oferta" id="u_precio_oferta" value="{{ old('u_precio_oferta') }}">
+                                    @error('u_precio_oferta')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <label>Categoría</label>
+                            <div class="input-group">
+                                <select id="u_categoria_id" name="u_categoria_id" class="form-control @error('u_categoria_id') is-invalid @enderror" value="{{ old("u_categoria_id") }}" required>
+                                    <option value="" disabled>Seleccione Categoría</option>
+                                    @foreach($categorias as $categoria)
+                                        <option value="{{ $categoria->id }}">{{ $categoria->nombre_web ? $categoria->nombre_web : $categoria->nombre }}</option>
+                                    @endforeach
+                                </select>
+                                @error('u_categoria_id')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
                             </div>
                             <label>Tags</label>
                             <div class="input-group">
@@ -1021,6 +1058,13 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
+                            <div class="input-group">
+                                <label for="u_en_oferta">Oferta</label>
+                                <input type="checkbox" class="@error('u_en_oferta') is-invalid @enderror" name="u_en_oferta" id="u_en_oferta" style="margin-left: 40px;" value="{{ old('u_catalogo') }}">
+                                @error('u_en_oferta')
+                                    <div class="invalid-feedback">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -1095,6 +1139,14 @@
                                     </td>
                                     <td>
                                         <span id="s_precio"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Precio de Oferta: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_precio_oferta"></span>
                                     </td>
                                 </tr>
                                 <tr>
@@ -1186,6 +1238,14 @@
                                     </td>
                                     <td>
                                         <span id="s_catalogo"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Oferta: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_en_oferta"></span>
                                     </td>
                                 </tr>
                                 <tr>
