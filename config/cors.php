@@ -15,15 +15,15 @@ return [
     |
     */
 
-    'paths' => ['api/*', 'sanctum/csrf-cookie', 'storage/*'],
+    'paths' => ['*', 'sanctum/csrf-cookie',],
 
-    'allowed_methods' => ['GET'],
+    'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['https://gonzalitocatalogo.nosbase.com'],
+    'allowed_origins' => ['*'],
 
     'allowed_origins_patterns' => [],
 
-    'allowed_headers' => ['Access-Control-Allow-Origin'],
+    'allowed_headers' => ['*'],
 
     'exposed_headers' => [],
 
