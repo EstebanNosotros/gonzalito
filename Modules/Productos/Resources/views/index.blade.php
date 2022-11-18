@@ -84,13 +84,13 @@
                         <div class="card">
                             @can('create productos')
                             <div class="card-header">
-                                <h3 class="card-title">
+                                <!--h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
-                                </h3>
+                                </h3-->
                                 <form action="{{ route('productos.synchronize') }}" method="POST" enctype="multipart/form-data" id="form_sincronizar_productos">
                                     @csrf
-                                    <h3 class="card-title" style="margin-left: 20px;">
-                                        <button type="submit" class="btn btn-sm btn-secondary button-submit-loader" data-backdrop="static" data-keyboard="false" id="btn_sincronizar_productos"><span class="button__text"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Registros </span></button>
+                                    <h3 class="card-title">
+                                        <button type="submit" class="btn btn-sm btn-success button-submit-loader" data-backdrop="static" data-keyboard="false" id="btn_sincronizar_productos"><span class="button__text"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Registros </span></button>
                                     </h3>
                                 </form>
                             </div>
@@ -339,7 +339,7 @@
                             data.imagenes.forEach(recorreImagenes);
                             function recorreImagenes(item) {
                                 i++;
-                                var fila = '<tr id="u_imagen'+i+'"><td style="max-width: 500px;"><input type="hidden" id="actualizar_imagenes_id'+i+'" name="actualizar_imagenes_id'+i+'" value="'+item.id+'"><img src="{{ env("APP_URL") }}'+'/'+item.imagen+'" alt="'+item.imagen+'" id="actualizar_imagenes_imagen'+i+'-image" name="actualizar_imagenes_imagen'+i+'-image" width="8%"><input type="text" class="form-control" id="actualizar_imagenes_imagen'+i+'" name="actualizar_imagenes_imagen'+i+'" value="'+item.imagen+'" readonly required></td><td><small><button type="button" id="btn_u_eliminar_imagen'+i+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Imagen</small></td></tr>';
+                                var fila = '<tr id="u_imagen'+i+'"><td style="max-width: 500px;"><input type="hidden" id="actualizar_imagenes_id'+i+'" name="actualizar_imagenes_id'+i+'" value="'+item.id+'"><img src="{{ env("APP_URL") }}'+'/'+item.imagen+'" alt="'+item.imagen+'" id="actualizar_imagenes_imagen'+i+'-image" name="actualizar_imagenes_imagen'+i+'-image" width="8%"><input type="text" class="form-control" id="actualizar_imagenes_imagen'+i+'" name="actualizar_imagenes_imagen'+i+'" value="'+item.imagen+'" readonly required><small class="text mr-2">Dimensiones Recomendadas: 500x500 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small></td><td><small><button type="button" id="btn_u_eliminar_imagen'+i+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Imagen</small></td></tr>';
                                 $('#u_tabla_imagenes tbody').append(fila);
                                 $('#btn_u_eliminar_imagen'+i).click(function() {
                                     $('#actualizar_imagenes_indice').attr('value', parseInt($('#actualizar_imagenes_indice').attr('value')) - 1);
@@ -424,27 +424,27 @@
                         $("#s_nombre").html(data.data.nombre);
                         $("#s_nombre_web").html(data.data.nombre_web);
                         if (data.data.mostrar == 1) {
-                            $('#s_mostrar').html('Si');
+                            $('#s_mostrar').html('Sí');
                         }else {
                             $('#s_mostrar').html('No');
                         }
                         if (data.data.destacar == 1) {
-                            $('#s_destacar').html('Si');
+                            $('#s_destacar').html('Sí');
                         }else {
                             $('#s_destacar').html('No');
                         }
                         if (data.data.en_stock == 1) {
-                            $('#s_en_stock').html('Si');
+                            $('#s_en_stock').html('Sí');
                         }else {
                             $('#s_en_stock').html('No');
                         }
                         if (data.data.catalogo == 1) {
-                            $('#s_catalogo').html('Si');
+                            $('#s_catalogo').html('Sí');
                         }else {
                             $('#s_catalogo').html('No');
                         }
                         if (data.data.en_oferta == 1) {
-                            $('#s_en_oferta').html('Si');
+                            $('#s_en_oferta').html('Sí');
                         }else {
                             $('#s_en_oferta').html('No');
                         }
@@ -635,7 +635,7 @@
                 $('#u_tabla_imagenes').css('display', 'block');
                 $('#actualizar_imagenes_indice').attr('value', parseInt($('#actualizar_imagenes_indice').attr('value',)) + 1);
                 $('#actualizar_imagenes_tope').attr('value', parseInt($('#actualizar_imagenes_tope').attr('value')) + 1);
-                var fila = '<tr id="u_imagen'+$('#actualizar_imagenes_tope').val()+'"><td style="max-width: 500px;"><input type="hidden" class="form-control" id="actualizar_imagenes_id'+$('#actualizar_imagenes_tope').val()+'" name="actualizar_imagenes_id'+$('#actualizar_imagenes_tope').val()+'"><img src="" alt="" id="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'-image" name="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'-image" width="8%"><input type="text" class="form-control" id="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'" name="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'" readonly required></td><td><small><button type="button" id="btn_u_eliminar_imagen'+$('#actualizar_imagenes_tope').val()+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Imagen</small></td></tr>';
+                var fila = '<tr id="u_imagen'+$('#actualizar_imagenes_tope').val()+'"><td style="max-width: 500px;"><input type="hidden" class="form-control" id="actualizar_imagenes_id'+$('#actualizar_imagenes_tope').val()+'" name="actualizar_imagenes_id'+$('#actualizar_imagenes_tope').val()+'"><img src="" alt="" id="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'-image" name="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'-image" width="8%"><input type="text" class="form-control" id="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'" name="actualizar_imagenes_imagen'+$('#actualizar_imagenes_tope').val()+'" readonly required><small class="text mr-2">Dimensiones Recomendadas: 500x500 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small></td><td><small><button type="button" id="btn_u_eliminar_imagen'+$('#actualizar_imagenes_tope').val()+'" style="background-color: red; color:white; border-radius:50%;"><i class="fas fa-minus"></i></button>Eliminar Imagen</small></td></tr>';
                 $('#u_tabla_imagenes tbody').append(fila);
                 //alert('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val());
                 //$('#btn_eliminar_cuota'+$('#crear_cuotas_tope').val()).on('click', eliminar_cuota($('#crear_cuotas_tope').val()));
@@ -680,7 +680,7 @@
 
 @section('modal')
     {{-- Modal Nuevo --}}
-    <div class="modal fade" id="modal-nuevo">
+    {{--<div class="modal fade" id="modal-nuevo">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -881,7 +881,7 @@
             <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
-    </div>
+    </div>--}}
     {{-- Modal Update --}}
     <div class="modal fade" id="modal-edit">
         <div class="modal-dialog modal-lg">
@@ -984,7 +984,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Imagen para mostrar inicialmente en el visor del producto" name="u_imagen_principal" id="u_imagen_principal" value="{{ old('u_imagen_principal') }}" readonly required><br/>
                                 </div>
-                                <small class="text-primary">Click para cargar desde archivo</small>
+                                <small class="text mr-2">Dimensiones Recomendadas: 500x500 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>
                             </div>
                             <label>Galer&iacute;a <small style="margin-left: 10px;"><button type="button" id="btn_u_agregar_imagen" style="background-color: darkgreen; color: white; border-radius:50%;"><i class="fas fa-plus"></i></button>Agregar Imagen</small></label>
                             <div class="input-group">
@@ -1046,21 +1046,21 @@
                             </div>
                             <div class="input-group">
                                 <label for="u_en_stock">Disponible</label>
-                                <input type="checkbox" class="@error('u_en_stock') is-invalid @enderror" name="u_en_stock" id="u_en_stock" style="margin-left: 11px;" value="{{ old('u_en_stock') }}">
+                                <input type="checkbox" class="@error('u_en_stock') is-invalid @enderror" name="u_en_stock" id="u_en_stock" style="margin-left: 11px;" value="{{ old('u_en_stock') }}" onclick="return false;" readonly>
                                 @error('u_en_stock')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="input-group">
                                 <label for="u_catalogo">Cat&aacute;logo</label>
-                                <input type="checkbox" class="@error('u_catalogo') is-invalid @enderror" name="u_catalogo" id="u_catalogo" style="margin-left: 24px;" value="{{ old('u_catalogo') }}">
+                                <input type="checkbox" class="@error('u_catalogo') is-invalid @enderror" name="u_catalogo" id="u_catalogo" style="margin-left: 24px;" value="{{ old('u_catalogo') }}" onclick="return false;" readonly>
                                 @error('u_catalogo')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
                             <div class="input-group">
                                 <label for="u_en_oferta">Oferta</label>
-                                <input type="checkbox" class="@error('u_en_oferta') is-invalid @enderror" name="u_en_oferta" id="u_en_oferta" style="margin-left: 40px;" value="{{ old('u_catalogo') }}">
+                                <input type="checkbox" class="@error('u_en_oferta') is-invalid @enderror" name="u_en_oferta" id="u_en_oferta" style="margin-left: 40px;" value="{{ old('u_catalogo') }}" onclick="return false;" readonly>
                                 @error('u_en_oferta')
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror

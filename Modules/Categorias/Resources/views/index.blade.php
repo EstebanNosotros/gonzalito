@@ -33,13 +33,13 @@
                         <div class="card">
                             @can('create categorias')
                             <div class="card-header">
-                                <h3 class="card-title">
+                                <!--h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nueva</a>
-                                </h3>
+                                </h3-->
                                 <form action="{{ route('categorias.synchronize') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
-                                    <h3 class="card-title" style="margin-left: 20px;">
-                                        <button type="submit" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Registros</button>
+                                    <h3 class="card-title">
+                                        <button type="submit" class="btn btn-sm btn-success" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Registros</button>
                                     </h3>
                                 </form>
                             </div>
@@ -72,8 +72,8 @@
                                                 <!--td><img src="{{ asset($i->imagen) }}" alt="{{ $i->imagen }}" width="8%"></td>
                                                 <td><img src="{{ asset($i->icono) }}" alt="{{ $i->icono }}" width="8%"></td-->
                                                 <td>{{ $i->referencia }}</td>
-                                                <td>{{ $i->mostrar }}</td>
-                                                <td>{{ $i->destacar }}</td>
+                                                <td>{{ $i->mostrar == 1 ? "Sí" : "No"  }}</td>
+                                                <td>{{ $i->destacar == 1 ? "Sí" : "No" }}</td>
                                                 <td>{{ $i->updated_at }}</td>
                                                 {{--@canany(['update categorias', 'delete categorias'])--}}
                                                     <td>
@@ -171,12 +171,12 @@
                         $("#s_nombre_web").html(data.nombre_web);
                         // $("#id").val(data.id);
                         if (data.mostrar == 1) {
-                            $('#s_mostrar').html('Si');
+                            $('#s_mostrar').html('Sí');
                         }else {
                             $('#s_mostrar').html('No');
                         }
                         if (data.destacar == 1) {
-                            $('#s_destacar').html('Si');
+                            $('#s_destacar').html('Sí');
                         }else {
                             $('#s_destacar').html('No');
                         }
@@ -220,7 +220,7 @@
 
 @section('modal')
     {{-- Modal nuevo --}}
-    <div class="modal fade" id="modal-nuevo">
+    {{--<div class="modal fade" id="modal-nuevo">
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
@@ -256,7 +256,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <small class="text-primary">Click para cargar desde archivo</small>
+                                <small class="text mr-2">Dimensiones Recomendadas: 130x130 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>
                             </div>
                             <div style="width: 100%;">
                                 <label>Icono</label>
@@ -267,7 +267,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <small class="text-primary">Click para cargar desde archivo</small>
+                                <small class="text mr-2">  Dimensiones Recomendadas: 26x26 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>
                             </div>
                             <label>Referencia</label>
                             <div class="input-group">
@@ -301,7 +301,7 @@
             <!-- /.modal-content -->
         </div>
         <!-- /.modal-dialog -->
-    </div>
+    </div>--}}
     {{-- Modal Update --}}
     <div class="modal fade" id="modal-edit">
         <div class="modal-dialog modal-lg">
@@ -333,19 +333,19 @@
                             </div>
                             <div style="width: 100%;">
                                 <label>Imagen</label>
-                                    <img src="" alt="" name="u_imagen-image" id="u_imagen-image" width="8%">
+                                    <img src="" alt="" name="u_imagen-image" id="u_imagen-image">
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Imagen para categoría" name="u_imagen" id="u_imagen" value="{{ old('u_imagen') }}" readonly required><br/>
                                 </div>
-                                <small class="text-primary">Click para cargar desde archivo</small>
+                                <small class="text mr-2">Dimensiones Recomendadas: 130x130 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>
                             </div>
                             <div style="width: 100%;">
                                 <label>Icono</label>
-                                    <img src="" alt="" name="u_icono-image" id="u_icono-image" width="8%">
+                                    <img src="" alt="" name="u_icono-image" id="u_icono-image">
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Icono para categoría" name="u_icono" id="u_icono" value="{{ old('u_icono') }}" readonly required><br/>
                                 </div>
-                                <small class="text-primary">Click para cargar desde archivo</small>
+                                <small class="text mr-2">Dimensiones Recomendadas: 26x26 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>
                             </div>
                             <label>Referencia</label>
                             <div class="input-group">
@@ -421,7 +421,7 @@
                                         <label class="show_label">Imagen: </label>
                                     </td>
                                     <td>
-                                        <img src="" alt="" name="s_imagen" id="s_imagen" width="8%">
+                                        <img src="" alt="" name="s_imagen" id="s_imagen">
                                     </td>
                                 </tr>
                                 <tr>
@@ -429,7 +429,7 @@
                                         <label class="show_label">Icono: </label>
                                     </td>
                                     <td>
-                                        <img src="" alt="" name="s_icono" id="s_icono" width="8%">
+                                        <img src="" alt="" name="s_icono" id="s_icono">
                                     </td>
                                 </tr>
                                 <tr>

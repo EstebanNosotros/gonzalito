@@ -134,11 +134,11 @@ class ProductosController extends Controller
             $marca                 = $record->marca;*/
             $categoria             = $record->categoria->nombre_web ? $record->categoria->nombre_web : $record->categoria->nombre;
             $referencia            = $record->referencia;
-            $mostrar               = $record->mostrar;
-            $destacar              = $record->destacar;
-            $catalogo              = $record->catalogo;
+            $mostrar               = $record->mostrar == 1 ? "Sí" : "No";
+            $destacar              = $record->destacar == 1 ? "Sí" : "No";
+            $catalogo              = $record->catalogo == 1 ? "Sí" : "No";
             $ultima_sincronizacion = $record->ultima_sincronizacion;
-            $en_oferta             = $record->en_oferta;
+            $en_oferta             = $record->en_oferta == 1 ? "Sí" : "No";
             $precio_oferta         = $record->precio_oferta;
             $id                    = $record->id;
 

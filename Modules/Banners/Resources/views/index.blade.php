@@ -36,9 +36,9 @@
                                 <h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" id="btn_modal_nuevo" name="btn_modal_nuevo" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
                                 </h3>
-                                <h3 class="card-title" style="margin-left: 20px;">
+                                <!--h3 class="card-title" style="margin-left: 20px;">
                                     <a href="#" class="btn btn-sm btn-secondary" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar</a>
-                                </h3>
+                                </h3-->
                             </div>
                             @endcan
                             <!-- /.card-header -->
@@ -54,7 +54,7 @@
                                             <th>Enlace</th-->
                                             <th>Referencia</th>
                                             <th>Mostrar</th>
-                                            <th>Destacar</th>
+                                            <!--th>Destacar</th-->
                                             <th>Actualizado</th>
                                             {{--@canany(['update banners', 'delete banners'])--}}
                                                 <th>Acciones</th>
@@ -71,8 +71,8 @@
                                                 <td><img src="{{ asset($i->imagen_mobile) }}" alt="{{ $i->imagen_mobile }}" width="100%"></td>
                                                 <td><a href="{{ $i->link }}">{{ $i->link }}</a></td-->
                                                 <td>{{ $i->referencia }}</td>
-                                                <td>{{ $i->mostrar }}</td>
-                                                <td>{{ $i->destacar }}</td>
+                                                <td>{{ $i->mostrar == 1 ? "Sí" : "No" }}</td>
+                                                <!--td>{{ $i->destacar == 1 ? "Sí" : "No" }}</td-->
                                                 <td>{{ $i->updated_at }}</td>
                                                 {{--@canany(['update banners', 'delete banners'])--}}
                                                     <td>
@@ -108,6 +108,16 @@
 @section('js')
     <script>
         $(document).ready(function() {
+            //Para las dimensiones de imagenes
+            function cargaDimensionesUpdate(select) {
+                if (select.value == 'Principal' ) {
+                    $('#dimensiones_imagen_escritorio_update').html('<small class="text mr-2">Dimensiones Recomendadas: 1440x720 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>');
+                    $('#dimensiones_imagen_movil_update').html('<small class="text mr-2">Dimensiones Recomendadas: 375x375 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>');
+                } else {
+                    $('#dimensiones_imagen_escritorio_update').html('<small class="text mr-2">Dimensiones Recomendadas: 345x345 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>');
+                    $('#dimensiones_imagen_movil_update').html('<small class="text mr-2">Dimensiones Recomendadas: 345x345 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>');
+                }
+            }
             ///Modal Edit
             $(document).on("click", '.btn-edit', function() {
                 let id = $(this).attr("data-id");
@@ -139,13 +149,13 @@
                             $('#u_mostrar').prop('checked', false);
                             $('#u_mostrar').val(1);
                         }
-                        if (data.destacar == 1) {
+                        /*if (data.destacar == 1) {
                             $('#u_destacar').prop('checked', true);
                             $('#u_destacar').val(1);
                         }else {
                             $('#u_destacar').prop('checked', false);
                             $('#u_destacar').val(1);
-                        }
+                        }*/
                         $("#id").val(data.id);
                         $('#modal-loading').modal('hide');
                         $('#modal-edit').modal({backdrop: 'static', keyboard: false, show: true});
@@ -177,15 +187,15 @@
                         $("#s_link_anchor").attr('href', data.link);
                         $("#s_referencia").html(data.referencia);
                         if (data.mostrar == 1) {
-                            $('#s_mostrar').html('Si');
+                            $('#s_mostrar').html('Sí');
                         }else {
                             $('#s_mostrar').html('No');
                         }
-                        if (data.destacar == 1) {
-                            $('#s_destacar').html('Si');
+                        /*if (data.destacar == 1) {
+                            $('#s_destacar').html('Sí');
                         }else {
                             $('#s_destacar').html('No');
-                        }
+                        }*/
                         $('#modal-loading').modal('hide');
                         $('#modal-show').modal({backdrop: 'static', keyboard: false, show: true});
                     },
@@ -215,6 +225,17 @@
                 inputId = '#'+event.target.id;
                 window.open('/file-manager/fm-button', 'fm', 'width=800,height=600');
             });
+
+            ///Funciones para dimensiones de imagenes
+            function cargaDimensionesCreate(select) {
+                if (select.value == 'Principal' ) {
+                    $('#dimensiones_imagen_escritorio_create').html('<small class="text mr-2">Dimensiones Recomendadas: 1440x720 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>');
+                    $('#dimensiones_imagen_movil_create').html('<small class="text mr-2">Dimensiones Recomendadas: 375x375 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>');
+                } else {
+                    $('#dimensiones_imagen_escritorio_create').html('<small class="text mr-2">Dimensiones Recomendadas: 345x345 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>');
+                    $('#dimensiones_imagen_movil_create').html('<small class="text mr-2">Dimensiones Recomendadas: 345x345 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small>');
+                }
+            }
         });
     </script>
 @endsection
@@ -225,7 +246,7 @@
         <div class="modal-dialog modal-lg">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Nuevo Dato</h4>
+                    <h4 class="modal-title">Nuevo Banner</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -243,7 +264,7 @@
                             </div>
                             <label>Tipo</label>
                             <div class="input-group">
-                                <select class="form-control @error('tipo') is-invalid @enderror" name="tipo" value="{{ old('tipo') }}">
+                                <select class="form-control @error('tipo') is-invalid @enderror" name="tipo" value="{{ old('tipo') }}" onchange="cargaDimensionesCreate(this);">
                                     <option value="" disabled selected>Seleccione Tipo de Banner</option>
                                     <option value="Principal">Principal</option> 
                                     <option value="Secundario">Secundario</option> 
@@ -261,7 +282,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <small class="text-primary">Click para cargar desde archivo</small>
+                                <span id="dimensiones_imagen_escritorio_create"><small class="text mr-2">Dimensiones Recomendadas: 1440x720 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small></span>
                             </div>
                             <div style="width: 100%;">
                                 <label>Imagen Móvil</label>
@@ -272,7 +293,7 @@
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
-                                <small class="text-primary">Click para cargar desde archivo</small>
+                                <span id="dimensiones_imagen_movil_create"><small class="text mr-2">Dimensiones Recomendadas: 375x375 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small></span>
                             </div>
                             <label>Link</label>
                             <div class="input-group">
@@ -295,13 +316,13 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="input-group">
+                            <!--div class="input-group">
                                 <label for="destacar" style="vertical-align: middle;">Destacar</label>
-                                <input type="checkbox" class="@error('destacar') is-invalid @enderror" name="destacar" id="destacar" style="margin-left: 10px;" value="1">
-                                @error('destacar')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <input type="checkbox" class="@-error('destacar') is-invalid @-enderror" name="destacar" id="destacar" style="margin-left: 10px;" value="1">
+                                @-error('destacar')
+                                    <div class="invalid-feedback">{-{ $message }-}</div>
+                                @-enderror
+                            </div-->
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -338,7 +359,7 @@
                             </div>
                             <label>Tipo</label>
                             <div class="input-group">
-                                <select class="form-control @error('u_tipo') is-invalid @enderror" name="u_tipo" id="u_tipo" value="{{ old('u_tipo') }}">
+                                <select class="form-control @error('u_tipo') is-invalid @enderror" name="u_tipo" id="u_tipo" value="{{ old('u_tipo') }}" onchange="cargaDimensionesUpdate(this);">
                                     <option value="" disabled selected>Seleccione Tipo de Banner</option>
                                     <option value="Principal">Principal</option> 
                                     <option value="Secundario">Secundario</option> 
@@ -353,7 +374,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Banner versión escritorio" name="u_imagen_desktop" id="u_imagen_desktop" value="{{ old('u_imagen_desktop') }}" readonly required><br/>
                                 </div>
-                                <small class="text-primary">Click para cargar desde archivo</small>
+                                <span id="dimensiones_imagen_escritorio_create"><small class="text mr-2">Dimensiones Recomendadas: 1440x720 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small></span>
                             </div>
                             <div style="width: 100%;">
                                 <label>Imagen Móvil</label>
@@ -361,7 +382,7 @@
                                 <div class="input-group">
                                     <input type="text" class="form-control" placeholder="Banner versión celular" name="u_imagen_mobile" id="u_imagen_mobile" value="{{ old('u_imagen_mobile') }}" readonly required><br/>
                                 </div>
-                                <small class="text-primary">Click para cargar desde archivo</small>
+                                <span id="dimensiones_imagen_movil_create"><small class="text mr-2">Dimensiones Recomendadas: 375x375 pixeles</small> <small class="text-primary">Click en campo para cargar desde archivo</small></span>
                             </div>
                             <label>Link</label>
                             <div class="input-group">
@@ -384,12 +405,13 @@
                                     <div class="invalid-feedback">{{ $message }}</div>
                                 @enderror
                             </div>
-                            <div class="input-group">
+                            <!--div class="input-group">
                                 <label for="u_destacar">Destacar</label>
-                                <input type="checkbox" class="@error('u_destacar') is-invalid @enderror" name="u_destacar" id="u_destacar" style="margin-left: 10px;" value="{{ old('u_destacar') }}">                                @error('u_destacar')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
-                            </div>
+                                <input type="checkbox" class="@-error('u_destacar') is-invalid @-enderror" name="u_destacar" id="u_destacar" style="margin-left: 10px;" value="{-{ old('u_destacar') }-}">
+                                @-error('u_destacar')
+                                    <div class="invalid-feedback">{-{ $message }-}</div>
+                                @-enderror
+                            </div-->
                         </div>
                 </div>
                 <div class="modal-footer justify-content-between">
@@ -478,13 +500,13 @@
                                         <span id="s_mostrar"></span>
                                     </td>
                                 </tr>
-                                <tr>
+                                <!--tr>
                                     <td>
                                         <label class="show_label">Destacar</label>
                                     </td>
                                     <td>
                                         <span id="s_destacar"></span>
-                                </tr>
+                                </tr-->
                             </table>
                         </div>
                 </div>
