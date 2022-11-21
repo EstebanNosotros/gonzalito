@@ -96,7 +96,7 @@ class ProductosController extends Controller
                            ->orWhere('productos.descripcion', 'like', '%' .$searchValue . '%')
                            ->orWhere('productos.codigo', 'like', '%' .$searchValue . '%')
                            ->orWhere('productos.precio', 'like', '%' .$searchValue . '%')
-                           ->orWhere('productos.precio_oferta', 'like', '%' .$searchValue . '%')
+                        //    ->orWhere('productos.precio_oferta', 'like', '%' .$searchValue . '%')
                            ->orWhere('productos.marca', 'like', '%' .$searchValue . '%')
                            //->orWhere('productos.categoria.nombre_web', 'like', '%' .$searchValue . '%')
                            ->orWhere('productos.tags', 'like', '%' .$searchValue . '%')
