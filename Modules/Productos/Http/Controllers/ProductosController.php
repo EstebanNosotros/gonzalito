@@ -139,7 +139,7 @@ class ProductosController extends Controller
             $catalogo              = $record->catalogo == 1 ? "Sí" : "No";
             $ultima_sincronizacion = $record->ultima_sincronizacion;
             $en_oferta             = $record->en_oferta == 1 ? "Sí" : "No";
-            $precio_oferta         = $record->precio_oferta;
+            // $precio_oferta         = $record->precio_oferta;
             $id                    = $record->id;
 
             $data_arr[] = array(
@@ -155,7 +155,7 @@ class ProductosController extends Controller
                 "catalogo"              => $catalogo,
                 "ultima_sincronizacion" => $ultima_sincronizacion,
                 "en_oferta"             => $en_oferta,
-                "precio_oferta"         => $precio_oferta,
+                // "precio_oferta"         => $precio_oferta,
                 "id"                    => $id,
             );
         }
