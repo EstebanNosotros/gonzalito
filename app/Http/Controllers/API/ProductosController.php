@@ -276,4 +276,51 @@ class ProductosController extends Controller
         return response()->download(public_path($zipName));
  
     }
+
+   /* public function getImagenPrincipal($idProducto)
+    {
+        /*$productos = Producto::all();
+        $zip = new ZipArchive;
+        $zipName = 'imagenes_productos.zip';
+        if (file_exists(public_path($zipName))) {
+            unlink(public_path($zipName));
+        }
+        if ($zip->open(public_path($zipName), ZipArchive::CREATE) === TRUE)
+        {
+            foreach ($productos as $producto)
+            {
+                if(file_exists(public_path($producto->imagen_principal)))
+                {
+                    $file = File::get(public_path($producto->imagen_principal));
+                    //EventLogger::info('##### Downloading the file#### ' );
+                    $fileName = basename($producto->imagen_principal);
+                    $zip->addFile(public_path($producto->imagen_principal), $fileName);
+                    //$extension = pathinfo(storage_path('/uploads/my_image.jpg'), PATHINFO_EXTENSION);
+                    //$headers = array('Content-Type: image/'.$extension);
+                    //return response()->download($categoria->imagen,$filename,$headers);
+                }
+            }
+            $zip->close();
+        }*-/
+        return 'existo';
+        // $producto = Producto::find($path)->imagen_principal;
+        if (file_exists(public_path($path))) {
+            $file = File::get(public_path("storage/productos/".$path));
+        }else {
+            return "nada";
+        }
+        /*const headers = {'Content-Type':'application/json',
+                    'Access-Control-Allow-Origin':'*',
+                    'Access-Control-Allow-Methods':'POST,PATCH,OPTIONS'};
+        const response = {
+        statusCode: 200,
+        headers:headers,
+        body: $file
+        };*-/
+        return response($file, 200)
+                       ->header('Access-Control-Allow-Origin','*');
+
+        //return response()->download(public_path($zipName));
+ 
+    }*/
 }

@@ -55,6 +55,8 @@ Route::middleware('auth:api')->group(function () {
  
     Route::resource('productos', ProductosController::class);
 
+    // Route::get('productosGetImage/{id}', [ ProductosController::class, 'getImage' ]);
+
     /// Banners
 
     Route::get('bannersDownloadImages', [ BannersController::class, 'downloadImages' ]);
