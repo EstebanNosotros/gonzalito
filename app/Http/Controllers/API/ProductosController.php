@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 //use App\Models\Product;
 use Modules\Productos\Models\Producto;
 use Modules\Productos\Models\ProductoCuota;
+use Modules\Productos\Models\ProductoImagen;
 use Illuminate\Http\Request; 
 use Validator;
 use Illuminate\Support\Facades\Storage;
@@ -277,37 +278,20 @@ class ProductosController extends Controller
  
     }
 
-   /* public function getImagenPrincipal($idProducto)
+    public function getImagenPrincipal($idProducto)
     {
-        /*$productos = Producto::all();
-        $zip = new ZipArchive;
-        $zipName = 'imagenes_productos.zip';
-        if (file_exists(public_path($zipName))) {
-            unlink(public_path($zipName));
-        }
-        if ($zip->open(public_path($zipName), ZipArchive::CREATE) === TRUE)
-        {
-            foreach ($productos as $producto)
-            {
-                if(file_exists(public_path($producto->imagen_principal)))
-                {
-                    $file = File::get(public_path($producto->imagen_principal));
-                    //EventLogger::info('##### Downloading the file#### ' );
-                    $fileName = basename($producto->imagen_principal);
-                    $zip->addFile(public_path($producto->imagen_principal), $fileName);
-                    //$extension = pathinfo(storage_path('/uploads/my_image.jpg'), PATHINFO_EXTENSION);
-                    //$headers = array('Content-Type: image/'.$extension);
-                    //return response()->download($categoria->imagen,$filename,$headers);
-                }
+        $producto = Producto::find($idProducto);
+        if($producto->imagen_principal) {
+            if (file_exists(public_path($producto->imagen_principal))) {
+                // $file = File::get(public_path($producto->imagen_principal));
+                // return "hay";
+                // \Log::info('existe la imagen principal');
+                return response()->file(public_path($producto->imagen_principal));
+            }else {
+                return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
             }
-            $zip->close();
-        }*-/
-        return 'existo';
-        // $producto = Producto::find($path)->imagen_principal;
-        if (file_exists(public_path($path))) {
-            $file = File::get(public_path("storage/productos/".$path));
         }else {
-            return "nada";
+            return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
         }
         /*const headers = {'Content-Type':'application/json',
                     'Access-Control-Allow-Origin':'*',
@@ -316,11 +300,36 @@ class ProductosController extends Controller
         statusCode: 200,
         headers:headers,
         body: $file
-        };*-/
-        return response($file, 200)
-                       ->header('Access-Control-Allow-Origin','*');
+        };*/
+        // return $file;// response($file, 200)
+                  //     ->header('Access-Control-Allow-Origin','*');
 
         //return response()->download(public_path($zipName));
  
-    }*/
+    }
+
+    public function getImagenGaleria($idImagen)
+    {
+        $imagen = ProductoImagen::find($idImagen);
+        if (file_exists(public_path($imagen->imagen))) {
+            // $file = File::get(public_path($producto->imagen_principal));
+            // return "hay";
+            return response()->file(public_path($imagen->imagen));
+        }else {
+            return null;
+        }
+        /*const headers = {'Content-Type':'application/json',
+                    'Access-Control-Allow-Origin':'*',
+                    'Access-Control-Allow-Methods':'POST,PATCH,OPTIONS'};
+        const response = {
+        statusCode: 200,
+        headers:headers,
+        body: $file
+        };*/
+        // return $file;// response($file, 200)
+                  //     ->header('Access-Control-Allow-Origin','*');
+
+        //return response()->download(public_path($zipName));
+ 
+    }
 }

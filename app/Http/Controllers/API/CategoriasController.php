@@ -250,6 +250,40 @@ class CategoriasController extends Controller
  
     }
 
+    public function getImagen($idCategoria)
+    {
+        $categoria = Categoria::find($idCategoria);
+        if($categoria->imagen) {
+            if (file_exists(public_path($categoria->imagen))) {
+                // $file = File::get(public_path($producto->imagen_principal));
+                // return "hay";
+                // \Log::info('existe la imagen principal');
+                return response()->file(public_path($categoria->imagen));
+            }else {
+                return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
+            }
+        }else {
+            return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
+        }
+    }
+
+    public function getIcono($idCategoria)
+    {
+        $categoria = Categoria::find($idCategoria);
+        if($categoria->icono) {
+            if (file_exists(public_path($categoria->icono))) {
+                // $file = File::get(public_path($producto->imagen_principal));
+                // return "hay";
+                // \Log::info('existe la imagen principal');
+                return response()->file(public_path($categoria->icono));
+            }else {
+                return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
+            }
+        }else {
+            return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
+        }
+    }
+
     /// GuzzleHTTP
 
     // GET

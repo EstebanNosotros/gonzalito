@@ -238,4 +238,64 @@ class BannersController extends Controller
         return response()->download(public_path($zipName));
  
     }
+
+    public function getImagenDesktop($idBanner)
+    {
+        $banner = Banner::find($idBanner);
+        if($banner->imagen_desktop) {
+            if (file_exists(public_path($banner->imagen_desktop))) {
+                // $file = File::get(public_path($producto->imagen_principal));
+                // return "hay";
+                // \Log::info('existe la imagen principal');
+                return response()->file(public_path($banner->imagen_desktop));
+            }else {
+                return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
+            }
+        }else {
+            return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
+        }
+        /*const headers = {'Content-Type':'application/json',
+                    'Access-Control-Allow-Origin':'*',
+                    'Access-Control-Allow-Methods':'POST,PATCH,OPTIONS'};
+        const response = {
+        statusCode: 200,
+        headers:headers,
+        body: $file
+        };*/
+        // return $file;// response($file, 200)
+                  //     ->header('Access-Control-Allow-Origin','*');
+
+        //return response()->download(public_path($zipName));
+ 
+    }
+
+    public function getImagenMobile($idBanner)
+    {
+        $banner = Banner::find($idBanner);
+        if($banner->imagen_mobile) {
+            if (file_exists(public_path($banner->imagen_mobile))) {
+                // $file = File::get(public_path($producto->imagen_principal));
+                // return "hay";
+                // \Log::info('existe la imagen principal');
+                return response()->file(public_path($banner->imagen_mobile));
+            }else {
+                return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
+            }
+        }else {
+            return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
+        }
+        /*const headers = {'Content-Type':'application/json',
+                    'Access-Control-Allow-Origin':'*',
+                    'Access-Control-Allow-Methods':'POST,PATCH,OPTIONS'};
+        const response = {
+        statusCode: 200,
+        headers:headers,
+        body: $file
+        };*/
+        // return $file;// response($file, 200)
+                  //     ->header('Access-Control-Allow-Origin','*');
+
+        //return response()->download(public_path($zipName));
+ 
+    }
 }

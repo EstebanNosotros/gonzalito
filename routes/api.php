@@ -45,6 +45,10 @@ Route::middleware('auth:api')->group(function () {
 
     Route::get('synchronizeCategorias', [ CategoriasController::class, 'synchronize' ]);
 
+    // Route::get('categoriasGetImagen/{id}', [ CategoriasController::class, 'getImagen' ]);
+
+    // Route::get('categoriasGetIcono/{id}', [ CategoriasController::class, 'getIcono' ]);
+
     /// Productos
 
     Route::get('productosDownloadImages', [ ProductosController::class, 'downloadImages' ]);
@@ -55,7 +59,9 @@ Route::middleware('auth:api')->group(function () {
  
     Route::resource('productos', ProductosController::class);
 
-    // Route::get('productosGetImage/{id}', [ ProductosController::class, 'getImage' ]);
+    // Route::get('productosGetImagenPrincipal/{id}', [ ProductosController::class, 'getImagenPrincipal' ]);
+
+    // Route::get('productosGetImagenGaleria/{id}', [ ProductosController::class, 'getImagenGaleria' ]);
 
     /// Banners
 
@@ -68,3 +74,17 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('banners', BannersController::class);
 
 });
+
+/*Route::middleware('api')->group(function() {
+    Route::get('productosGetImagenPrincipal/{id}', [ ProductosController::class, 'getImagenPrincipal' ]);
+
+    Route::get('productosGetImagenGaleria/{id}', [ ProductosController::class, 'getImagenGaleria' ]);
+
+    Route::get('categoriasGetImagen/{id}', [ CategoriasController::class, 'getImagen' ]);
+
+    Route::get('categoriasGetIcono/{id}', [ CategoriasController::class, 'getIcono' ]);
+
+    Route::get('bannersGetImagenDesktop/{id}', [ BannersController::class, 'getImagenDesktop' ]);
+
+    Route::get('bannersGetImagenMobile/{id}', [ BannersController::class, 'getImagenMobile' ]);
+});*/

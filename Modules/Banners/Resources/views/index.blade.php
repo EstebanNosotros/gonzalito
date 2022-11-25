@@ -156,6 +156,7 @@
                             $('#u_destacar').prop('checked', false);
                             $('#u_destacar').val(1);
                         }*/
+                        $('#u_tipo').on('change',cargaDimensionesUpdate(this));
                         $("#id").val(data.id);
                         $('#modal-loading').modal('hide');
                         $('#modal-edit').modal({backdrop: 'static', keyboard: false, show: true});
