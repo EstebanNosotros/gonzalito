@@ -1,5 +1,6 @@
 {
     "Categorias": true,
     "Banners": true,
-    "Productos": true
+    "Productos": true,
+    "Dispositivos": true
 }

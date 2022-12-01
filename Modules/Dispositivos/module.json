@@ -1,0 +1,23 @@
+{
+    "name": "Dispositivos",
+    "label": "Dispositivos",
+    "alias": "dispositivos",
+    "description": "manage all dispositivos",
+    "keywords": ["dispositivos"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Dispositivos\\Providers\\DispositivosServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "menus": [
+        {
+            "icon": "fas fa-circle",
+            "name": "Dispositivos",
+            "route": "dispositivos.index",
+            "permission": "read dispositivos"
+        }
+    ],
+    "permissions": ["dispositivos"]
+}
