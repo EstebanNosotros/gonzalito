@@ -60,14 +60,14 @@
                                         @foreach ($data as $i)
                                             <tr>
                                                 <td>{{ $loop->iteration }}</td>
-                                                <td>{{ $i->user_id }}</td>
+                                                <td>{{ $i->nombre }}</td>
                                                 <td>{{ $i->hash }}</td>
                                                 <td>{{ $i->user_agent }}</td>
                                                 <td>{{ $i->created_at }}</td>
                                                 @can('delete dispositivos')
                                                     <td>
                                                         <div class="btn-group">
-                                                            <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $i->id }}" data-name="{{ $i->user_id }}"><i class="fas fa-trash"></i></button>
+                                                            <button class="btn btn-sm btn-danger btn-delete" data-id="{{ $i->id }}" data-name="{{ $i->nombre }}"><i class="fas fa-trash"></i></button>
                                                         </div>
                                                     </td>
                                                 @endcan
@@ -136,7 +136,7 @@
             ///Modal delete
             $(document).on("click", '.btn-delete', function() {
                 let id = $(this).attr("data-id");
-                let usuario = $(this).attr("data-usuario");
+                let usuario = $(this).attr("data-name");
                 $("#did").val(id);
                 $("#delete-data").html(usuario);
                 $('#modal-delete').modal({backdrop: 'static', keyboard: false, show: true});

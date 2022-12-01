@@ -16,8 +16,9 @@ class DispositivosController extends Controller
     {
         $x['title'] = "Dispositivos";
         $x['data']  = DB::connection('mysql_catalogo')
-                        ->select('SELECT d.*
-                                    FROM dispositivos d');
+                        ->select('SELECT d.*, u.nombre
+                                    FROM dispositivos d, users u
+                                   WHERE u.id = d.user_id');
         // $x['data']      = Dispositivo::get();
 
         return view('dispositivos::index', $x);
