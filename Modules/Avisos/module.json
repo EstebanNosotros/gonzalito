@@ -1,0 +1,23 @@
+{
+    "name": "Avisos",
+    "label": "Avisos",
+    "alias": "avisos",
+    "description": "manage all avisos",
+    "keywords": ["avisos"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Avisos\\Providers\\AvisosServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "menus": [
+        {
+            "icon": "fas fa-circle",
+            "name": "Avisos",
+            "route": "avisos.index",
+            "permission": "read avisos"
+        }
+    ],
+    "permissions": ["avisos"]
+}

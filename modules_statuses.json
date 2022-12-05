@@ -2,5 +2,6 @@
     "Categorias": true,
     "Banners": true,
     "Productos": true,
-    "Dispositivos": true
+    "Dispositivos": true,
+    "Avisos": true
 }
