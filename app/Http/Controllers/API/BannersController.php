@@ -247,7 +247,7 @@ class BannersController extends Controller
                 // $file = File::get(public_path($producto->imagen_principal));
                 // return "hay";
                 // \Log::info('existe la imagen principal');
-                return response()->file(public_path($banner->imagen_desktop));
+                return response()->header('Access-Control-Allow-Origin', '*')->file(public_path($banner->imagen_desktop));
             }else {
                 return null;//response()->file(public_path('storage/productos/logo-gonzalito-placeholder.jpg'));
             }

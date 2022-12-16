@@ -17,6 +17,7 @@ use Carbon\Carbon;
 use DB;
 use DataTables;
 use DateTime;
+use Illuminate\Support\Facades\Storage;
 
 class ProductosController extends Controller
 {
@@ -240,6 +241,11 @@ class ProductosController extends Controller
                 ,'en_oferta'              => ($request->en_oferta ? $request->en_oferta : false)
                 ,'precio_oferta'          => $request->precio_oferta
             ]);
+            if($request->imagen_principal) {
+                $ruta = substr($request->imagen_principal, 8);
+                // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
+            }
             $topeImagenes = $request->crear_imagenes_tope;
             for ($i = 1; $i <= $topeImagenes; $i++) {
                 if (isset($_POST["crear_imagenes_imagen".$i])) {
@@ -250,7 +256,9 @@ class ProductosController extends Controller
                       //  ,'destacar'    => isset($_POST["crear_imagenes_destacar".$i]) ? $_POST["crear_imagenes_destacar".$i] : false
                         ,'producto_id' => $producto->id
                     ]);
-                    Log::info($productoImagen);
+                    $ruta = substr($_POST["crear_imagenes_imagen".$i], 8);
+                    // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                    Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
                 }
             }
             Log::info('fin de creacion');
@@ -324,6 +332,7 @@ class ProductosController extends Controller
                 }
             }
             $producto = Producto::find($request->id);
+            $imagenPrincipal = $producto->imagen_principal;
             $producto->update([
                 'nombre'                  => $request->u_nombre
                 ,'nombre_web'             => $request->u_nombre_web
@@ -344,6 +353,13 @@ class ProductosController extends Controller
                 ,'en_oferta'              => ($request->u_en_oferta ? $request->u_en_oferta : false)
                 ,'precio_oferta'          => $request->u_precio_oferta
             ]);
+            if($request->u_imagen_principal != $imagenPrincipal) {
+                $ruta = substr($request->u_imagen_principal, 8);
+                Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
+                $rutaBorrar = substr($imagenPrincipal, 8);
+                // Alert::success('Aviso', $rutaBorrar)->toToast()->toHtml();
+                Storage::disk('catalogo_produccion')->delete($rutaBorrar);
+            }
             $topeImagenes = $request->actualizar_imagenes_tope;
             $imagenes_existentes = ProductoImagen::where('producto_id', $producto->id)->pluck('id')->toArray();
             $imagenes_entrantes  = [];
@@ -367,6 +383,9 @@ class ProductosController extends Controller
                            // ,'destacar'    => isset($_POST["actualizar_imagenes_destacar".($i+1)])
                         ]);
                     }
+                    $ruta = substr($_POST["actualizar_imagenes_imagen".($i+1)], 8);
+                    // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                    Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
                 }
             }
 
@@ -385,6 +404,9 @@ class ProductosController extends Controller
                 if(!$existeProducto && !$existeImagen && !$existeCategoria && !$imagenDirectorioBase) {*/
                     if(file_exists(public_path($imagen->imagen))) {
                         unlink(public_path($imagen->imagen));
+                        $ruta = substr($imagen->imagen, 8);
+                        // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                        Storage::disk('catalogo_produccion')->delete($ruta);
                     }
                 //}
                 $imagen->delete();
@@ -412,12 +434,18 @@ class ProductosController extends Controller
             foreach($imagenes as $imagen) {
                 if (file_exists(public_path($imagen->imagen))) {
                     unlink(public_path($imagen->imagen));
+                    $ruta = substr($imagen->imagen, 8);
+                    // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                    Storage::disk('catalogo_produccion')->delete($ruta);
                 }
                 $imagen->delete();
             }
             if ($producto->imagen_principal) {
                 if (file_exists(public_path($producto->imagen_principal))) {
                     unlink(public_path($producto->imagen_principal));
+                    $ruta = substr($producto->imagen_principal, 8);
+                    // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                    Storage::disk('catalogo_produccion')->delete($ruta);
                 }
             }
             $producto->delete();

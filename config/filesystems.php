@@ -44,6 +44,14 @@ return [
             'throw' => false,
         ],
 
+        'catalogo_produccion' => [
+            'driver' => 'local',
+            'root' =>  env('CATALOGO_STORAGE_URL'),// '../Gonzalito-Catalogo/storage/app/public', // '../../public_html/storage/app/public',
+            //'url' => env('APP_URL').'/storage',
+            //'visibility' => 'public',
+            //'throw' => false,
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),
