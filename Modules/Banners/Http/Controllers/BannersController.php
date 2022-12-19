@@ -9,6 +9,7 @@ use Illuminate\Routing\Controller;
 use Modules\Banners\Models\Banner;
 use RealRashid\SweetAlert\Facades\Alert;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Storage;
 
 class BannersController extends Controller
 {
@@ -47,6 +48,16 @@ class BannersController extends Controller
                 ,'destacar'       => ($request->destacar ? $request->destacar : false)
                 ,'tipo'           => $request->tipo
             ]);
+            if($request->imagen_desktop) {
+                $ruta = substr($request->imagen_desktop, 8);
+                // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
+            }
+            if($request->imagen_mobile) {
+                $ruta = substr($request->imagen_mobile, 8);
+                // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
+            }
             Alert::success('Aviso', 'Dato <b>' . $banner->nombre . '</b> registrado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             Alert::error('Aviso', 'Dato <b>' . $banner->nombre . '</b> error al registrar : ' . $th->getMessage())->toToast()->toHtml();
@@ -82,6 +93,8 @@ class BannersController extends Controller
         }
         try {
             $banner = Banner::find($request->id);
+            $imagenDesktopBanner = $banner->imagen_desktop;
+            $imagenMobileBanner  = $banner->imagen_mobile;
             $banner->update([
                 'nombre'          => $request->u_nombre
                 ,'imagen_desktop' => $request->u_imagen_desktop
@@ -92,6 +105,16 @@ class BannersController extends Controller
                 ,'destacar'       => ($request->u_destacar ? $request->u_destacar : false)
                 ,'tipo'           => $request->u_tipo
             ]);
+            if(($request->u_imagen_desktop != $imagenDesktopBanner) && (!is_null($request->u_imagen_desktop)) ) {
+                $ruta = substr($request->u_imagen_desktop, 8);
+                // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
+            }
+            if(($request->u_imagen_mobile != $imagenMobileBanner) && (!is_null($request->u_imagen_mobile)) ) {
+                $ruta = substr($request->u_imagen_mobile, 8);
+                // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
+            }
             Alert::success('Aviso', 'Dato <b>' . $banner->nombre . '</b> actualizado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             Alert::error('Aviso', 'Dato <b>' . $banner->nombre . '</b> error al actualizar : ' . $th->getMessage())->toToast()->toHtml();
@@ -105,9 +128,13 @@ class BannersController extends Controller
             $banner = Banner::find($request->id);
             if (file_exists(public_path($banner->imagen_desktop))) {
                 unlink(public_path($banner->imagen_desktop));
+                $ruta = substr($banner->imagen_desktop, 8);
+                Storage::disk('catalogo_produccion')->delete($ruta);
             }
             if (file_exists(public_path($banner->imagen_mobile))) {
                 unlink(public_path($banner->imagen_mobile));
+                $ruta = substr($banner->imagen_mobile, 8);
+                Storage::disk('catalogo_produccion')->delete($ruta);
             }
             $banner->delete();
             Alert::success('Aviso', 'Dato <b>' . $banner->nombre . '</b> eliminado correctamente')->toToast()->toHtml();

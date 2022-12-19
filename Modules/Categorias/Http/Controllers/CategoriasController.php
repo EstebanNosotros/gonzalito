@@ -10,6 +10,7 @@ use Modules\Categorias\Models\Categoria;
 use RealRashid\SweetAlert\Facades\Alert;
 use stdClass;
 use Symfony\Component\HttpFoundation\Response;
+use Illuminate\Support\Facades\Storage;
 
 class CategoriasController extends Controller
 {
@@ -48,6 +49,16 @@ class CategoriasController extends Controller
                 ,'mostrar'    => ($request->mostrar ? $request->mostrar : false)
                 ,'destacar'   => ($request->destacar ? $request->destacar : false)
             ]);
+            if($request->imagen) {
+                $ruta = substr($request->imagen, 8);
+                // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
+            }
+            if($request->icono) {
+                $ruta = substr($request->icono, 8);
+                // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
+            }
             Alert::success('Información', 'Registro <b>' . $categoria->nombre . '</b> creado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             Alert::error('Información', 'Registro <b>' . $categoria->nombre . '</b> error al crear : ' . $th->getMessage())->toToast()->toHtml();
@@ -81,7 +92,9 @@ class CategoriasController extends Controller
                 ->withInput();
         }
         try {
-            $categoria = Categoria::find($request->id);
+            $categoria       = Categoria::find($request->id);
+            $imagenCategoria = $categoria->imagen;
+            $iconoCategoria  = $categoria->icono;
             $categoria->update([
                 'nombre'      => $request->u_nombre,
                 'nombre_web'  => $request->u_nombre_web,
@@ -91,6 +104,16 @@ class CategoriasController extends Controller
                 'mostrar'     => ($request->u_mostrar ? $request->u_mostrar : false),
                 'destacar'    => ($request->u_destacar ? $request->u_destacar : false)
             ]);
+            if(($request->u_imagen != $imagenCategoria) && (!is_null($request->u_imagen)) ) {
+                $ruta = substr($request->u_imagen, 8);
+                // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
+            }
+            if(($request->u_icono != $iconoCategoria) && (!is_null($request->u_icono)) ) {
+                $ruta = substr($request->u_icono, 8);
+                // Alert::success('Aviso', $ruta)->toToast()->toHtml();
+                Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
+            }
             Alert::success('Aviso', 'Registro <b>' . $categoria->nombre . '</b> actualizado correctamente')->toToast()->toHtml();
         } catch (\Throwable $th) {
             Alert::error('Aviso', 'Registro <b>' . $categoria->nombre . '</b> error al actualizar : ' . $th->getMessage())->toToast()->toHtml();
@@ -105,11 +128,15 @@ class CategoriasController extends Controller
             if($categoria->imagen) {
                 if (file_exists(public_path($categoria->imagen))) {
                     unlink(public_path($categoria->imagen));
+                    $ruta = substr($categoria->imagen, 8);
+                    Storage::disk('catalogo_produccion')->delete($ruta);
                 }
             }
             if($categoria->icono) {
                 if (file_exists(public_path($categoria->icono))) {
                     unlink(public_path($categoria->icono));
+                    $ruta = substr($categoria->icono, 8);
+                    Storage::disk('catalogo_produccion')->delete($ruta);
                 }
             }
             $categoria->delete();

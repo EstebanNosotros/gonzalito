@@ -356,9 +356,9 @@ class ProductosController extends Controller
             if($request->u_imagen_principal != $imagenPrincipal) {
                 $ruta = substr($request->u_imagen_principal, 8);
                 Storage::disk('catalogo_produccion')->put($ruta, Storage::disk('public')->get($ruta));
-                $rutaBorrar = substr($imagenPrincipal, 8);
+                // $rutaBorrar = substr($imagenPrincipal, 8);
                 // Alert::success('Aviso', $rutaBorrar)->toToast()->toHtml();
-                Storage::disk('catalogo_produccion')->delete($rutaBorrar);
+                // Storage::disk('catalogo_produccion')->delete($rutaBorrar);
             }
             $topeImagenes = $request->actualizar_imagenes_tope;
             $imagenes_existentes = ProductoImagen::where('producto_id', $producto->id)->pluck('id')->toArray();
