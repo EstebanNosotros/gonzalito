@@ -1,0 +1,23 @@
+{
+    "name": "Vendedores",
+    "label": "Vendedores",
+    "alias": "vendedores",
+    "description": "manage all vendedores",
+    "keywords": ["vendedores"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Vendedores\\Providers\\VendedoresServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "menus": [
+        {
+            "icon": "fas fa-circle",
+            "name": "Vendedores",
+            "route": "vendedores.index",
+            "permission": "read vendedores"
+        }
+    ],
+    "permissions": ["vendedores"]
+}

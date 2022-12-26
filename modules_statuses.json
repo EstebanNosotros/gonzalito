@@ -3,5 +3,6 @@
     "Banners": true,
     "Productos": true,
     "Dispositivos": true,
-    "Avisos": true
+    "Avisos": true,
+    "Vendedores": true
 }
