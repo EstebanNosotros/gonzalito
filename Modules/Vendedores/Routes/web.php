@@ -11,5 +11,7 @@ Route::middleware('auth')->prefix('admin/vendedor')->group(function() {
         Route::post('/show', 'show')->middleware(['permisson:read vendedores'])->name('vendedores.show');
         Route::put('/', 'update')->middleware(['permisson:update vendedores'])->name('vendedores.update');
         Route::delete('/', 'destroy')->middleware(['permisson:delete vendedores'])->name('vendedores.destroy');
+
+        Route::post('/synchronize', 'synchronize')->middleware(['permisson:create vendedores'])->name('vendedores.synchronize');
     });
 });

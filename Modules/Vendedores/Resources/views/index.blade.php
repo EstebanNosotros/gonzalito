@@ -31,19 +31,19 @@
                 <div class="row">
                     <div class="col-12">
                         <div class="card">
-                            {{-- @can('create vendedores')--}}
+                            @can('create vendedores')
                             <div class="card-header">
                                 <!--h3 class="card-title">
                                     <a href="#" class="btn btn-sm btn-success" data-toggle="modal" data-target="#modal-nuevo" data-backdrop="static" data-keyboard="false"><i class="fas fa-plus"></i> Nuevo</a>
                                 </h3-->
-                                {{--<form action="{{ route('vendeodres.synchronize') }}" method="POST" enctype="multipart/form-data">
+                                <form action="{{ route('vendedores.synchronize') }}" method="POST" enctype="multipart/form-data">
                                     @csrf
                                     <h3 class="card-title" style="margin-left: 20px;">
-                                        <input type="checkbox" id="chkSelectAll"> &nbsp; <span style="font-weight: 400;" id="selectSelectAll">Seleccionar Todos</span> &nbsp;  <button type="submit" class="btn btn-sm btn-success" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Actualizar Seleccionados</button>
+                                        {{--<input type="checkbox" id="chkSelectAll"> &nbsp; <span style="font-weight: 400;" id="selectSelectAll">Seleccionar Todos</span> &nbsp;--}}  <button type="submit" class="btn btn-sm btn-success" data-backdrop="static" data-keyboard="false"><i class="fa-solid fa-arrows-rotate"></i> Sincronizar</button>
                                     </h3>
-                                </form>--}}
+                                </form>
                             </div>
-                            {{-- @endcan --}}
+                            @endcan
                             <!-- /.card-header -->
                             <div class="card-body table-responsive">
                                 <table class="table table-bordered table-hover datatable">

@@ -52,26 +52,88 @@ class VendedoresController extends Controller
         ], Response::HTTP_OK);
     }
 
-    public function synchronize(Request $request)
+    //Synchronize
+    public function synchronize()
     {
-        $validator = Validator::make($request->all(), [
-            'nombre'      => ['required', 'string', 'max:255']
-        ]);
-        if ($validator->fails()) {
-            return back()->withErrors($validator)
-                ->withInput();
+        if ($_SERVER['REQUEST_METHOD'] != 'POST') {
+            exit;
         }
-        try {
-            $vendedore = Vendedore::find($request->id);
-            $vendedore->update([
-                'nombre'  => $request->nombre
-            ]);
-            Alert::success('Aviso', 'Dato <b>' . $vendedore->nombre . '</b> actualizado correctamente')->toToast()->toHtml();
-        } catch (\Throwable $th) {
-            Alert::error('Aviso', 'Dato <b>' . $vendedore->nombre . '</b> error al actualizar : ' . $th->getMessage())->toToast()->toHtml();
+        $username='p4nt4L1to';
+        $password='305pr15mA';
+        $httpClient = new \GuzzleHttp\Client();
+        $req = $httpClient->get('http://190.128.136.242:7575/catalogserv/vendedores', ['auth' => [$username, $password]]);
+        $res = $req->getBody();
+        //return json_decode($res, true);
+        //return count(json_decode($res,true));
+        //dd($res);
+        $vendedores = json_decode($res, true);
+        foreach ($vendedores as $vendedor) {
+            $existe = null;
+            $existe = DB::connection('mysql_catalogo')
+                        ->select('SELECT u.id, u.nombre, u.ci, u.contacto, u.key, u.referencia, u.updated_at
+                                    FROM users u
+                                   WHERE u.nombre = :nombre', ['nombre' => $vendedor['nombre']]);
+            if($existe == null) {
+                // $existe = DB::connection('mysql_catalogo')
+                //             ->table('users')
+                //             ->insert([
+                //                 array(
+                //                     'nombre' => vendedor['nombre']
+                //                     ,'ci'    => 
+                //                 )
+                //             ]);                    
+                null;
+            }else {
+                // $existe = $existe[0];
+                DB::connection('mysql_catalogo')
+                  ->table('users')
+                  ->where('nombre', $vendedor['nombre'])
+                  ->update([
+                        'referencia'  => $vendedor['id_vendedor']
+                        ,'contacto'   => $vendedor['contacto']
+                  ]);     
+            }
         }
-        return back();
+        return "Vendedores de catalogo actualizados en el sistema <a href=\"".route('vendedores.index')."\">Volver</a>";
+
     }
+
+   /* public function synchronizeDirect()
+    {
+        $username='p4nt4L1to';
+        $password='305pr15mA';
+        $httpClient = new \GuzzleHttp\Client();
+        $req = $httpClient->get('http://190.128.136.242:7575/catalogserv/categorias', ['auth' => [$username, $password]]);
+        $res = $req->getBody();
+        //return json_decode($res, true);
+        //return count(json_decode($res,true));
+        //dd($res);
+        $categorias = json_decode($res, true);
+        foreach ($categorias as $categoria) {
+            $existe = null;
+            $existe = Categoria::where('referencia', $categoria['id_categoria'])->first();
+            if($existe == null) {
+                Categoria::create([
+                    'nombre'     => $categoria['nombre']
+                    ,'referencia' => $categoria['id_categoria']
+                    ,'mostrar'    => $categoria['estado'] == 'A' ? 1 : 0
+                ]);                    
+            }else {
+                $existe->update([
+                    'nombre'     => $categoria['nombre']
+                    ,'mostrar'    => $categoria['estado'] == 'A' ? 1 : 0
+                ]);
+            }
+        }
+        $totalCategorias = Categoria::count();
+        return "Ahora hay ".$totalCategorias." categorias en el sistema <a href=\"".route('categorias.index')."\">Volver</a>";
+
+    }
+
+    public function synchronize_test() {
+        Log::info('synchronize de categorias');
+        return;
+    }*/
 
     /*public function update(Request $request)
     {
