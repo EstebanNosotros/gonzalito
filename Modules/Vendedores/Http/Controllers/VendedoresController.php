@@ -66,6 +66,7 @@ class VendedoresController extends Controller
         //return json_decode($res, true);
         //return count(json_decode($res,true));
         //dd($res);
+        $c = 0;
         $vendedores = json_decode($res, true);
         foreach ($vendedores as $vendedor) {
             $existe = null;
@@ -85,16 +86,17 @@ class VendedoresController extends Controller
                 null;
             }else {
                 // $existe = $existe[0];
+                $c++;
                 DB::connection('mysql_catalogo')
                   ->table('users')
                   ->where('nombre', $vendedor['nombre'])
                   ->update([
                         'referencia'  => $vendedor['id_vendedor']
-                        ,'contacto'   => $vendedor['contacto']
+                        // ,'contacto'   => $vendedor['contacto']
                   ]);     
             }
         }
-        return "Vendedores de catalogo actualizados en el sistema <a href=\"".route('vendedores.index')."\">Volver</a>";
+        return "Vendedores de catalogo actualizados en el sistema, se actualizaron ".$c." registros <a href=\"".route('vendedores.index')."\">Volver</a>";
 
     }
 
