@@ -34,6 +34,7 @@ class Producto extends Model
         ,'catalogo'
         ,"en_oferta"
         ,"precio_oferta"
+        ,"orden_oferta"
     ];
 
     public function categoria()

@@ -117,6 +117,7 @@
                                             <th>Destacar</th>                       
                                             <th>Cat&aacute;logo</th>
                                             <th>Oferta</th>
+                                            <th>Orden</th>
                                             <th>Sincronizado</th>
                                             {{--@canany(['update productos', 'delete productos'])--}}
                                                 <th>Acciones</th>
@@ -207,6 +208,7 @@
                     { data: 'destacar' },
                     { data: 'catalogo' },
                     { data: 'en_oferta' },
+                    { data: 'orden_oferta' },
                     { data: 'ultima_sincronizacion' },
                     { data: null ,
                       render: function ( data, type, row ) {
@@ -301,6 +303,7 @@
                         $('#u_codigo').val(data.codigo);
                         $('#u_precio').val(data.precio);
                         $('#u_precio_oferta').val(data.precio_oferta);
+                        $('#u_orden_oferta').val(data.orden_oferta);
                         $('#u_marca').val(data.marca);
                         $('#u_categoria_id').val(data.categoria_id);
                         $('#u_tags').val(data.tags);
@@ -366,7 +369,7 @@
 
                                 // Callback
 
-                                return 'Solo puede elegir hasta 5 productos';
+                                return 'Solo puede elegir hasta 6 productos';
                             }
                         });
                         if(data.productos_relacionados != null) {
@@ -455,6 +458,7 @@
                         $('#s_codigo').html(data.data.codigo);
                         $('#s_precio').html((data.data.precio).toLocaleString('es'));
                         $('#s_precio_oferta').html((data.data.precio_oferta).toLocaleString('es'));
+                        $('#s_orden_oferta').html(data.data.orden_oferta);
                         $('#s_marca').html(data.data.marca);
                         $('#s_categoria').html(data.data.categoria.nombre_web ? data.data.categoria.nombre_web : data.data.categoria.nombre);
                         $('#s_tags').html(data.data.tags);
@@ -956,17 +960,28 @@
                                     @enderror
                                 </div>
                             </div>
-                            <label>Categoría</label>
-                            <div class="input-group">
-                                <select id="u_categoria_id" name="u_categoria_id" class="form-control @error('u_categoria_id') is-invalid @enderror" value="{{ old("u_categoria_id") }}" required>
-                                    <option value="" disabled>Seleccione Categoría</option>
-                                    @foreach($categorias as $categoria)
-                                        <option value="{{ $categoria->id }}">{{ $categoria->nombre_web ? $categoria->nombre_web : $categoria->nombre }}</option>
-                                    @endforeach
-                                </select>
-                                @error('u_categoria_id')
-                                    <div class="invalid-feedback">{{ $message }}</div>
-                                @enderror
+                            <div style="display: inline-block; width: 48%;">
+                                <label>Categoría</label>
+                                <div class="input-group">
+                                    <select id="u_categoria_id" name="u_categoria_id" class="form-control @error('u_categoria_id') is-invalid @enderror" value="{{ old("u_categoria_id") }}" required>
+                                        <option value="" disabled>Seleccione Categoría</option>
+                                        @foreach($categorias as $categoria)
+                                            <option value="{{ $categoria->id }}">{{ $categoria->nombre_web ? $categoria->nombre_web : $categoria->nombre }}</option>
+                                        @endforeach
+                                    </select>
+                                    @error('u_categoria_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                            </div>
+                            <div style="display: inline-block; width: 48%; margin-left: 4%;">
+                                <label>Orden de Oferta</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control @error('u_precio_oferta') is-invalid @enderror" placeholder="Nivel de prioridad al momento de mostrar el producto cuando este est&aacute; de oferta (1 es el m&aacute;s alto" name="u_orden_oferta" id="u_orden_oferta" value="{{ old('u_orden_oferta') }}">
+                                    @error('u_orden_oferta')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
                             </div>
                             <label>Tags</label>
                             <div class="input-group">
@@ -1147,6 +1162,14 @@
                                     </td>
                                     <td>
                                         <span id="s_precio_oferta"></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <label class="show_label">Orden de Oferta: </label>
+                                    </td>
+                                    <td>
+                                        <span id="s_orden_oferta"></span>
                                     </td>
                                 </tr>
                                 <tr>

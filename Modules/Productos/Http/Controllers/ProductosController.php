@@ -140,7 +140,7 @@ class ProductosController extends Controller
             $catalogo              = $record->catalogo == 1 ? "Sí" : "No";
             $ultima_sincronizacion = $record->ultima_sincronizacion;
             $en_oferta             = $record->en_oferta == 1 ? "Sí" : "No";
-            // $precio_oferta         = $record->precio_oferta;
+            $orden_oferta          = $record->orden_oferta;
             $id                    = $record->id;
 
             $data_arr[] = array(
@@ -156,7 +156,7 @@ class ProductosController extends Controller
                 "catalogo"              => $catalogo,
                 "ultima_sincronizacion" => $ultima_sincronizacion,
                 "en_oferta"             => $en_oferta,
-                // "precio_oferta"         => $precio_oferta,
+                "orden_oferta"          => $orden_oferta,
                 "id"                    => $id,
             );
         }
@@ -197,6 +197,7 @@ class ProductosController extends Controller
             ,'catalogo'               => ['sometimes', 'boolean']
             ,'en_oferta'              => ['sometimes', 'boolean']
             ,'precio_oferta'          => ['nullable', 'numeric']
+            ,'orden_oderta'           => ['nullable', 'integer']
         ]);
         if ($validator->fails()) {
             return back()->withErrors($validator)
@@ -240,6 +241,7 @@ class ProductosController extends Controller
                 ,'cuotas'                 => json_encode($cuotas, JSON_NUMERIC_CHECK)
                 ,'en_oferta'              => ($request->en_oferta ? $request->en_oferta : false)
                 ,'precio_oferta'          => $request->precio_oferta
+                ,'orden_oferta'           => $request->orden_oferta
             ]);
             if($request->imagen_principal) {
                 $ruta = substr($request->imagen_principal, 8);
@@ -304,6 +306,7 @@ class ProductosController extends Controller
             ,'u_catalogo'               => ['sometimes', 'boolean']
             ,'u_en_oferta'              => ['sometimes', 'boolean']
             ,'u_precio_oferta'          => ['nullable', 'numeric']
+            ,'u_orden_oferta'           => ['nullable', 'integer']
         ]);
         if ($validator->fails()) {
             return back()->withErrors($validator)
@@ -352,6 +355,7 @@ class ProductosController extends Controller
                 ,'cuotas'                 => json_encode($cuotas, JSON_NUMERIC_CHECK)
                 ,'en_oferta'              => ($request->u_en_oferta ? $request->u_en_oferta : false)
                 ,'precio_oferta'          => $request->u_precio_oferta
+                ,'orden_oferta'           => $request->u_orden_oferta
             ]);
             if($request->u_imagen_principal != $imagenPrincipal) {
                 $ruta = substr($request->u_imagen_principal, 8);
