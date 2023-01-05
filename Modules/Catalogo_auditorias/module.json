@@ -1,0 +1,23 @@
+{
+    "name": "Catalogo_auditorias",
+    "label": "Catalogo_auditorias",
+    "alias": "catalogo_auditorias",
+    "description": "manage all catalogo_auditorias",
+    "keywords": ["catalogo_auditorias"],
+    "priority": 0,
+    "providers": [
+        "Modules\\Catalogo_auditorias\\Providers\\Catalogo_auditoriasServiceProvider"
+    ],
+    "aliases": {},
+    "files": [],
+    "requires": [],
+    "menus": [
+        {
+            "icon": "fas fa-circle",
+            "name": "Catalogo_auditorias",
+            "route": "catalogo_auditorias.index",
+            "permission": "read catalogo_auditorias"
+        }
+    ],
+    "permissions": ["catalogo_auditorias"]
+}
