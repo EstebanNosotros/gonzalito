@@ -4,5 +4,6 @@
     "Productos": true,
     "Dispositivos": true,
     "Avisos": true,
-    "Vendedores": true
+    "Vendedores": true,
+    "Catalogo_auditorias": true
 }
