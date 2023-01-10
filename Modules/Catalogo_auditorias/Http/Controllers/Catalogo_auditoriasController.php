@@ -200,7 +200,7 @@ class Catalogo_auditoriasController extends Controller
                                                 $lineaSearchByObjeto")));
         // Records
         $records = DB::connection('mysql_catalogo')
-                     ->select(DB::raw("SELECT a.*, u.nombre AS vendedor, @row_num:= @row_num + 1 AS iteration
+                     ->select(DB::raw("SELECT a.id AS id, a.created_at AS fecha, a.ip AS ip, a.user_agent AS dispositivo, a.url AS url, a.object_reference AS referencia, a.user_role AS rol, a.object AS objeto, u.nombre AS vendedor, @row_num:= @row_num + 1 AS iteration
                                  FROM audits a, users u
                                 WHERE u.id = a.user_id
                                 $lineaSearchByName
@@ -262,14 +262,14 @@ class Catalogo_auditoriasController extends Controller
         /// foreach($productos as $producto){ //changed
         foreach($records as $record){
             $iteration             = $record->iteration;
-            $fecha                 = $record->created_at;
+            $fecha                 = $record->fecha;
             $ip                    = $record->ip;
             $vendedor              = $record->vendedor;
-            $dispositivo           = $record->user_agent;
+            $dispositivo           = $record->dispositivo;
             $url                   = $record->url;
-            $objeto                = $record->object;
-            $referencia            = $record->object_reference;
-            $rol                   = $record->user_role;
+            $objeto                = $record->objeto;
+            $referencia            = $record->referencia;
+            $rol                   = $record->rol;
             $id                    = $record->id;
 
             $data_arr[] = array(
